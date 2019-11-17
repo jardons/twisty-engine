@@ -5,7 +5,7 @@ using Twisty.Engine.Geometry;
 
 namespace Twisty.Engine.Structure
 {
-	public class Block
+	public abstract class Block
 	{
 		private List<BlockFace> m_Faces;
 
@@ -38,6 +38,11 @@ namespace Twisty.Engine.Structure
 		/// Position is stored using the direction relative to the Form center.
 		/// </summary>
 		public SphericalVector Position { get; set; }
+
+		/// <summary>
+		/// Gets the unique ID of the block.
+		/// </summary>
+		public abstract string Id { get; }
 
 		#endregion Public Properties
 

@@ -9,6 +9,21 @@ namespace Twisty.Engine.Tests.Structure
 	[Trait("Category", "Structure")]
 	public class BlockTest
 	{
+		public class TestBlock : Block
+		{
+			public TestBlock(BlockFace f)
+				: base(f)
+			{
+			}
+
+			public TestBlock(IEnumerable<BlockFace> f)
+				: base(f)
+			{
+			}
+
+			public override string Id => string.Empty;
+		}
+
 		#region Test Data
 
 		public static readonly TheoryData<SphericalVector, double, SphericalVector> RotationsValues = new TheoryData<SphericalVector, double, SphericalVector>()
@@ -29,8 +44,8 @@ namespace Twisty.Engine.Tests.Structure
 			IEnumerable<BlockFace> faces = null;
 
 			// 2. Execute
-			Action a1 = () => b = new Block(f);
-			Action a2 = () => b = new Block(faces);
+			Action a1 = () => b = new TestBlock(f);
+			Action a2 = () => b = new TestBlock(faces);
 
 			// 3. Verify
 			Assert.Throws<ArgumentNullException>(a1);
@@ -45,7 +60,7 @@ namespace Twisty.Engine.Tests.Structure
 			IEnumerable<BlockFace> faces = new List<BlockFace>(0);
 
 			// 2. Execute
-			Action a = () => b = new Block(faces);
+			Action a = () => b = new TestBlock(faces);
 
 			// 3. Verify
 			Assert.Throws<ArgumentException>(a);
@@ -56,7 +71,7 @@ namespace Twisty.Engine.Tests.Structure
 		{
 			// 1. Prepare
 			SphericalVector faceOrientation = new SphericalVector(Math.PI, Math.PI);
-			Block b = new Block(new BlockFace("test", faceOrientation));
+			Block b = new TestBlock(new BlockFace("test", faceOrientation));
 
 			// 2. Execute
 			BlockFace f = b.GetBlockFace(faceOrientation);
@@ -71,7 +86,7 @@ namespace Twisty.Engine.Tests.Structure
 		{
 			// 1. Prepare
 			SphericalVector faceOrientation = new SphericalVector(Math.PI, Math.PI);
-			Block b = new Block(new BlockFace("test", faceOrientation));
+			Block b = new TestBlock(new BlockFace("test", faceOrientation));
 
 			b.RotateAround(axis, theta);
 			faceOrientation = faceOrientation.RotateAround(axis, theta);
@@ -89,7 +104,7 @@ namespace Twisty.Engine.Tests.Structure
 		{
 			// 1. Prepare
 			SphericalVector faceOrientation = new SphericalVector(Math.PI, Math.PI);
-			Block b = new Block(new BlockFace("test", faceOrientation));
+			Block b = new TestBlock(new BlockFace("test", faceOrientation));
 
 			b.RotateAround(axis, theta);
 			faceOrientation = faceOrientation.RotateAround(axis, theta);
@@ -109,7 +124,7 @@ namespace Twisty.Engine.Tests.Structure
 		{
 			// 1. Prepare
 			SphericalVector faceOrientation = new SphericalVector(Math.PI, Math.PI);
-			Block b = new Block(new BlockFace("test", faceOrientation));
+			Block b = new TestBlock(new BlockFace("test", faceOrientation));
 
 			// 2. Execute
 			BlockFace f = b.GetBlockFace(new SphericalVector(100, 100));
@@ -124,7 +139,7 @@ namespace Twisty.Engine.Tests.Structure
 		{
 			// 1. Prepare
 			SphericalVector faceOrientation = new SphericalVector(Math.PI / 2.0, Math.PI / 2.0);
-			Block b = new Block(new BlockFace("test", faceOrientation));
+			Block b = new TestBlock(new BlockFace("test", faceOrientation));
 
 			b.RotateAround(axis, theta);
 

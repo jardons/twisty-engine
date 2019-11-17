@@ -22,17 +22,17 @@ namespace Twisty.Engine.Structure
 		}
 
 		/// <summary>
-		/// Get a Block for a specific face of the twisty puzzle based on the current blocks positions.
+		/// Get the Blocks for a specific face of the twisty puzzle based on the current blocks positions.
 		/// </summary>
-		/// <param name="o">Orientation of the face of the puzzle.</param>
+		/// <param name="v">Orientation of the face of the puzzle.</param>
 		/// <returns>The list of blocks currently visible on the requested face.</returns>
-		/// <remarks>Logis is only valid for standard forms. Any shapeshifting form would need to improve this logic.</remarks>
-		public IEnumerable<Block> GetBlockForFace(SphericalVector o)
+		/// <remarks>Logic is only valid for standard forms. Any shapeshifting form would need to improve this logic.</remarks>
+		public IEnumerable<Block> GetBlocksForFace(SphericalVector v)
 		{
-			if (o == null)
-				throw new ArgumentNullException("Orientation is mandatory", nameof(o));
+			if (v == null)
+				throw new ArgumentNullException("Orientation is mandatory", nameof(v));
 
-			return m_Blocks.Where(b => b.GetBlockFace(o) != null);
+			return m_Blocks.Where(b => b.GetBlockFace(v) != null);
 		}
 	}
 }
