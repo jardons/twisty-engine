@@ -79,6 +79,12 @@ namespace Twisty.Engine.Tests.Geometry
 			{new CartesianCoordinate(1.0, 5.0, 8.0), 100.0, new CartesianCoordinate(3.0, 7.0, 9.0), new CartesianCoordinate(0.7167446324, 5.71852897500143, 7.53556258643274)},
 		};
 
+		public static readonly TheoryData<CartesianCoordinate, CartesianCoordinate, double> CalculateTheta
+			= new TheoryData<CartesianCoordinate, CartesianCoordinate, double>()
+		{
+			{new CartesianCoordinate(0.0, 1.0, 0.0), new CartesianCoordinate(-1.0, 0.0, 0.0), Math.PI / 2.0},
+		};
+
 		#endregion Test Data
 
 		#region Test Methods
@@ -168,6 +174,22 @@ namespace Twisty.Engine.Tests.Geometry
 			Assert.Equal(expected.X, r.X, PRECISION_DOUBLE);
 			Assert.Equal(expected.Y, r.Y, PRECISION_DOUBLE);
 			Assert.Equal(expected.Z, r.Z, PRECISION_DOUBLE);
+		}
+
+		[Theory]
+		[MemberData(nameof(CartesianCoordinateTest.CalculateTheta), MemberType = typeof(CartesianCoordinateTest))]
+		public void CatesianCoordinate_CalculateThetaBetweenVector_ReturnExpected(CartesianCoordinate c1, CartesianCoordinate c2, double expected)
+		{
+			// 1. Prepare
+			// Nothing to prepare.
+
+			// 2. Execute
+			double r1 = c1.GetThetaTo(c2);
+			double r2 = c2.GetThetaTo(c1);
+
+			// 3. Verify
+			Assert.Equal(expected, r1, PRECISION_DOUBLE);
+			Assert.Equal(expected, r2, PRECISION_DOUBLE);
 		}
 
 		#endregion Test Methods

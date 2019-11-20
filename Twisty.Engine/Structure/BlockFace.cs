@@ -15,7 +15,7 @@ namespace Twisty.Engine.Structure
 		public BlockFace(string identifier, SphericalVector p)
 		{
 			this.Position = p;
-			this.Identifier = identifier;
+			this.Id = identifier;
 		}
 
 		/// <summary>
@@ -28,7 +28,7 @@ namespace Twisty.Engine.Structure
 		/// <summary>
 		/// Textual identifier used to identify BlockFaces among them and should match the correct face of the owner.
 		/// </summary>
-		public string Identifier { get; }
+		public string Id { get; }
 
 		public void MoveAround(SphericalVector axis, double theta) => this.Position = this.Position.RotateAround(axis, theta);
 	}

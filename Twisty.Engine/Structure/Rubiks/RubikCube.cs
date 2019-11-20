@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Twisty.Engine.Geometry;
 
 namespace Twisty.Engine.Structure.Rubiks
@@ -34,11 +35,44 @@ namespace Twisty.Engine.Structure.Rubiks
 		/// <param name="n">Indicate the number of rows per face of the cube that is currently generated.</param>
 		/// <exception cref="ArgumentException">Size of the Rubik's Cube should be bigger than 1.</exception>
 		public RubikCube(int n)
-			: base(GenerateBlocks(n))
+			: base(GenerateBlocks(n), GenerateAxes())
 		{
 		}
 
+		public void RotateAround(RotationAxis axis, bool isClockwise)
+		{
+			// Select all blocks that will be included in the rotation.
+			var blocks = base.GetBlocksForFace(axis.Vector).OfType<IPositionnedBySphericalVector>().ToList();
+			if (blocks.Count == 0)
+				return;
+
+			blocks.Sort(new CircularVectorComparer(blocks[0]));
+
+			// Convert the rotation direction to the correct angle.
+			double theta = isClockwise ? Math.PI / 2.0 : -Math.PI / 2.0;
+
+			// Perform the manipulation for the 4 corners.
+			base.SwitchAndRotate(blocks.OfType<RubikCornerBlock>().ToList(), axis.Vector, theta);
+		}
+
 		#region Private Members
+
+		/// <summary>
+		/// Generate the axes that will be available for the rotation of the cube.
+		/// </summary>
+		/// <returns>The list of axis available on a Rubik's cube.</returns>
+		private static IEnumerable<RotationAxis> GenerateAxes()
+		{
+			return new List<RotationAxis>()
+			{
+				new RotationAxis(FACE_ID_TOP, FACE_POSITION_TOP),
+				new RotationAxis(FACE_ID_BOTTOM, FACE_POSITION_BOTTOM),
+				new RotationAxis(FACE_ID_FRONT, FACE_POSITION_FRONT),
+				new RotationAxis(FACE_ID_BACK, FACE_POSITION_BACK),
+				new RotationAxis(FACE_ID_RIGHT, FACE_POSITION_RIGHT),
+				new RotationAxis(FACE_ID_LEFT, FACE_POSITION_LEFT),
+			};
+		}
 
 		/// <summary>
 		/// Generate the blocks that will form the current cube of size N.
@@ -73,11 +107,11 @@ namespace Twisty.Engine.Structure.Rubiks
 		{
 			// 4 bottoms corners.
 			blocks.Add(new RubikCornerBlock(
-					new SphericalVector(Math.PI / 4.0, Math.PI / 4.0),
-					new BlockFace(FACE_ID_BOTTOM, FACE_POSITION_BOTTOM),
-					new BlockFace(FACE_ID_FRONT, FACE_POSITION_FRONT),
-					new BlockFace(FACE_ID_RIGHT, FACE_POSITION_RIGHT)
-				));
+				new SphericalVector(Math.PI / 4.0, Math.PI / 4.0),
+				new BlockFace(FACE_ID_BOTTOM, FACE_POSITION_BOTTOM),
+				new BlockFace(FACE_ID_FRONT, FACE_POSITION_FRONT),
+				new BlockFace(FACE_ID_RIGHT, FACE_POSITION_RIGHT)
+			));
 
 			blocks.Add(new RubikCornerBlock(
 				new SphericalVector(Math.PI / 4.0 * 3.0, Math.PI / 4.0),

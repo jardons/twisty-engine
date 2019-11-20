@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Twisty.Engine.Geometry;
 
 namespace Twisty.Engine.Structure
 {
-	public abstract class Block
+	/// <summary>
+	/// Class describing a block moving around the rotation core.
+	/// </summary>
+	[DebuggerDisplay("{Id}")]
+	public abstract class Block : IPositionnedBySphericalVector
 	{
 		private List<BlockFace> m_Faces;
 
@@ -22,6 +27,10 @@ namespace Twisty.Engine.Structure
 			m_Faces.Add(face);
 		}
 
+		/// <summary>
+		/// Create a new block proposing multiple faces.
+		/// </summary>
+		/// <param name="faces">Collection of available faces for this block.</param>
 		public Block(IEnumerable<BlockFace> faces)
 		{
 			if (faces == null)
@@ -48,6 +57,11 @@ namespace Twisty.Engine.Structure
 
 		#region Public Methods
 
+		/// <summary>
+		/// Rotate this block around the provided axis.
+		/// </summary>
+		/// <param name="axis">Vector indicating the axis of rotation around which the block will be rotated.</param>
+		/// <param name="theta">Angle of the rotation in radians.</param>
 		public void RotateAround(SphericalVector axis, double theta)
 		{
 			if (axis == null)
@@ -57,12 +71,30 @@ namespace Twisty.Engine.Structure
 				face.MoveAround(axis, theta);
 		}
 
+		/// <summary>
+		/// Gets a block face based on its orientation.
+		/// </summary>
+		/// <param name="o">Vector indicating the orientation of the face we try to get.</param>
+		/// <returns>The searched Blockface if found, otherwise, null is returned.</returns>
 		public BlockFace GetBlockFace(SphericalVector o)
 		{
 			if (o == null)
 				throw new ArgumentNullException("Orientation is mandatory", nameof(o));
 
 			return m_Faces.FirstOrDefault(f => f.Position == o);
+		}
+
+		/// <summary>
+		/// Gets a block face based on its Id.
+		/// </summary>
+		/// <param name="id">Id of the face we try to get.</param>
+		/// <returns>The searched Blockface if found, otherwise, null is returned.</returns>
+		public BlockFace GetBlockFace(string id)
+		{
+			if (id == null)
+				throw new ArgumentNullException("Id is mandatory", nameof(id));
+
+			return m_Faces.FirstOrDefault(f => f.Id == id);
 		}
 
 		#endregion Public Methods

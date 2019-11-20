@@ -60,8 +60,13 @@ namespace Twisty.Engine.Geometry
 		public double Z { get; }
 
 		/// <summary>
-		/// Gets the magnitude of this vector.
+		/// Gets the magnitude of this vector, also noted as ||V||.
 		/// </summary>
+		/// <remarks>
+		/// Formula :
+		///          _________________
+		/// ||V|| = V Xv² * Yv² * Zv² '
+		/// </remarks>
 		public double Magnitude => Math.Sqrt(this.X * this.X + this.Y * this.Y + this.Z * this.Z);
 
 		/// <summary>
@@ -73,7 +78,7 @@ namespace Twisty.Engine.Geometry
 		/// Gets the angle in radians between the vector and the Y axis.
 		/// </summary>
 		public double ThetaToY => Math.Acos(this.Y / this.Magnitude);
-		
+
 		/// <summary>
 		/// Gets the angle in radians between the vector and the Z axis.
 		/// </summary>
@@ -82,22 +87,22 @@ namespace Twisty.Engine.Geometry
 		/// <summary>
 		/// Gets a boolean indicating if whether the current coordonate is on the X axis or not.
 		/// </summary>
-		public bool IsOnX => AreEqual(Y, 0.0) && AreEqual(Z, 0.0);
+		public bool IsOnX => Y.IsZero() && Z.IsZero();
 
 		/// <summary>
 		/// Gets a boolean indicating if whether the current coordonate is on the Y axis or not.
 		/// </summary>
-		public bool IsOnY => AreEqual(X, 0.0) && AreEqual(Z, 0.0);
+		public bool IsOnY => X.IsZero() && Z.IsZero();
 
 		/// <summary>
 		/// Gets a boolean indicating if whether the current coordonate is on the Z axis or not.
 		/// </summary>
-		public bool IsOnZ => AreEqual(X, 0.0) && AreEqual(Y, 0.0);
+		public bool IsOnZ => X.IsZero() && Y.IsZero();
 
 		/// <summary>
 		/// Gets a boolean indicating if whether the current coordonate is the origin point crossing all axes or not.
 		/// </summary>
-		public bool IsOnOrigin => AreEqual(X, 0.0) && AreEqual(Y, 0.0) && AreEqual(Z, 0.0);
+		public bool IsOnOrigin => X.IsZero() && Y.IsZero() && Z.IsZero();
 
 		#endregion Public Properties
 
@@ -199,6 +204,9 @@ namespace Twisty.Engine.Geometry
 		/// <remarks>
 		/// Rotation formula :
 		/// 
+		///	 V : This vector.
+		///	 K : Vector used a rotation axis.
+		/// 
 		///  R = V cos theta + (K × V) sin theta + K (K . V) (1 − cos theta)
 		/// </remarks>
 		public CartesianCoordinate RotateAroundVector(CartesianCoordinate k, double theta)
@@ -223,6 +231,26 @@ namespace Twisty.Engine.Geometry
 				return new CartesianCoordinate(this.X / m, this.Y / m, this.Z / m);
 
 			return this;
+		}
+
+		/// <summary>
+		/// Calculate the theta angle relative to a provided vector.
+		/// </summary>
+		/// <param name="x">Vector that will be used to calculate the theta</param>
+		/// <returns>Calculated theta value between the two vectors.</returns>
+		/// <remarks>
+		/// Formula :
+		/// 
+		///  V : This vector.
+		///  X : Vector to which the angle theta is calculated.
+		/// 
+		///                  V . X
+		///  cos theta = -------------
+		///               ||X|| ||Y||
+		/// </remarks>
+		public double GetThetaTo(CartesianCoordinate x)
+		{
+			return Math.Acos(this.DotProduct(x) / (this.Magnitude * x.Magnitude));
 		}
 
 		#endregion Public Methods
@@ -279,17 +307,6 @@ namespace Twisty.Engine.Geometry
 		#region Private Methods
 
 		/// <summary>
-		/// Evaluate if the 2 doubles are concidered as equal in this context.
-		/// </summary>
-		/// <param name="d1">First double value to compare.</param>
-		/// <param name="d2">Second value to compare.</param>
-		/// <returns>A boolean indicating whether the 2 doubles are equals or not.</returns>
-		private bool AreEqual(double d1, double d2)
-		{
-			return Math.Abs(d1 - d2) < 0.0000000001;
-		}
-
-		/// <summary>
 		/// Normalize angle to a value within a single circle rotation.
 		/// </summary>
 		/// <param name="rad">Angle to evaluate in radians.</param>
@@ -311,7 +328,7 @@ namespace Twisty.Engine.Geometry
 
 			// Return perfect 0.0 when possible to limit double precisions issues.
 			double piResult = rad / Math.PI;
-			if (AreEqual(piResult, 0.5) || AreEqual(piResult, -0.5) || AreEqual(piResult, 1.5) || AreEqual(piResult, -1.5))
+			if (piResult.IsEqualTo(0.5) || piResult.IsEqualTo(-0.5) || piResult.IsEqualTo(1.5) || piResult.IsEqualTo(-1.5))
 				return 0.0;
 
 			return Math.Cos(rad);
@@ -328,7 +345,7 @@ namespace Twisty.Engine.Geometry
 			rad = NormarizeAngle(rad);
 
 			// Return perfect 0.0 when possible to limit double precisions issues.
-			if (AreEqual(rad, 0) || AreEqual(rad, Math.PI) || AreEqual(rad, -Math.PI))
+			if (rad.IsZero() || rad.IsEqualTo(Math.PI) || rad.IsEqualTo(-Math.PI))
 				return 0.0;
 
 			return Math.Sin(rad);
@@ -359,10 +376,10 @@ namespace Twisty.Engine.Geometry
 		}
 
 		/// <summary>
-		/// Gets the Cross Product between 2 vectors.
+		/// Gets the Cross Product between this vector and another vector.
 		/// </summary>
-		/// <param name="matrix"></param>
-		/// <returns></returns>
+		/// <param name="v">Vector with which we will calculate the cross product.</param>
+		/// <returns>New coordinates containing the cross product from the 2 vectors.</returns>
 		private CartesianCoordinate CrossProduct(CartesianCoordinate v)
 		{
 			return new CartesianCoordinate(

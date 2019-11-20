@@ -110,7 +110,7 @@ namespace Twisty.Engine.Geometry
 			this.Phi = NormalizeValue(phi);
 			this.Theta = NormalizeValue(theta);
 
-			if (AreEqual(this.Theta, 0.0) || AreEqual(this.Theta, HALF_ANGLE))
+			if (this.Theta.IsZero() || this.Theta.IsEqualTo(HALF_ANGLE))
 				// All point with Theta in 180 and 0 join in the same point for the vertical axis, so keep a single Phi value.
 				this.Phi = 0.0;
 			else if (this.Theta > HALF_ANGLE)
@@ -136,11 +136,17 @@ namespace Twisty.Engine.Geometry
 		/// <summary>
 		/// Gets a boolean indicating whether the Vector is direct on the origin (0,0) coordinate or not.
 		/// </summary>
-		public bool IsOnOrigin => AreEqual(0.0, this.Phi) && AreEqual(0.0, this.Theta);
+		public bool IsOnOrigin => this.Phi.IsZero() && this.Theta.IsZero();
 
+		/// <summary>
+		/// Rotate the current vector around a specified vector from a defined angle in radians.
+		/// </summary>
+		/// <param name="v">Vector used as a rotation axis.</param>
+		/// <param name="theta">Angle of rotation expressed in radians.</param>
+		/// <returns>The coordinates of the resulting rotated vector.</returns>
 		public SphericalVector RotateAround(SphericalVector v, double theta)
 		{
-			if (AreEqual(theta, 0.0))
+			if (theta.IsZero())
 				return this;
 
 			return CoordinateConverter.ConvertToSpherical(CoordinateConverter.ConvertToCartesian(this).RotateAroundVector(CoordinateConverter.ConvertToCartesian(v), theta));
@@ -157,7 +163,7 @@ namespace Twisty.Engine.Geometry
 
 		public static bool operator ==(SphericalVector o1, SphericalVector o2)
 		{
-			return o1.Theta == o2.Theta && o1.Phi == o2.Phi;
+			return o1.Theta.IsEqualTo(o2.Theta) && o1.Phi.IsEqualTo(o2.Phi);
 		}
 
 		/// <summary>
@@ -168,7 +174,7 @@ namespace Twisty.Engine.Geometry
 		/// <returns>A boolean indicating whether the 2 objects are different or not.</returns>
 		public static bool operator !=(SphericalVector o1, SphericalVector o2)
 		{
-			return o1.Theta != o2.Theta || o1.Phi != o2.Phi;
+			return !o1.Theta.IsEqualTo(o2.Theta) || !o1.Phi.IsEqualTo(o2.Phi);
 		}
 
 		#endregion Operators Overrides
@@ -203,23 +209,16 @@ namespace Twisty.Engine.Geometry
 		#region Private Methods
 
 		/// <summary>
-		/// Evaluate if the 2 doubles are concidered as equal in this context.
-		/// </summary>
-		/// <param name="d1">First double value to compare.</param>
-		/// <param name="d2">Second value to compare.</param>
-		/// <returns>A boolean indicating whether the 2 doubles are equals or not.</returns>
-		private bool AreEqual(double d1, double d2)
-		{
-			return Math.Abs(d1 - d2) < 0.0000000001;
-		}
-
-		/// <summary>
 		/// Normalize the angle value to his expression with a value between 0 and 360.
 		/// </summary>
 		/// <param name="x">Angle value to normalize.</param>
 		/// <returns>Normalized angle between 0 and 360.</returns>
 		private static double NormalizeValue(double x)
 		{
+			// Catch back calculation precisions when needed.
+			if (x.IsZero())
+				return 0.0;
+
 			if (x > 0.0)
 				return x % MAX_ANGLE;
 

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Twisty.Engine.Geometry;
 using Xunit;
 
@@ -19,6 +17,8 @@ namespace Twisty.Engine.Tests.Geometry
 			{Math.PI / 2.0, Math.PI / 2.0, 0.0, 1.0, 0.0},
 			{Math.PI, Math.PI / 2.0, -1.0, 0.0, 0.0},
 			{0.0, Math.PI, 0.0, 0.0, -1.0},
+			{Math.PI / 4.0, Math.PI / 4.0, 0.5, 0.5, 0.70710678118654757 },
+			{Math.PI / 4.0 * 3.0, Math.PI / 4.0, -0.5, 0.5, 0.70710678118654757 },
 		};
 
 		#endregion Test Data
@@ -47,7 +47,7 @@ namespace Twisty.Engine.Tests.Geometry
 		{
 			// 1. Prepare
 			CartesianCoordinate cc = new CartesianCoordinate(x, y, z);
-			
+
 			// 2. Execute
 			var sc = CoordinateConverter.ConvertToSpherical(cc);
 

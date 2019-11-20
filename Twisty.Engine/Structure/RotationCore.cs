@@ -10,16 +10,42 @@ namespace Twisty.Engine.Structure
 	/// </summary>
 	public abstract class RotationCore
 	{
+		#region Private Members
+
 		private List<Block> m_Blocks;
+
+		private Dictionary<string, RotationAxis> m_Axes;
+
+		#endregion Private Members
 
 		/// <summary>
 		/// Create a new RotationCore object
 		/// </summary>
-		/// <param name="blocks"></param>
-		protected RotationCore(IEnumerable<Block> blocks)
+		/// <param name="blocks">List of blocks available around the center of the RotationCore.</param>
+		/// <param name="axes">List of Rotation Axes proposed around the rotation core.</param>
+		protected RotationCore(IEnumerable<Block> blocks, IEnumerable<RotationAxis> axes)
 		{
 			m_Blocks = new List<Block>(blocks);
+			m_Axes = new Dictionary<string, RotationAxis>();
+			foreach (var axis in axes)
+				m_Axes.Add(axis.Id, axis);
 		}
+
+		#region Public Properties
+
+		/// <summary>
+		/// Gets the list of blocks available in this core.
+		/// </summary>
+		public IEnumerable<Block> Blocks => m_Blocks;
+
+		/// <summary>
+		/// Gets the list of axes available for rotation around this core.
+		/// </summary>
+		public IEnumerable<RotationAxis> Axes => m_Axes.Values;
+
+		#endregion Public Properties
+
+		#region Public Methods
 
 		/// <summary>
 		/// Get the Blocks for a specific face of the twisty puzzle based on the current blocks positions.
@@ -34,5 +60,43 @@ namespace Twisty.Engine.Structure
 
 			return m_Blocks.Where(b => b.GetBlockFace(v) != null);
 		}
+
+		#endregion Public Methods
+
+		#region Protected Methods
+
+		/// <summary>
+		/// Perform the switch of positions of blocks and their rotation on themselve.
+		/// </summary>
+		/// <typeparam name="T">Type of blocks available in the collection to switch and rotate.</typeparam>
+		/// <param name="blocks">Sorted collection for which position will be switched. Each block will take the position of the next one.</param>
+		/// <param name="rotationAxis">Axis used for the rotation of the blocks.</param>
+		/// <param name="theta">Angle in radians of the rotations to execute on each blocks.</param>
+		protected void SwitchAndRotate<T>(IList<T> blocks, SphericalVector rotationAxis, double theta)
+			where T : Block
+		{
+			// No switch to perform if their is not at least 2 blocks.
+			if (blocks.Count > 1)
+			{
+				// Store position of the first block that need to be set to the last one.
+				var firstPosition = blocks[0].Position;
+
+				// Update all intermediate blocks positions.
+				for (int i = 0; i < blocks.Count - 1; ++i)
+					blocks[i].Position = blocks[i + 1].Position;
+
+				// Finalize the switch by replacing the position of the last one with the one from the first one.
+				blocks[blocks.Count - 1].Position = firstPosition;
+			}
+
+			if (!theta.IsZero())
+			{
+				// Rotate the block aroung themselve.
+				foreach (var b in blocks)
+					b.RotateAround(rotationAxis, theta);
+			}
+		}
+
+		#endregion Protected Methods
 	}
 }
