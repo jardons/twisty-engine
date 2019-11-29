@@ -61,6 +61,13 @@ namespace Twisty.Engine.Structure
 			return m_Blocks.Where(b => b.GetBlockFace(v) != null);
 		}
 
+		/// <summary>
+		/// Gets an axis using its id.
+		/// </summary>
+		/// <param name="axisId">Id of the axis we are looking up.</param>
+		/// <returns>Axis for the corresponding or null if not found.</returns>
+		public RotationAxis GetAxis(string axisId) => m_Axes[axisId];
+
 		#endregion Public Methods
 
 		#region Protected Methods

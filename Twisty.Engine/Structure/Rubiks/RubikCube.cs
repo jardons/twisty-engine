@@ -37,8 +37,19 @@ namespace Twisty.Engine.Structure.Rubiks
 		public RubikCube(int n)
 			: base(GenerateBlocks(n), GenerateAxes())
 		{
+			this.N = n;
 		}
 
+		/// <summary>
+		/// Gets the count of layer in this cube.
+		/// </summary>
+		public int N { get; }
+
+		/// <summary>
+		/// Rotate a face around a specified rotation axis.
+		/// </summary>
+		/// <param name="axis">Rotation axis aroung which the rotation will be executed.</param>
+		/// <param name="isClockwise">Boolean indicating if whether the rotation is clockwise or not.</param>
 		public void RotateAround(RotationAxis axis, bool isClockwise)
 		{
 			// Select all blocks that will be included in the rotation.

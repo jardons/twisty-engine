@@ -102,7 +102,7 @@ namespace Twisty.Engine.Geometry
 		/// <summary>
 		/// Gets a boolean indicating if whether the current coordonate is the origin point crossing all axes or not.
 		/// </summary>
-		public bool IsOnOrigin => X.IsZero() && Y.IsZero() && Z.IsZero();
+		public bool IsZero => X.IsZero() && Y.IsZero() && Z.IsZero();
 
 		#endregion Public Properties
 
@@ -126,15 +126,11 @@ namespace Twisty.Engine.Geometry
 			double cosTheta = Cos(theta);
 			double sinTheta = Sin(theta);
 
-			// Create matrix.
-			double[,] matrix = new double[3, 3]
-			{
-				{ 1.0, 0.0, 0.0 },
-				{ 0.0, cosTheta, -sinTheta },
-				{ 0.0, sinTheta, cosTheta },
-			};
-
-			return MultiplicateByMatrix(matrix);
+			return new CartesianCoordinate(
+				this.X,
+				this.Y * cosTheta - this.Z * sinTheta,
+				this.Y * sinTheta + this.Z * cosTheta
+			);
 		}
 
 		/// <summary>
@@ -155,15 +151,11 @@ namespace Twisty.Engine.Geometry
 			double cosTheta = Cos(theta);
 			double sinTheta = Sin(theta);
 
-			// Create matrix.
-			double[,] matrix = new double[3, 3]
-			{
-				{ cosTheta, 0.0, sinTheta },
-				{ 0.0, 1.0, 0.0 },
-				{ -sinTheta, 0.0, cosTheta },
-			};
-
-			return MultiplicateByMatrix(matrix);
+			return new CartesianCoordinate(
+				this.X * cosTheta + this.Z * sinTheta,
+				this.Y,
+				this.Z * cosTheta - this.X * sinTheta
+			);
 		}
 
 		/// <summary>
@@ -184,15 +176,11 @@ namespace Twisty.Engine.Geometry
 			double cosTheta = Cos(theta);
 			double sinTheta = Sin(theta);
 
-			// Create matrix.
-			double[,] matrix = new double[3, 3]
-			{
-				{ cosTheta, -sinTheta, 0.0 },
-				{ sinTheta, cosTheta, 0.0 },
-				{ 0.0, 0.0, 1.0 },
-			};
-
-			return MultiplicateByMatrix(matrix);
+			return new CartesianCoordinate(
+				this.X * cosTheta - this.Y * sinTheta,
+				this.X * sinTheta + this.Y * cosTheta,
+				this.Z
+			);
 		}
 
 		/// <summary>
@@ -359,20 +347,6 @@ namespace Twisty.Engine.Geometry
 		private double DotProduct(CartesianCoordinate c)
 		{
 			return this.X * c.X + this.Y * c.Y + this.Z * c.Z;
-		}
-
-		/// <summary>
-		/// Multiplicate a matrix to the current vector.
-		/// </summary>
-		/// <param name="matrix"></param>
-		/// <returns></returns>
-		private CartesianCoordinate MultiplicateByMatrix(double[,] matrix)
-		{
-			return new CartesianCoordinate(
-				this.X * matrix[0, 0] + this.Y * matrix[0, 1] + this.Z * matrix[0, 2],
-				this.X * matrix[1, 0] + this.Y * matrix[1, 1] + this.Z * matrix[1, 2],
-				this.X * matrix[2, 0] + this.Y * matrix[2, 1] + this.Z * matrix[2, 2]
-			);
 		}
 
 		/// <summary>

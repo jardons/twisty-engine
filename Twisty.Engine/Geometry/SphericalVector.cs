@@ -13,46 +13,46 @@ namespace Twisty.Engine.Geometry
 	/// 
 	/// 1) Base Axis is vertical and directed to the top.
 	/// 
-	///	        front view                       top view 
+	///         front view                       top view 
 	/// 
-	///	           0.0
-	///	            *
-	///	            |
-	///	            |
-	///	            O                               O
+	///            0.0
+	///             *
+	///             |
+	///             |
+	///             O                               O
 	/// 
 	/// 2) Horizontal axis, defined by Phi, indicate the horizontal angle in the circle around the center.
 	/// This angle is directive starting at the center.
 	/// The Horizontal angle is providing us an 2D slice of the sphere in the form of a half circle
 	/// 
-	///	        front view                       top view                   front view without verical
+	///         front view                       top view                   front view without verical
 	/// 
 	/// 
 	///            0,0                             90,90                             90,*
 	///             *                                *                                 *
 	///             |                                |                                 |   *
 	///   180,90  270,90  0,90             180,90    |     0,90                        |     *
-	///	     *------*------*                  *------O------*                          O------*
-	///	            |                                |                                 |     *
-	///	            |                                |                                 |   *
-	///	            *                                *                                 *
-	///	                                           270,90
+	///      *------*------*                  *------O------*                          O------*
+	///             |                                |                                 |     *
+	///             |                                |                                 |   *
+	///             *                                *                                 *
+	///                                            270,90
 	/// 
 	/// 3) Vertical axis, defined by Theta, indicate the vertical angle inside the horizontal slice of the cude.
 	/// As 2 opposites slices have different Horizontal angle, the vertical angle is limited to 180 degree.
 	/// 
-	///	        front view
+	///         front view
 	/// 
 	///            0,0
 	///             *   90,30
 	///             |   *
 	///             | /   90,90
-	///	            O------*
-	///	            | \
-	///	            |   *
-	///	            *  90,150
-	///	           0,180
-	///	           
+	///             O------*
+	///             | \
+	///             |   *
+	///             *  90,150
+	///            0,180
+	///            
 	/// </example>
 	/// <remarks>
 	/// Note that this class is following the ISO convention.
@@ -83,26 +83,11 @@ namespace Twisty.Engine.Geometry
 		/// <summary>
 		/// Create a new SphericalCoordinate with the provided angles.
 		/// </summary>
-		/// <param name="phi">Azimuthal angle of the coordinates expressed in degree</param>
-		/// <param name="theta">Polar angle of the coordinates expressed in degree.</param>
-		/// <remarks>
-		/// If angle value is supperior to 360 or negative, the value will be simplified to the equivalent between 0 and 360.
-		/// Afterwards, if the value of Y is still superior to 180, the Orientation will review the value of X and Y to access the same axis with an Y value under 180.
-		/// In this way, each point in the globe will only be reachable with one and only one Orientation coordonate.
-		/// </remarks>
-		public SphericalVector(int phi, int theta)
-			: this(phi * (Math.PI / 180), theta * (Math.PI / 180))
-		{
-		}
-
-		/// <summary>
-		/// Create a new SphericalCoordinate with the provided angles.
-		/// </summary>
 		/// <param name="phi">Azimuthal angle of the coordinates expressed in variant.</param>
 		/// <param name="theta">Polar angle of the coordinates expressed in variant.</param>
 		/// <remarks>
-		/// If angle value is supperior to 360 or negative, the value will be simplified to the equivalent between 0 and 360.
-		/// Afterwards, if the value of Y is still superior to 180, the Orientation will review the value of X and Y to access the same axis with an Y value under 180.
+		/// If angle value is supperior to Pi * 2 or negative, the value will be simplified to the equivalent between 0 and Pi * 2.
+		/// Afterwards, if the value of Y is still superior to Pi, the Orientation will review the value of X and Y to access the same axis with an Y value under Pi.
 		/// In this way, each point in the globe will only be reachable with one and only one Orientation coordonate.
 		/// </remarks>
 		public SphericalVector(double phi, double theta)
@@ -111,7 +96,7 @@ namespace Twisty.Engine.Geometry
 			this.Theta = NormalizeValue(theta);
 
 			if (this.Theta.IsZero() || this.Theta.IsEqualTo(HALF_ANGLE))
-				// All point with Theta in 180 and 0 join in the same point for the vertical axis, so keep a single Phi value.
+				// All point with Theta in Pi and 0 join in the same point for the vertical axis, so keep a single Phi value.
 				this.Phi = 0.0;
 			else if (this.Theta > HALF_ANGLE)
 			{
@@ -187,7 +172,7 @@ namespace Twisty.Engine.Geometry
 		/// <returns>A general hascode unique to this object.</returns>
 		public override int GetHashCode()
 		{
-			return (Theta + Phi * 10000.0).GetHashCode();
+			return (Theta + Phi * 100000.0).GetHashCode();
 		}
 
 		/// <summary>
@@ -201,7 +186,7 @@ namespace Twisty.Engine.Geometry
 				return false;
 
 			SphericalVector o = (SphericalVector)obj;
-			return o.Theta == this.Theta && o.Phi == this.Phi;
+			return o.Theta.IsEqualTo(this.Theta) && o.Phi.IsEqualTo(this.Phi);
 		}
 
 		#endregion Objects overrides
@@ -222,10 +207,8 @@ namespace Twisty.Engine.Geometry
 			if (x > 0.0)
 				return x % MAX_ANGLE;
 
-			if (x < 0.0)
-				return MAX_ANGLE + (x % -MAX_ANGLE);
-
-			return x;
+			// If not Zero or bigger, then always smaller than 0.0.
+			return MAX_ANGLE + (x % -MAX_ANGLE);
 		}
 
 		#endregion Private Methods

@@ -73,19 +73,10 @@
 		/// 
 		/// Coordinates are then :
 		/// 
-		///           a(Ax1 + By1 + Cz1 + D)
-		/// x = x1 - ------------------------
-		///               Aa + Bb + Cc
-		/// 
-		///           b(Ax1 + By1 + Cz1 + D)
-		/// y = y1 - ------------------------
-		///               Aa + Bb + Cc
-		///        
-		/// 
-		///           c(Ax1 + By1 + Cz1 + D)
-		/// z = z1 - ------------------------
-		///               Aa + Bb + Cc
-		///          
+		///           a(Ax1 + By1 + Cz1 + D)             b(Ax1 + By1 + Cz1 + D)             c(Ax1 + By1 + Cz1 + D)
+		/// x = x1 - ------------------------  y = y1 - ------------------------  z = z1 - ------------------------
+		///                Aa + Bb + Cc                       Aa + Bb + Cc                       Aa + Bb + Cc
+		///       
 		/// </remarks>
 		public CartesianCoordinate GetIntersection(ParametricLine l)
 		{
