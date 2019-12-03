@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Define the coordinate of a Point or Vector using the Homogeneous coordinates.
 	/// </summary>
-	public struct HomogeneousCoordiante
+	public struct HomogeneousCoordinate
 	{
 		/// <summary>
 		/// Create a new CartesianCoordinate object.
@@ -12,7 +12,7 @@
 		/// <param name="y">Coordinates on the Y axis.</param>
 		/// <param name="z">Coordinates on the Z axis.</param>
 		/// <param name="w">Coordinates  in the projective space.</param>
-		public HomogeneousCoordiante(double x, double y, double z, double w)
+		public HomogeneousCoordinate(double x, double y, double z, double w)
 		{
 			this.X = x;
 			this.Y = y;

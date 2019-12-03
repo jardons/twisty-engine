@@ -30,6 +30,28 @@ namespace Twisty.Engine.Geometry
 		public static readonly CartesianCoordinate Zero = new CartesianCoordinate(0.0, 0.0, 0.0);
 
 		/// <summary>
+		/// Create a new CartesianCoordinate from a coordinates string on the format "(X Y Z)".
+		/// </summary>
+		/// <param name="coordinates">Coordinates in the format "(X Y Z)".</param>
+		public CartesianCoordinate(string coordinates)
+		{
+			try
+			{
+				double[] parsed = CoordinateConverter.ParseCoordinates(coordinates);
+				if (parsed.Length != 3)
+					throw new ArgumentException("The provided coordinates are not in the expected format '(X Y Z)' and does not contains 3 values.", nameof(coordinates));
+
+				this.X = parsed[0];
+				this.Y = parsed[1];
+				this.Z = parsed[2];
+			}
+			catch (FormatException e)
+			{
+				throw new ArgumentException("The provided coordinates are not in the expected format '(X Y Z)' and cannot be parsed.", nameof(coordinates), e);
+			}
+		}
+
+		/// <summary>
 		/// Create a new CartesianCoordinate object.
 		/// </summary>
 		/// <param name="x">Coordinates on the X axis.</param>
@@ -246,10 +268,25 @@ namespace Twisty.Engine.Geometry
 		#region Operators
 
 		/// <summary>
+		/// Gets the result of the substraction of 2 vectors.
+		/// </summary>
+		/// <param name="v1">First vector from which the second one will be substracted.</param>
+		/// <param name="v2">Substracted Vector.</param>
+		/// <returns>Result of the subbstraction of the 2 vectors.</returns>
+		public static CartesianCoordinate operator -(CartesianCoordinate v1, CartesianCoordinate v2)
+		{
+			return new CartesianCoordinate(
+					v1.X - v2.X,
+					v1.Y - v2.Y,
+					v1.Z - v2.Z
+				);
+		}
+
+		/// <summary>
 		/// Gets the sum of 2 vectors.
 		/// </summary>
 		/// <param name="v1">First vector to add.</param>
-		/// <param name="v2">Secnod vector to add.</param>
+		/// <param name="v2">Second vector to add.</param>
 		/// <returns>Result of the sum of the 2 vectors.</returns>
 		public static CartesianCoordinate operator +(CartesianCoordinate v1, CartesianCoordinate v2)
 		{
@@ -301,7 +338,7 @@ namespace Twisty.Engine.Geometry
 		/// <returns>Normalized angle value with a value lower than 2*Pi.</returns>
 		private double NormarizeAngle(double rad)
 		{
-			return rad % (2 * Math.PI);
+			return rad % (2.0 * Math.PI);
 		}
 
 		/// <summary>

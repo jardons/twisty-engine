@@ -11,6 +11,17 @@ namespace Twisty.Engine.Tests.Geometry
 
 		#region Test Data
 
+		//(CartesianCoordinate source, CartesianCoordinate added, CartesianCoordinate expected)
+		public static readonly TheoryData<string, double, double, double> CreateFromString
+			= new TheoryData<string, double, double, double>()
+		{
+			{ "(0.0 0.0 0.0)", 0.0, 0.0, 0.0 },
+			{ "(1.2 0.0 0.0)", 1.2, 0.0, 0.0 },
+			{ "(0.0 1.3 0.0)", 0.0, 1.3, 0.0 },
+			{ "(0.0 0.0 1.4)", 0.0, 0.0, 1.4 },
+		};
+
+		//(CartesianCoordinate source, CartesianCoordinate added, CartesianCoordinate expected)
 		public static readonly TheoryData<CartesianCoordinate, CartesianCoordinate, CartesianCoordinate> AddVector
 			= new TheoryData<CartesianCoordinate, CartesianCoordinate, CartesianCoordinate>()
 		{
@@ -21,6 +32,19 @@ namespace Twisty.Engine.Tests.Geometry
 			{new CartesianCoordinate(0.0, 0.0, 1.0), new CartesianCoordinate(0.0, 0.0, -1.0), new CartesianCoordinate(0.0, 0.0, 0.0)},
 			{new CartesianCoordinate(0.0, 0.0, 1.0), new CartesianCoordinate(1.0, 0.0, 0.0), new CartesianCoordinate(1.0, 0.0, 1.0)},
 			{new CartesianCoordinate(1.0, 0.0, 1.0), new CartesianCoordinate(-1.0, 0.0, 0.0), new CartesianCoordinate(0.0, 0.0, 1.0)},
+		};
+
+		//(CartesianCoordinate source, CartesianCoordinate substracted, CartesianCoordinate expected)
+		public static readonly TheoryData<CartesianCoordinate, CartesianCoordinate, CartesianCoordinate> SubstractVector
+			= new TheoryData<CartesianCoordinate, CartesianCoordinate, CartesianCoordinate>()
+		{
+			{new CartesianCoordinate(0.0, 0.0, 0.0), new CartesianCoordinate(0.0, 0.0, 0.0), new CartesianCoordinate(0.0, 0.0, 0.0)},
+			{new CartesianCoordinate(0.0, 0.0, 0.0), new CartesianCoordinate(10.0, 0.0, 0.0), new CartesianCoordinate(-10.0, 0.0, 0.0)},
+			{new CartesianCoordinate(1.0, 0.0, 0.0), new CartesianCoordinate(-1.0, 0.0, 0.0), new CartesianCoordinate(2.0, 0.0, 0.0)},
+			{new CartesianCoordinate(0.0, 1.0, 0.0), new CartesianCoordinate(0.0, -1.0, 0.0), new CartesianCoordinate(0.0, 2.0, 0.0)},
+			{new CartesianCoordinate(0.0, 0.0, 1.0), new CartesianCoordinate(0.0, 0.0, -1.0), new CartesianCoordinate(0.0, 0.0, 2.0)},
+			{new CartesianCoordinate(0.0, 0.0, 1.0), new CartesianCoordinate(1.0, 0.0, 0.0), new CartesianCoordinate(-1.0, 0.0, 1.0)},
+			{new CartesianCoordinate(1.0, 0.0, 1.0), new CartesianCoordinate(-1.0, 0.0, 0.0), new CartesianCoordinate(2.0, 0.0, 1.0)},
 		};
 
 		public static readonly TheoryData<CartesianCoordinate, double, CartesianCoordinate> RotateAll
@@ -90,6 +114,40 @@ namespace Twisty.Engine.Tests.Geometry
 		#region Test Methods
 
 		[Theory]
+		[MemberData(nameof(CartesianCoordinateTest.CreateFromString), MemberType = typeof(CartesianCoordinateTest))]
+		public void CartesianCoordinate_CreateFromString_BeExpected(string pointCoordinates, double expectedX, double expectedY, double expectedZ)
+		{
+			// 1. Prepare
+			// Nothing to prepare
+
+			// 2. Execute
+			CartesianCoordinate c = new CartesianCoordinate(pointCoordinates);
+
+			// 3. Verify
+			Assert.Equal(c.X, expectedX, PRECISION_DOUBLE);
+			Assert.Equal(c.Y, expectedY, PRECISION_DOUBLE);
+			Assert.Equal(c.Z, expectedZ, PRECISION_DOUBLE);
+		}
+
+		[Theory]
+		[MemberData(nameof(CoordinateConverterTest.InvalidCoordinates), MemberType = typeof(CoordinateConverterTest))]
+		[InlineData("(1)")]
+		[InlineData("(1 2)")]
+		[InlineData("(1 2 )")]
+		[InlineData("(1 2 3 4)")]
+		public void CartesianCoordinate_CreateFromInvalidString_ThrowArgumentException(string pointCoordinates)
+		{
+			// 1. Prepare
+			// Nothing to prepare
+
+			// 2. Execute
+			Action a = () => new CartesianCoordinate(pointCoordinates);
+
+			// 3. Verify
+			Assert.Throws<ArgumentException>(a);
+		}
+
+		[Theory]
 		[MemberData(nameof(CartesianCoordinateTest.AddVector), MemberType = typeof(CartesianCoordinateTest))]
 		public void CartesianCoordinate_AddVector_BeExpected(CartesianCoordinate source, CartesianCoordinate added, CartesianCoordinate expected)
 		{
@@ -107,6 +165,22 @@ namespace Twisty.Engine.Tests.Geometry
 			Assert.Equal(expected.X, r2.X, PRECISION_DOUBLE);
 			Assert.Equal(expected.Y, r2.Y, PRECISION_DOUBLE);
 			Assert.Equal(expected.Z, r2.Z, PRECISION_DOUBLE);
+		}
+
+		[Theory]
+		[MemberData(nameof(CartesianCoordinateTest.SubstractVector), MemberType = typeof(CartesianCoordinateTest))]
+		public void CartesianCoordinate_SubstractVector_BeExpected(CartesianCoordinate source, CartesianCoordinate substracted, CartesianCoordinate expected)
+		{
+			// 1. Prepare
+			// Nothing to prepare.
+
+			// 2. Execute
+			CartesianCoordinate r = source - substracted;
+
+			// 3. Verify
+			Assert.Equal(expected.X, r.X, PRECISION_DOUBLE);
+			Assert.Equal(expected.Y, r.Y, PRECISION_DOUBLE);
+			Assert.Equal(expected.Z, r.Z, PRECISION_DOUBLE);
 		}
 
 		[Theory]

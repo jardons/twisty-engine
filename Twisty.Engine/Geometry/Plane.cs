@@ -1,4 +1,6 @@
-﻿namespace Twisty.Engine.Geometry
+﻿using System;
+
+namespace Twisty.Engine.Geometry
 {
 	/// <summary>
 	/// Formula representing a formula describing a plane.
@@ -7,6 +9,40 @@
 	/// </summary>
 	public class Plane
 	{
+		/// <summary>
+		/// Create a new Plane from the coordiante in a string format.
+		/// </summary>
+		/// <param name="coordinates">Coordinates in the string format "(A B C D)".</param>
+		public Plane(string coordinates)
+		{
+			try
+			{
+				double[] parsed = CoordinateConverter.ParseCoordinates(coordinates);
+				if (parsed.Length != 4)
+					throw new ArgumentException("The provided coordinates are not in the expected format '(A B C D)' and does not contains 4 values.", nameof(coordinates));
+
+				this.Normal = new CartesianCoordinate(parsed[0], parsed[1], parsed[2]);
+				this.D = parsed[3];
+			}
+			catch (FormatException e)
+			{
+				throw new ArgumentException("The provided coordinates are not in the expected format '(A B C D)' and cannot be parsed.", nameof(coordinates), e);
+			}
+		}
+
+		/// <summary>
+		/// Create a new Plane.
+		/// </summary>
+		/// <param name="a">A factor of the formula 'ax + by + cz + d = 0' used to define a plane.</param>
+		/// <param name="b">B factor of the formula 'ax + by + cz + d = 0' used to define a plane.</param>
+		/// <param name="c">C factor of the formula 'ax + by + cz + d = 0' used to define a plane.</param>
+		/// <param name="d">D factor of the formula 'ax + by + cz + d = 0' used to define a plane.</param>
+		public Plane(double a, double b, double c, double d)
+		{
+			this.Normal = new CartesianCoordinate(a, b, c);
+			this.D = d;
+		}
+
 		/// <summary>
 		/// Create a new plane based on his normal and a random point that is part of the plane.
 		/// </summary>

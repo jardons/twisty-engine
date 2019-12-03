@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace Twisty.Engine.Geometry
 {
@@ -22,13 +23,38 @@ namespace Twisty.Engine.Geometry
 		public static double ConvertRadianToDegree(double radian) => radian * (180 / Math.PI);
 
 		/// <summary>
+		/// Parse a string of coordinates to get
+		/// </summary>
+		/// <param name="coordinates">String containing the coordinates to parse.</param>
+		/// <returns>A table of double containing the coordinate in the given order.</returns>
+		public static double[] ParseCoordinates(string coordinates)
+		{
+			if (coordinates == null)
+				throw new ArgumentNullException(nameof(coordinates));
+
+			if (!coordinates.StartsWith("(") || !coordinates.EndsWith(")") || coordinates.Length < 3)
+				throw new FormatException("Coordiantes doesn't follow the expected format '(DDD.D, DDD.D, DDD.D)' where 'DDD.D' must be a valid Double.");
+
+			string[] values = coordinates.Substring(1, coordinates.Length - 2).Split(' ', StringSplitOptions.RemoveEmptyEntries);
+			double[] result = new double[values.Length];
+
+			for (int i = 0; i < values.Length; ++i)
+				if (double.TryParse(values[i], NumberStyles.Any, CultureInfo.InvariantCulture, out double d))
+					result[i] = d;
+				else
+					throw new FormatException("Coordiantes doesn't follow the expected format '(DDD.D, DDD.D, DDD.D)' where 'DDD.D' must be a valid Double.");
+
+			return result;
+		}
+
+		/// <summary>
 		/// Convert a Cartesian Point to his Homogeneous equivalent.
 		/// </summary>
 		/// <param name="cc">Cartesian coordinate to convert.</param>
 		/// <returns>The Vector converted to a Homogeneous representation.</returns>
-		public static HomogeneousCoordiante ConvertToHomogeneous(CartesianCoordinate cc)
+		public static HomogeneousCoordinate ConvertToHomogeneous(CartesianCoordinate cc)
 		{
-			return new HomogeneousCoordiante(
+			return new HomogeneousCoordinate(
 				cc.X,
 				cc.Y,
 				cc.Z,
@@ -57,7 +83,7 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		/// <param name="hc">Homogeneous coordinate to convert.</param>
 		/// <returns>The Vector converted to a Cartesian representation.</returns>
-		public static CartesianCoordinate ConvertToCartesian(HomogeneousCoordiante hc)
+		public static CartesianCoordinate ConvertToCartesian(HomogeneousCoordinate hc)
 		{
 			return hc.W.IsZero()
 				? new CartesianCoordinate(

@@ -91,7 +91,7 @@ namespace Twisty.Engine.Geometry
 
 		#endregion IComparer<CartesianCoordinate> Members
 
-		#region IComparer<CartesianCoordinate> Members
+		#region IComparer<IPositionnedBySphericalVector> Members
 
 		/// <summary>
 		/// Compares two objects and returns a value indicating whether one is less than, equal to, or greater than the other.
@@ -109,6 +109,6 @@ namespace Twisty.Engine.Geometry
 			return this.Compare(x.Position, y.Position);
 		}
 
-		#endregion IComparer<CartesianCoordinate> Members
+		#endregion IComparer<IPositionnedBySphericalVector> Members
 	}
 }
