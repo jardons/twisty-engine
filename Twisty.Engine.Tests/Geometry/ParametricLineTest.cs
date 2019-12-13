@@ -1,4 +1,5 @@
-﻿using Twisty.Engine.Geometry;
+﻿using System;
+using Twisty.Engine.Geometry;
 using Xunit;
 
 namespace Twisty.Engine.Tests.Geometry
@@ -17,6 +18,14 @@ namespace Twisty.Engine.Tests.Geometry
 			{new CartesianCoordinate(1.0, 2.0, 3.0), new CartesianCoordinate(4.0, 5.0, 6.0), 1.0, 3.0, 2.0, 3.0, 3.0, 3.0},
 		};
 
+		//(string coordinates, double x, double xt, double y, double yt, double z, double zt)
+		public static readonly TheoryData<string, double, double, double, double, double, double> ParametricLinesFromString = new TheoryData<string, double, double, double, double, double, double>()
+		{
+			{ "(0.0 0.0 0.0 4.0 5.0 6.0)", 0.0, 4.0, 0.0, 5.0, 0.0, 6.0 },
+			{ "(1.0 1.0 1.0 4.0 5.0 6.0)", 1.0, 4.0, 1.0, 5.0, 1.0, 6.0 },
+			{ "(1.0 2.0 3.0 4.0 5.0 6.0)", 1.0, 4.0, 2.0, 5.0, 3.0, 6.0 },
+		};
+
 		//(string planeCoordinates, string ccCoordinate1, string ccCoordinate2, bool result)
 		public static readonly TheoryData<string, string, string, bool> ParametricLinesAndPlanes = new TheoryData<string, string, string, bool>()
 		{
@@ -31,6 +40,45 @@ namespace Twisty.Engine.Tests.Geometry
 		#endregion Test Data
 
 		#region Test Methods
+
+		[Theory]
+		[MemberData(nameof(CoordinateConverterTest.InvalidCoordinates), MemberType = typeof(CoordinateConverterTest))]
+		[InlineData("(1)")]
+		[InlineData("(1 2)")]
+		[InlineData("(1 2 3)")]
+		[InlineData("(1 2 3 4)")]
+		[InlineData("(1 2 3 4 5)")]
+		[InlineData("(1 2 3 4 5 6 7)")]
+		public void ParametricLine_CreateFromInvalidString_ThrowArgumentException(string pointCoordinates)
+		{
+			// 1. Prepare
+			// Nothing to prepare
+
+			// 2. Execute
+			Action a = () => new ParametricLine(pointCoordinates);
+
+			// 3. Verify
+			Assert.Throws<ArgumentException>(a);
+		}
+
+		[Theory]
+		[MemberData(nameof(ParametricLineTest.ParametricLinesFromString), MemberType = typeof(ParametricLineTest))]
+		public void ParametricLine_CreateFromString_BeExpected(string coordinates, double x, double xt, double y, double yt, double z, double zt)
+		{
+			// 1. Prepare
+			// Nothing to prepare.
+
+			// 2. Execute
+			ParametricLine o = new ParametricLine(coordinates);
+
+			// 3. Verify
+			Assert.Equal(x, o.X, PRECISION_DOUBLE);
+			Assert.Equal(xt, o.A, PRECISION_DOUBLE);
+			Assert.Equal(y, o.Y, PRECISION_DOUBLE);
+			Assert.Equal(yt, o.B, PRECISION_DOUBLE);
+			Assert.Equal(z, o.Z, PRECISION_DOUBLE);
+			Assert.Equal(zt, o.C, PRECISION_DOUBLE);
+		}
 
 		[Theory]
 		[MemberData(nameof(ParametricLineTest.ParametricLinesFromPoints), MemberType = typeof(ParametricLineTest))]

@@ -1,4 +1,6 @@
-﻿namespace Twisty.Engine.Geometry
+﻿using System;
+
+namespace Twisty.Engine.Geometry
 {
 	/// <summary>
 	/// Class defining a line between 2 points in his parametrics form.
@@ -10,6 +12,27 @@
 	/// </summary>
 	public class ParametricLine
 	{
+		/// <summary>
+		/// Create a new ParametricLine from a coordinates string on the format "(X Y Z A B C)".
+		/// </summary>
+		/// <param name="coordinates">Coordinates in the format "(X Y Z A B C)".</param>
+		public ParametricLine(string coordinates)
+		{
+			try
+			{
+				double[] parsed = CoordinateConverter.ParseCoordinates(coordinates);
+				if (parsed.Length != 6)
+					throw new ArgumentException("The provided coordinates are not in the expected format '(X Y Z A B C)' and does not contains 3 values.", nameof(coordinates));
+
+				this.Point = new CartesianCoordinate(parsed[0], parsed[1], parsed[2]);
+				this.Vector = new CartesianCoordinate(parsed[3], parsed[4], parsed[5]);
+			}
+			catch (FormatException e)
+			{
+				throw new ArgumentException("The provided coordinates are not in the expected format '(X Y Z A B C)' and cannot be parsed.", nameof(coordinates), e);
+			}
+		}
+
 		/// <summary>
 		/// Create a new ParametricLine from all the variable of the identification formula.
 		/// </summary>
