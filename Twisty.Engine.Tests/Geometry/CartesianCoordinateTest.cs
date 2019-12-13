@@ -124,9 +124,9 @@ namespace Twisty.Engine.Tests.Geometry
 			CartesianCoordinate c = new CartesianCoordinate(pointCoordinates);
 
 			// 3. Verify
-			Assert.Equal(c.X, expectedX, PRECISION_DOUBLE);
-			Assert.Equal(c.Y, expectedY, PRECISION_DOUBLE);
-			Assert.Equal(c.Z, expectedZ, PRECISION_DOUBLE);
+			Assert.Equal(expectedX, c.X, PRECISION_DOUBLE);
+			Assert.Equal(expectedY, c.Y, PRECISION_DOUBLE);
+			Assert.Equal(expectedZ, c.Z, PRECISION_DOUBLE);
 		}
 
 		[Theory]
