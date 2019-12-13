@@ -116,6 +116,9 @@ namespace Twisty.Engine.Geometry
 		/// </remarks>
 		public CartesianCoordinate GetIntersection(ParametricLine l)
 		{
+			if (l.IsParallelTo(this))
+				throw new InvalidOperationException("Cannot Get Intersection between a Plane and a parallel line.");
+
 			double planePart = this.A * l.X + this.B * l.Y + this.C * l.Z + this.D;
 			double divisor = this.A * l.A + this.B * l.B + this.C * l.C;
 

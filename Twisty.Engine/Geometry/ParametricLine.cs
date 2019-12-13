@@ -6,22 +6,40 @@
 	/// The formula used to defined a parametric line is :
 	/// x = x1 + a * t
 	/// y = y1 + b * t
-	/// z = z1 + b * t
+	/// z = z1 + c * t
 	/// </summary>
 	public class ParametricLine
 	{
+		/// <summary>
+		/// Create a new ParametricLine from all the variable of the identification formula.
+		/// </summary>
+		/// <param name="x">X coordinate of the initial point of the Line.</param>
+		/// <param name="y">Y coordinate of the initial point of the Line.</param>
+		/// <param name="z">Z coordinate of the initial point of the Line.</param>
+		/// <param name="a">A factor of the Line formula.</param>
+		/// <param name="b">B factor of the Line formula.</param>
+		/// <param name="c">C factor of the Line formula.</param>
 		public ParametricLine(double x, double y, double z, double a, double b, double c)
 		{
 			this.Point = new CartesianCoordinate(x, y, z);
 			this.Vector = new CartesianCoordinate(a, b, c);
 		}
 
+		/// <summary>
+		/// Create a ParametricLine starting at the initial coordinate and following a provided Vector.
+		/// </summary>
+		/// <param name="v">Vector providing the direction of the line.</param>
 		public ParametricLine(CartesianCoordinate v)
 		{
 			this.Point = CartesianCoordinate.Zero;
 			this.Vector = v;
 		}
 
+		/// <summary>
+		/// Create a ParametricLine starting from a specific point and following a provided Vector.
+		/// </summary>
+		/// <param name="p">Initial point of the line.</param>
+		/// <param name="v">Vector providing the direction of the line.</param
 		public ParametricLine(CartesianCoordinate p, CartesianCoordinate v)
 		{
 			this.Point = p;
@@ -30,12 +48,34 @@
 
 		#region Public Properties
 
+		/// <summary>
+		/// Gets the X coordinate of the initial point of the Line.
+		/// </summary>
 		public double X => Point.X;
+
+		/// <summary>
+		/// Gets the Y coordinate of the initial point of the Line.
+		/// </summary>
 		public double Y => Point.Y;
+
+		/// <summary>
+		/// Gets the Z coordinate of the initial point of the Line.
+		/// </summary>
 		public double Z => Point.Z;
 
+		/// <summary>
+		/// Gets the A factor of the Line formula.
+		/// </summary>
 		public double A => Vector.X;
+
+		/// <summary>
+		/// Gets the B factor of the Line formula.
+		/// </summary>
 		public double B => Vector.Y;
+
+		/// <summary>
+		/// Gets the C factor of the Line formula.
+		/// </summary>
 		public double C => Vector.Z;
 
 		/// <summary>
@@ -50,6 +90,20 @@
 		#endregion Public Properties
 
 		#region Public Methods
+
+		/// <summary>
+		/// Evaluate if the current line is parallel to a given plane.
+		/// </summary>
+		/// <param name="p">Plane to which the orientation of the Line will be compared.</param>
+		/// <returns>A boolean indicating whether the Line and the Plane are parallel or not.</returns>
+		/// <remarks>
+		/// A line is parallel to a Plan when the this calculation is true :
+		/// aA + bB + cC = 0
+		/// </remarks>
+		public bool IsParallelTo(Plane p)
+		{
+			return (this.A * p.A + this.B * p.B + this.C * p.C).IsZero();
+		}
 
 		/// <summary>
 		/// Create a ParametricLine between 2 lines.
