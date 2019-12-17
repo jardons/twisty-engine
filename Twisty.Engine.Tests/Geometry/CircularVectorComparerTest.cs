@@ -8,32 +8,30 @@ namespace Twisty.Engine.Tests.Geometry
 	{
 		#region Test Data
 
-		// (CartesianCoordinate x, CartesianCoordinate y, CartesianCoordinate startVector, int expected)
-		public static readonly TheoryData<CartesianCoordinate, CartesianCoordinate, CartesianCoordinate, int> ComparedCartesianValues
-			= new TheoryData<CartesianCoordinate, CartesianCoordinate, CartesianCoordinate, int>()
+		// (string xCoord, strinct yCoord, string plane, int expected)
+		public static readonly TheoryData<string, string, string, int> ComparedCartesianValues = new TheoryData<string, string, string, int>()
 		{
 			// Perfect equality
-			{ new CartesianCoordinate(1.0, 0.0, 0.0), new CartesianCoordinate(1.0, 0.0, 0.0), new CartesianCoordinate(1.0, 0.0, 0.0), 0 },
-			{ new CartesianCoordinate(1.0, 0.0, 0.0), new CartesianCoordinate(1.0, 0.0, 0.0), new CartesianCoordinate(0.0, 1.0, 0.0), 0 },
-			{ new CartesianCoordinate(1.0, 0.0, 0.0), new CartesianCoordinate(1.0, 0.0, 0.0), new CartesianCoordinate(0.0, 0.0, 1.0), 0 },
-			{ new CartesianCoordinate(1.0, 0.0, 0.0), new CartesianCoordinate(1.0, 0.0, 0.0), new CartesianCoordinate(1.0, 1.0, 1.0), 0 },
-			{ new CartesianCoordinate(1.0, 0.0, 0.0), new CartesianCoordinate(1.0, 0.0, 0.0), new CartesianCoordinate(7.0, 5.0, 6.0), 0 },
-			// Different vector with same angle relative to axis.
-			{ new CartesianCoordinate(1.0, 0.0, 0.0), new CartesianCoordinate(1.0, 0.0, 1.0), new CartesianCoordinate(0.0, 1.0, 0.0), 0 },
-			{ new CartesianCoordinate(1.0, 0.0, 0.0), new CartesianCoordinate(1.0, 0.0, -1.0), new CartesianCoordinate(0.0, 1.0, 0.0), 0 },
-			{ new CartesianCoordinate(0.5, 0.5, 0.70710678118654757), new CartesianCoordinate(-0.5, 0.5, 0.70710678118654757), new CartesianCoordinate(0.0, 0.0, -1.0), 0 },
-			{ new CartesianCoordinate(0.5, 0.5, 0.70710678118654757), new CartesianCoordinate(-0.5, 0.5, 0.70710678118654757), new CartesianCoordinate(0.0, -1.0, 0.0), 0 },
-			{ new CartesianCoordinate(0.5, 0.5, 0.70710678118654757), new CartesianCoordinate(-0.5, 0.5, 0.70710678118654757), new CartesianCoordinate(0.0, 1.0, 0.0), 0 },
+			{ "(1.0 0.0 0.0)", "(1.0 0.0 0.0)", "(1.0 0.0 0.0 1)", 0 },
+			{ "(1.0 0.0 0.0)", "(1.0 0.0 0.0)", "(0.0 1.0 0.0 1)", 0 },
+			{ "(1.0 0.0 0.0)", "(1.0 0.0 0.0)", "(0.0 0.0 1.0 1)", 0 },
 			// Differences.
-			{ new CartesianCoordinate(1.0, 0.0, 0.0), new CartesianCoordinate(1.0, 1.0, 0.0), new CartesianCoordinate(0.0, 1.0, 0.0), 1 },
-			{ new CartesianCoordinate(1.0, 0.0, 0.0), new CartesianCoordinate(1.0, -1.0, 0.0), new CartesianCoordinate(0.0, 1.0, 0.0), -1 },
-			{ new CartesianCoordinate(1.0, 0.0, 7.0), new CartesianCoordinate(1.0, 0.0, 3.0), new CartesianCoordinate(1.0, 1.0, 1.0), 1 },
-			{ new CartesianCoordinate(0.5, 0.5, 0.70710678118654757), new CartesianCoordinate(-0.5, 0.5, 0.70710678118654757), new CartesianCoordinate(-1.0, 0.0, 0.0), 1 },
-			{ new CartesianCoordinate(0.5, 0.5, 0.70710678118654757), new CartesianCoordinate(-0.5, 0.5, 0.70710678118654757), new CartesianCoordinate(1.0, 0.0, 0.0), -1 },
-			// Triange of differents values should not loop.
-			{ new CartesianCoordinate(1.0, 0.0, 0.0), new CartesianCoordinate(1.0, 1.0, 0.0), new CartesianCoordinate(1.0, 0.0, 0.0), -1 },
-			{ new CartesianCoordinate(1.0, 0.0, 0.0), new CartesianCoordinate(1.0, 2.0, 0.0), new CartesianCoordinate(1.0, 0.0, 0.0), -1 },
-			{ new CartesianCoordinate(1.0, 1.0, 0.0), new CartesianCoordinate(1.0, 2.0, 0.0), new CartesianCoordinate(1.0, 0.0, 0.0), -1 },
+			{ "(1.0 0.0 0.0)", "(1.0 1.0 0.0)", "(0 0 1 1)", -1 },
+			{ "(1.0 0.0 0.0)", "(1.0 -1.0 0.0)", "(0 0 1 1)", -1 },
+			{ "(1.0 0.0 7.0)", "(1.0 0.0 3.0)", "(0 1 0 1)", 1 },
+			{ "(0.5 0.5 0.70710678118654757)", "(-0.5 0.5 0.70710678118654757)", "(0 -1 0 1)", 1 },
+			{ "(0.5 0.5 0.70710678118654757)", "(-0.5 0.5 0.70710678118654757)", "(0 1 0 1)", -1 },
+			// Triangle of differents values should not loop.
+			{ "(1.0 0.0 0.0)", "(1.0 1.0 0.0)", "(0 0 1 1)", -1 },
+			{ "(1.0 0.0 0.0)", "(1.0 2.0 0.0)", "(0 0 1 1)", -1 },
+			{ "(1.0 1.0 0.0)", "(1.0 2.0 0.0)", "(0 0 1 1)", -1 },
+			// Square rotation full test
+			{ "(0.5 0.5 0.71)", "(-0.5 0.5 0.71)", "(0 0 1 1)", -1 },
+			{ "(0.5 0.5 0.71)", "(0.5 -0.5 0.71)", "(0 0 1 1)", -1 },
+			{ "(0.5 0.5 0.71)", "(-0.5 -0.5 0.71)", "(0 0 1 1)", -1 },
+			{ "(-0.5 0.5 0.71)", "(0.5 -0.5 0.71)", "(0 0 1 1)", -1 },
+			{ "(-0.5 0.5 0.71)", "(-0.5 -0.5 0.71)", "(0 0 1 1)", -1 },
+			{ "(-0.5 -0.5 0.71)", "(0.5 -0.5 0.71)", "(0 0 1 1)", -1 },
 		};
 
 		#endregion Test Data
@@ -42,10 +40,13 @@ namespace Twisty.Engine.Tests.Geometry
 
 		[Theory]
 		[MemberData(nameof(CircularVectorComparerTest.ComparedCartesianValues), MemberType = typeof(CircularVectorComparerTest))]
-		public void CircularVectorComparer_CompareVector_BeExpected(CartesianCoordinate x, CartesianCoordinate y, CartesianCoordinate startVector, int expected)
+		public void CircularVectorComparer_CompareVector_BeExpected(string xCoord, string yCoord, string plane, int expected)
 		{
 			// 1. Prepare
-			var comparer = new CircularVectorComparer(startVector);
+			CartesianCoordinate x = new CartesianCoordinate(xCoord);
+			CartesianCoordinate y = new CartesianCoordinate(yCoord);
+			Plane p = new Plane(plane);
+			var comparer = new CircularVectorComparer(p);
 
 			// 2. Execute
 			int result = comparer.Compare(x, y);

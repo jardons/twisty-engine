@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Twisty.Engine.Geometry
 {
@@ -14,35 +15,20 @@ namespace Twisty.Engine.Geometry
 	}
 
 	/// <summary>
-	/// Comparer allowing to compare vector based on their angular distance relative to an initial vector.
+	/// Comparer allowing to compare vector based on their angular distance to the X axis in a Plane.
+	/// The sorting direction is counter-clockwise.
 	/// </summary>
 	public class CircularVectorComparer : IComparer<SphericalVector>, IComparer<CartesianCoordinate>, IComparer<IPositionnedBySphericalVector>
 	{
-		private CartesianCoordinate m_StartingVectorAxis;
+		private CartesianCoordinatesConverter m_Converter;
 
 		/// <summary>
-		/// Create a new CircularVectorComparer using the position of an object as starting vector.
+		/// Create a new CircularVectorComparer using a Plane on which we will projects the points to sort..
 		/// </summary>
-		/// <param name="obj">Object from with the starting position will be used.</param>
-		public CircularVectorComparer(IPositionnedBySphericalVector obj)
-			: this(CoordinateConverter.ConvertToCartesian(obj.Position))
-		{ }
-
-		/// <summary>
-		/// Create a new CircularVectorComparer using a starting vector.
-		/// </summary>
-		/// <param name="startingVector">Spherical Cordinates of the starting vector used for the comparisons.</param>
-		public CircularVectorComparer(SphericalVector startingVector)
-			: this(CoordinateConverter.ConvertToCartesian(startingVector))
-		{ }
-
-		/// <summary>
-		/// Create a new CircularVectorComparer using a starting vector.
-		/// </summary>
-		/// <param name="startingVector">Cartesians Cordinates of the starting vector used for the comparisons.</param>
-		public CircularVectorComparer(CartesianCoordinate startingVector)
+		/// <param name="p">PLane used to project the points prior to sort them.</param>
+		public CircularVectorComparer(Plane p)
 		{
-			m_StartingVectorAxis = startingVector;
+			m_Converter = new CartesianCoordinatesConverter(p);
 		}
 
 		#region IComparer<SphericalVector> Members
@@ -80,11 +66,28 @@ namespace Twisty.Engine.Geometry
 		/// </returns>
 		public int Compare(CartesianCoordinate x, CartesianCoordinate y)
 		{
-			double thetaX = x.GetThetaTo(m_StartingVectorAxis);
-			double thetaY = y.GetThetaTo(m_StartingVectorAxis);
-
-			if (thetaX.IsEqualTo(thetaY))
+			// Check perfect equality first to avoid further calculations.
+			if (x.X.IsEqualTo(y.X) && x.Y.IsEqualTo(y.Y) && x.Z.IsEqualTo(y.Z))
 				return 0;
+
+			Cartesian2dCoordinate x2 = m_Converter.ConvertTo2d(x);
+			Cartesian2dCoordinate y2 = m_Converter.ConvertTo2d(y);
+
+			// Check 2D perfect equality first to avoid further calculations.
+			if (x2.X.IsEqualTo(y2.X) && x2.Y.IsEqualTo(y2.Y))
+				return 0;
+
+			// Get Theta value related to the X vector, if one in the starting one we don't need to compare further.
+			double thetaX = x2.ThetaToX;
+			if (thetaX.IsZero())
+				return -1;
+
+			double thetaY = y2.ThetaToX;
+			if (thetaY.IsZero())
+				return 1;
+
+			thetaX = AlignThetaOnRotationDirection(x2, thetaX);
+			thetaY = AlignThetaOnRotationDirection(y2, thetaY);
 
 			return thetaX > thetaY ? 1 : -1;
 		}
@@ -110,5 +113,23 @@ namespace Twisty.Engine.Geometry
 		}
 
 		#endregion IComparer<IPositionnedBySphericalVector> Members
+
+		#region Private Members
+
+		/// <summary>
+		/// Align the theta of calculated value based on their direction, negative value will be accessible trough bigger angle than positive one.
+		/// </summary>
+		/// <param name="cc">Coordinates used to realign the theta angle.</param>
+		/// <param name="theta">Angle in radians to realign.</param>
+		/// <returns>Realigned angles value in radians.</returns>
+		private double AlignThetaOnRotationDirection(Cartesian2dCoordinate cc, double theta)
+		{
+			if (cc.Y > 0.0)
+				return theta;
+
+			return Math.PI * 2.0 - theta;
+		}
+
+		#endregion Private Members
 	}
 }
