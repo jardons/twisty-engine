@@ -260,7 +260,31 @@ namespace Twisty.Engine.Geometry
 		/// </remarks>
 		public double GetThetaTo(CartesianCoordinate x)
 		{
-			return Math.Acos(this.DotProduct(x) / (this.Magnitude * x.Magnitude));
+			return this.Acos(this.DotProduct(x) / (this.Magnitude * x.Magnitude));
+		}
+
+		/// <summary>
+		/// Gets the dot product between this vector in a 1 X 3 format and a second one in a 3 X 1 format.
+		/// </summary>
+		/// <param name="c">Vector that will be used as a 3 X 1 matrix.</param>
+		/// <returns>Calculated vector from the dot product of the 2 vectors.</returns>
+		public double DotProduct(CartesianCoordinate c)
+		{
+			return this.X * c.X + this.Y * c.Y + this.Z * c.Z;
+		}
+
+		/// <summary>
+		/// Gets the Cross Product between this vector and another vector.
+		/// </summary>
+		/// <param name="v">Vector with which we will calculate the cross product.</param>
+		/// <returns>New coordinates containing the cross product from the 2 vectors.</returns>
+		public CartesianCoordinate CrossProduct(CartesianCoordinate v)
+		{
+			return new CartesianCoordinate(
+				this.Y * v.Z - this.Z * v.Y,
+				this.Z * v.X - this.X * v.Z,
+				this.X * v.Y - this.Y * v.X
+			);
 		}
 
 		#endregion Public Methods
@@ -342,6 +366,20 @@ namespace Twisty.Engine.Geometry
 		}
 
 		/// <summary>
+		/// Calculate the arc cosinus for a value.
+		/// </summary>
+		/// <param name="d">Cosinus value used to calculate angle.</param>
+		/// <returns>Calculated Arc cosinus value.</returns>
+		private double Acos(double d)
+		{
+			// Avoid NaN coming from double precissions issues. (1.0000000000001)
+			if (d.IsEqualTo(1.0))
+				return 0.0;
+
+			return Math.Acos(d);
+		}
+
+		/// <summary>
 		/// Calculate the Cosinus for an angle in radian by avoiding precision lost for some case causing important rounding issues with our matrix.
 		/// </summary>
 		/// <param name="rad">Angle to evaluate in radians.</param>
@@ -374,30 +412,6 @@ namespace Twisty.Engine.Geometry
 				return 0.0;
 
 			return Math.Sin(rad);
-		}
-
-		/// <summary>
-		/// Gets the dot product between this vector in a 1 X 3 format and a second one in a 3 X 1 format.
-		/// </summary>
-		/// <param name="c">Vector that will be used as a 3 X 1 matrix.</param>
-		/// <returns>Calculated vector from the dot product of the 2 vectors.</returns>
-		private double DotProduct(CartesianCoordinate c)
-		{
-			return this.X * c.X + this.Y * c.Y + this.Z * c.Z;
-		}
-
-		/// <summary>
-		/// Gets the Cross Product between this vector and another vector.
-		/// </summary>
-		/// <param name="v">Vector with which we will calculate the cross product.</param>
-		/// <returns>New coordinates containing the cross product from the 2 vectors.</returns>
-		private CartesianCoordinate CrossProduct(CartesianCoordinate v)
-		{
-			return new CartesianCoordinate(
-				this.Y * v.Z - this.Z * v.Y,
-				this.Z * v.X - this.X * v.Z,
-				this.X * v.Y - this.Y * v.X
-			);
 		}
 
 		#endregion Private Methods

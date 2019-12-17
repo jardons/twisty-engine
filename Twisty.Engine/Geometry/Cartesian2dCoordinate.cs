@@ -83,6 +83,26 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		public bool IsOnY => X.IsZero();
 
+		/// <summary>
+		/// Gets the magnitude of this vector, also noted as ||V||.
+		/// </summary>
+		/// <remarks>
+		/// Formula :
+		///          ___________
+		/// ||V|| = V Xv² * Yv² '
+		/// </remarks>
+		public double Magnitude => Math.Sqrt(this.X * this.X + this.Y * this.Y);
+
+		/// <summary>
+		/// Gets the angle in radians between the vector and the X axis.
+		/// </summary>
+		public double ThetaToX => Math.Acos(this.X / this.Magnitude);
+
+		/// <summary>
+		/// Gets the angle in radians between the vector and the Y axis.
+		/// </summary>
+		public double ThetaToY => Math.Acos(this.Y / this.Magnitude);
+
 		#endregion Public Properties
 	}
 }
