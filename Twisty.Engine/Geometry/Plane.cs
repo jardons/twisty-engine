@@ -254,7 +254,7 @@ namespace Twisty.Engine.Geometry
 			//      D1 B2 - D2 B1
 			// X = ---------------
 			//      A2 B1 - A1 B2
-			double divisor = p.A * this.B - (this.A * p.B);
+			double divisor = (p.A * this.B) - (this.A * p.B);
 			if (divisor.IsZero())
 			{
 				cc = Cartesian3dCoordinate.Zero;
