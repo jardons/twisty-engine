@@ -55,7 +55,7 @@ namespace Twisty.Engine.Geometry
 			// As : 0 = ax + by + cz + d
 			//      -d = ax + by + cz
 			//      d = -(ax + by + cz)
-			this.D = -(normal.X * point.X + normal.Y * point.Y + normal.Z * point.Z);
+			this.D = -((normal.X * point.X) + (normal.Y * point.Y) + (normal.Z * point.Z));
 		}
 
 		/// <summary>
@@ -89,7 +89,7 @@ namespace Twisty.Engine.Geometry
 		/// <param name="point">Point for which appartenance to the plane will be checked.</param>
 		/// <returns>A boolean indicating whether the point is ont the plane or not.</returns>
 		/// <remarks>Formula : ax + by + cz + d = 0</remarks>
-		public bool IsOnPlane(Cartesian3dCoordinate point) => (this.A * point.X + this.B * point.Y + this.C * point.Z + this.D).IsZero();
+		public bool IsOnPlane(Cartesian3dCoordinate point) => ((this.A * point.X) + (this.B * point.Y) + (this.C * point.Z) + this.D).IsZero();
 
 		/// <summary>
 		/// Gets the intersection point coordinate between the current plane and another specified plane.
@@ -205,14 +205,14 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		/// <param name="l">Parametric line with which we calculate the product.</param>
 		/// <returns>Result of the sum of the product of the A, B and C factor of the plane and parametric line formula.</returns>
-		private double GetSumOfAbcProduct(ParametricLine l) => this.A * l.A + this.B * l.B + this.C * l.C;
+		private double GetSumOfAbcProduct(ParametricLine l) => (this.A * l.A) + (this.B * l.B) + (this.C * l.C);
 
 		/// <summary>
 		/// Gets the sum of products of the A, B and C factor of the plane and parametric line formula.
 		/// </summary>
 		/// <param name="cc">Parametric line with which we calculate the product.</param>
 		/// <returns>Result of the sum of the product of the A, B and C factor of the plane and parametric line formula.</returns>
-		private double GetSumOfAbcProduct(Cartesian3dCoordinate cc) => this.A * cc.X + this.B * cc.Y + this.C * cc.Z;
+		private double GetSumOfAbcProduct(Cartesian3dCoordinate cc) => (this.A * cc.X) + (this.B * cc.Y) + (this.C * cc.Z);
 
 		/// <summary>
 		/// Try to calculate a point at the intersection of 2 plane using linear combination.
