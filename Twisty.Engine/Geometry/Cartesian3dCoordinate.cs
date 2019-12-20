@@ -17,23 +17,23 @@ namespace Twisty.Engine.Geometry
 	///   -y -------O------- +y
 	///            /|
 	///           / |
-	///         /   |
+	///          /  |
 	///        +x   -z
 	///          
 	/// </example>
 	[DebuggerDisplay("({X}, {Y}, {Z})")]
-	public struct CartesianCoordinate
+	public struct Cartesian3dCoordinate
 	{
 		/// <summary>
 		/// Gets the Zero point coordinates.
 		/// </summary>
-		public static readonly CartesianCoordinate Zero = new CartesianCoordinate(0.0, 0.0, 0.0);
+		public static readonly Cartesian3dCoordinate Zero = new Cartesian3dCoordinate(0.0, 0.0, 0.0);
 
 		/// <summary>
-		/// Create a new CartesianCoordinate from a coordinates string on the format "(X Y Z)".
+		/// Create a new Cartesian3dCoordinate from a coordinates string on the format "(X Y Z)".
 		/// </summary>
 		/// <param name="coordinates">Coordinates in the format "(X Y Z)".</param>
-		public CartesianCoordinate(string coordinates)
+		public Cartesian3dCoordinate(string coordinates)
 		{
 			try
 			{
@@ -52,12 +52,12 @@ namespace Twisty.Engine.Geometry
 		}
 
 		/// <summary>
-		/// Create a new CartesianCoordinate object.
+		/// Create a new Cartesian3dCoordinate object.
 		/// </summary>
 		/// <param name="x">Coordinates on the X axis.</param>
 		/// <param name="y">Coordinates on the Y axis.</param>
 		/// <param name="z">Coordinates on the Z axis.</param>
-		public CartesianCoordinate(double x, double y, double z)
+		public Cartesian3dCoordinate(double x, double y, double z)
 		{
 			this.X = x;
 			this.Y = y;
@@ -142,13 +142,13 @@ namespace Twisty.Engine.Geometry
 		///  Rx(theta) = (  0  cos theta  -sin theta  ) X (  y  )
 		///              (  0  sin theta   cos theta  )   (  z  )
 		/// </remarks>
-		public CartesianCoordinate RotateAroundX(double theta)
+		public Cartesian3dCoordinate RotateAroundX(double theta)
 		{
 			// Precalculate intermediates values used more than once.
 			double cosTheta = Cos(theta);
 			double sinTheta = Sin(theta);
 
-			return new CartesianCoordinate(
+			return new Cartesian3dCoordinate(
 				this.X,
 				this.Y * cosTheta - this.Z * sinTheta,
 				this.Y * sinTheta + this.Z * cosTheta
@@ -167,13 +167,13 @@ namespace Twisty.Engine.Geometry
 		///  Ry(theta) = (       0      1      0      ) X (  y  )
 		///              (  -sin theta  0  cos theta  )   (  z  )
 		/// </remarks>
-		public CartesianCoordinate RotateAroundY(double theta)
+		public Cartesian3dCoordinate RotateAroundY(double theta)
 		{
 			// Precalculate intermediates values used more than once.
 			double cosTheta = Cos(theta);
 			double sinTheta = Sin(theta);
 
-			return new CartesianCoordinate(
+			return new Cartesian3dCoordinate(
 				this.X * cosTheta + this.Z * sinTheta,
 				this.Y,
 				this.Z * cosTheta - this.X * sinTheta
@@ -192,13 +192,13 @@ namespace Twisty.Engine.Geometry
 		///  Rz(theta) = (  sin theta   cos theta  0  ) X (  y  )
 		///              (      0           0      1  )   (  z  )
 		/// </remarks>
-		public CartesianCoordinate RotateAroundZ(double theta)
+		public Cartesian3dCoordinate RotateAroundZ(double theta)
 		{
 			// Precalculate intermediates values used more than once.
 			double cosTheta = Cos(theta);
 			double sinTheta = Sin(theta);
 
-			return new CartesianCoordinate(
+			return new Cartesian3dCoordinate(
 				this.X * cosTheta - this.Y * sinTheta,
 				this.X * sinTheta + this.Y * cosTheta,
 				this.Z
@@ -219,7 +219,7 @@ namespace Twisty.Engine.Geometry
 		/// 
 		///  R = V cos theta + (K × V) sin theta + K (K . V) (1 − cos theta)
 		/// </remarks>
-		public CartesianCoordinate RotateAroundVector(CartesianCoordinate k, double theta)
+		public Cartesian3dCoordinate RotateAroundVector(Cartesian3dCoordinate k, double theta)
 		{
 			// Precalculate intermediates values used more than once.
 			double cosTheta = Cos(theta);
@@ -233,12 +233,12 @@ namespace Twisty.Engine.Geometry
 		/// <summary>
 		/// Gets the normalized coordinate of this vector.
 		/// </summary>
-		/// <returns>A new CartesianCoordinate containing the normalized coordinate of this vector.</returns>
-		public CartesianCoordinate Normalize()
+		/// <returns>A new Cartesian3dCoordinate containing the normalized coordinate of this vector.</returns>
+		public Cartesian3dCoordinate Normalize()
 		{
 			double m = this.Magnitude;
 			if (m > 0.0)
-				return new CartesianCoordinate(this.X / m, this.Y / m, this.Z / m);
+				return new Cartesian3dCoordinate(this.X / m, this.Y / m, this.Z / m);
 
 			return this;
 		}
@@ -258,7 +258,7 @@ namespace Twisty.Engine.Geometry
 		///  cos theta = -------------
 		///               ||X|| ||Y||
 		/// </remarks>
-		public double GetThetaTo(CartesianCoordinate x)
+		public double GetThetaTo(Cartesian3dCoordinate x)
 		{
 			return this.Acos(this.DotProduct(x) / (this.Magnitude * x.Magnitude));
 		}
@@ -268,7 +268,7 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		/// <param name="c">Vector that will be used as a 3 X 1 matrix.</param>
 		/// <returns>Calculated vector from the dot product of the 2 vectors.</returns>
-		public double DotProduct(CartesianCoordinate c)
+		public double DotProduct(Cartesian3dCoordinate c)
 		{
 			return this.X * c.X + this.Y * c.Y + this.Z * c.Z;
 		}
@@ -278,9 +278,9 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		/// <param name="v">Vector with which we will calculate the cross product.</param>
 		/// <returns>New coordinates containing the cross product from the 2 vectors.</returns>
-		public CartesianCoordinate CrossProduct(CartesianCoordinate v)
+		public Cartesian3dCoordinate CrossProduct(Cartesian3dCoordinate v)
 		{
-			return new CartesianCoordinate(
+			return new Cartesian3dCoordinate(
 				this.Y * v.Z - this.Z * v.Y,
 				this.Z * v.X - this.X * v.Z,
 				this.X * v.Y - this.Y * v.X
@@ -297,9 +297,9 @@ namespace Twisty.Engine.Geometry
 		/// <param name="v1">First vector from which the second one will be substracted.</param>
 		/// <param name="v2">Substracted Vector.</param>
 		/// <returns>Result of the subbstraction of the 2 vectors.</returns>
-		public static CartesianCoordinate operator -(CartesianCoordinate v1, CartesianCoordinate v2)
+		public static Cartesian3dCoordinate operator -(Cartesian3dCoordinate v1, Cartesian3dCoordinate v2)
 		{
-			return new CartesianCoordinate(
+			return new Cartesian3dCoordinate(
 					v1.X - v2.X,
 					v1.Y - v2.Y,
 					v1.Z - v2.Z
@@ -312,9 +312,9 @@ namespace Twisty.Engine.Geometry
 		/// <param name="v1">First vector to add.</param>
 		/// <param name="v2">Second vector to add.</param>
 		/// <returns>Result of the sum of the 2 vectors.</returns>
-		public static CartesianCoordinate operator +(CartesianCoordinate v1, CartesianCoordinate v2)
+		public static Cartesian3dCoordinate operator +(Cartesian3dCoordinate v1, Cartesian3dCoordinate v2)
 		{
-			return new CartesianCoordinate(
+			return new Cartesian3dCoordinate(
 					v1.X + v2.X,
 					v1.Y + v2.Y,
 					v1.Z + v2.Z
@@ -327,9 +327,9 @@ namespace Twisty.Engine.Geometry
 		/// <param name="v1">First vector to multiply.</param>
 		/// <param name="v">Value to multiply with all value fo the vector.</param>
 		/// <returns>Result of the product of the vector with the value.</returns>
-		public static CartesianCoordinate operator *(double v, CartesianCoordinate v1)
+		public static Cartesian3dCoordinate operator *(double v, Cartesian3dCoordinate v1)
 		{
-			return new CartesianCoordinate(
+			return new Cartesian3dCoordinate(
 					v1.X * v,
 					v1.Y * v,
 					v1.Z * v
@@ -342,9 +342,9 @@ namespace Twisty.Engine.Geometry
 		/// <param name="v1">First vector to multiply.</param>
 		/// <param name="v2">Value to multiply with all value fo the vector.</param>
 		/// <returns>Result of the product of the vector with the value.</returns>
-		public static CartesianCoordinate operator *(CartesianCoordinate v1, double v)
+		public static Cartesian3dCoordinate operator *(Cartesian3dCoordinate v1, double v)
 		{
-			return new CartesianCoordinate(
+			return new Cartesian3dCoordinate(
 					v1.X * v,
 					v1.Y * v,
 					v1.Z * v

@@ -19,14 +19,15 @@ namespace Twisty.Engine.Tests.Structure.Rubiks
 			{ RubikCube.FACE_ID_FRONT, RubikCube.FACE_POSITION_FRONT },
 			{ RubikCube.FACE_ID_RIGHT, RubikCube.FACE_POSITION_RIGHT },
 			{ RubikCube.FACE_ID_LEFT, RubikCube.FACE_POSITION_LEFT },
-			{ RubikCube.FACE_ID_TOP, RubikCube.FACE_POSITION_TOP },
-			{ RubikCube.FACE_ID_BOTTOM, RubikCube.FACE_POSITION_BOTTOM },
+			{ RubikCube.FACE_ID_UP, RubikCube.FACE_POSITION_UP },
+			{ RubikCube.FACE_ID_DOWN, RubikCube.FACE_POSITION_DOWN },
 		};
 
 		// (string faceId, bool isClockwise, SphericalVector blockPosition, string checkedFace, string expectedBlockFace)
 		public static readonly TheoryData<string, bool, SphericalVector, string, string> FacesRotations = new TheoryData<string, bool, SphericalVector, string, string>()
 		{
-			{ RubikCube.FACE_ID_TOP, true, new SphericalVector(Math.PI / 4.0, Math.PI / 4.0 * 3.0), RubikCube.FACE_ID_FRONT, RubikCube.FACE_ID_LEFT },
+			{ RubikCube.FACE_ID_UP, true, RubikCube.BLOCK_POSITION_CORNER_UP_FRONT_LEFT, RubikCube.FACE_ID_FRONT, RubikCube.FACE_ID_RIGHT },
+			{ RubikCube.FACE_ID_UP, false, RubikCube.BLOCK_POSITION_CORNER_UP_FRONT_LEFT, RubikCube.FACE_ID_FRONT, RubikCube.FACE_ID_LEFT },
 		};
 
 		#endregion Test Data
@@ -49,7 +50,7 @@ namespace Twisty.Engine.Tests.Structure.Rubiks
 
 		[Theory]
 		[MemberData(nameof(RubikCubeTest.FacesRotations), MemberType = typeof(RubikCubeTest))]
-		public void RubikCube_CreateSize2AndRotateOnce_FindExpectedFace(string faceId, bool isClockwise, SphericalVector blockPosition, string checkedFace, string expectedBlockFace)
+		public void RubikCube_RotateOnceOnSize2_FindExpectedFace(string faceId, bool isClockwise, SphericalVector blockPosition, string checkedFace, string expectedBlockFace)
 		{
 			// 1. Prepare
 			RubikCube c = new RubikCube(2);
@@ -89,9 +90,10 @@ namespace Twisty.Engine.Tests.Structure.Rubiks
 		public void RubikCube_CreateAndCountBlocks_ShouldMatch(int size, int blocksCount)
 		{
 			// 1. Prepare
-			RubikCube c = new RubikCube(size);
+			// Nothing
 
 			// 2. Execute
+			RubikCube c = new RubikCube(size);
 			int count = c.Blocks.Count();
 
 			// 3. Verify

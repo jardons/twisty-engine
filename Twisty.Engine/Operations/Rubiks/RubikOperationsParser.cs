@@ -7,7 +7,7 @@ namespace Twisty.Engine.Operations.Rubiks
 	/// <summary>
 	/// Class designed to parse a list of operations to perform on a rubiks cube.
 	/// </summary>
-	public class RubikOperationsParser
+	public class RubikOperationsParser : IOperationsParser<RubikCube>
 	{
 		/// <summary>
 		/// Parse command and generate an Operation list based on its content.
@@ -63,9 +63,9 @@ namespace Twisty.Engine.Operations.Rubiks
 				case 'B':
 					return RubikCube.FACE_ID_BACK;
 				case 'U':
-					return RubikCube.FACE_ID_TOP;
+					return RubikCube.FACE_ID_UP;
 				case 'D':
-					return RubikCube.FACE_ID_BOTTOM;
+					return RubikCube.FACE_ID_DOWN;
 			}
 
 			return null;

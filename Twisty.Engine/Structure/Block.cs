@@ -53,6 +53,11 @@ namespace Twisty.Engine.Structure
 		/// </summary>
 		public abstract string Id { get; }
 
+		/// <summary>
+		/// Gets the faces visibles for this block.
+		/// </summary>
+		public IEnumerable<BlockFace> Faces => m_Faces;
+
 		#endregion Public Properties
 
 		#region Public Methods

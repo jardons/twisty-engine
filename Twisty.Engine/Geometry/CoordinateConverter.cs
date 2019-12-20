@@ -52,7 +52,7 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		/// <param name="cc">Cartesian coordinate to convert.</param>
 		/// <returns>The Vector converted to a Homogeneous representation.</returns>
-		public static HomogeneousCoordinate ConvertToHomogeneous(CartesianCoordinate cc)
+		public static HomogeneousCoordinate ConvertToHomogeneous(Cartesian3dCoordinate cc)
 		{
 			return new HomogeneousCoordinate(
 				cc.X,
@@ -67,11 +67,11 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		/// <param name="sc">Spherical coordinate to convert.</param>
 		/// <returns>The Vector converted to a Cartesian representation.</returns>
-		public static CartesianCoordinate ConvertToCartesian(SphericalVector sc)
+		public static Cartesian3dCoordinate ConvertToCartesian(SphericalVector sc)
 		{
 			double sinTheta = Math.Sin(sc.Theta);
 
-			return new CartesianCoordinate(
+			return new Cartesian3dCoordinate(
 				sinTheta * Math.Cos(sc.Phi),
 				sinTheta * Math.Sin(sc.Phi),
 				Math.Cos(sc.Theta)
@@ -83,15 +83,15 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		/// <param name="hc">Homogeneous coordinate to convert.</param>
 		/// <returns>The Vector converted to a Cartesian representation.</returns>
-		public static CartesianCoordinate ConvertToCartesian(HomogeneousCoordinate hc)
+		public static Cartesian3dCoordinate ConvertToCartesian(HomogeneousCoordinate hc)
 		{
 			return hc.W.IsZero()
-				? new CartesianCoordinate(
+				? new Cartesian3dCoordinate(
 					hc.X,
 					hc.Y,
 					hc.Z
 				)
-				: new CartesianCoordinate(
+				: new Cartesian3dCoordinate(
 					hc.X / hc.W,
 					hc.Y / hc.W,
 					hc.Z / hc.W
@@ -103,7 +103,7 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		/// <param name="cc">Cartesian coordinate to convert.</param>
 		/// <returns>The Vector converted to a Spherical representation.</returns>
-		public static SphericalVector ConvertToSpherical(CartesianCoordinate cc)
+		public static SphericalVector ConvertToSpherical(Cartesian3dCoordinate cc)
 		{
 			// Pre validate value to avoid double.NaN in calculation result.
 			if (cc.IsZero)

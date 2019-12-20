@@ -6,7 +6,7 @@
 	public struct HomogeneousCoordinate
 	{
 		/// <summary>
-		/// Create a new CartesianCoordinate object.
+		/// Create a new Cartesian3dCoordinate object.
 		/// </summary>
 		/// <param name="x">Coordinates on the X axis.</param>
 		/// <param name="y">Coordinates on the Y axis.</param>

@@ -28,15 +28,15 @@ namespace Twisty.Engine.Geometry
 	///         front view                       top view                   front view without verical
 	/// 
 	/// 
-	///            0,0                             90,90                             90,*
+	///            0,0                            180,90                             90,*
 	///             *                                *                                 *
 	///             |                                |                                 |   *
-	///   180,90  270,90  0,90             180,90    |     0,90                        |     *
+	///   180,90  270,90  0,90             270,90    |    90,90                        |     *
 	///      *------*------*                  *------O------*                          O------*
 	///             |                                |                                 |     *
 	///             |                                |                                 |   *
 	///             *                                *                                 *
-	///                                            270,90
+	///                                             0,90
 	/// 
 	/// 3) Vertical axis, defined by Theta, indicate the vertical angle inside the horizontal slice of the cude.
 	/// As 2 opposites slices have different Horizontal angle, the vertical angle is limited to 180 degree.
@@ -145,7 +145,6 @@ namespace Twisty.Engine.Geometry
 		/// <param name="o1">First object to compare.</param>
 		/// <param name="o2">Second object to compare.</param>
 		/// <returns>A boolean indicating whether the 2 objects are equals or not.</returns>
-
 		public static bool operator ==(SphericalVector o1, SphericalVector o2)
 		{
 			return o1.Theta.IsEqualTo(o2.Theta) && o1.Phi.IsEqualTo(o2.Phi);

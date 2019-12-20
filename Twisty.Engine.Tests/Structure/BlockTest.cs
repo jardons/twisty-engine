@@ -71,9 +71,9 @@ namespace Twisty.Engine.Tests.Structure
 		{
 			// 1. Prepare
 			SphericalVector faceOrientation = new SphericalVector(Math.PI, Math.PI);
-			Block b = new TestBlock(new BlockFace("test", faceOrientation));
 
 			// 2. Execute
+			Block b = new TestBlock(new BlockFace("test", faceOrientation));
 			BlockFace f = b.GetBlockFace(faceOrientation);
 
 			// 3. Verify
@@ -82,16 +82,15 @@ namespace Twisty.Engine.Tests.Structure
 
 		[Theory]
 		[MemberData(nameof(BlockTest.RotationsValues), MemberType = typeof(BlockTest))]
-		public void Block_CreateRotateAndGetFace_ShouldFindFace(SphericalVector axis, double theta, SphericalVector expected)
+		public void Block_RotateAndGetFace_ShouldFindFace(SphericalVector axis, double theta, SphericalVector expected)
 		{
 			// 1. Prepare
 			SphericalVector faceOrientation = new SphericalVector(Math.PI, Math.PI);
 			Block b = new TestBlock(new BlockFace("test", faceOrientation));
 
+			// 2. Execute
 			b.RotateAround(axis, theta);
 			faceOrientation = faceOrientation.RotateAround(axis, theta);
-
-			// 2. Execute
 			BlockFace f = b.GetBlockFace(faceOrientation);
 
 			// 3. Verify

@@ -138,7 +138,7 @@ namespace Twisty.Engine.Tests.Geometry
 			SphericalVector sc = new SphericalVector(phi, theta);
 
 			// 2. Execute
-			CartesianCoordinate cc = CoordinateConverter.ConvertToCartesian(sc);
+			Cartesian3dCoordinate cc = CoordinateConverter.ConvertToCartesian(sc);
 
 			// 3. Verify
 			Assert.Equal(x, cc.X, PRECISION_DOUBLE);
@@ -151,7 +151,7 @@ namespace Twisty.Engine.Tests.Geometry
 		public void CoordinateConverter_ConvertFromCartesianToSpherical_BeExpected(double phi, double theta, double x, double y, double z)
 		{
 			// 1. Prepare
-			CartesianCoordinate cc = new CartesianCoordinate(x, y, z);
+			Cartesian3dCoordinate cc = new Cartesian3dCoordinate(x, y, z);
 
 			// 2. Execute
 			var sc = CoordinateConverter.ConvertToSpherical(cc);
@@ -170,7 +170,7 @@ namespace Twisty.Engine.Tests.Geometry
 			HomogeneousCoordinate hc = new HomogeneousCoordinate(hx, hy, hz, hw);
 
 			// 2. Execute
-			CartesianCoordinate cc = CoordinateConverter.ConvertToCartesian(hc);
+			Cartesian3dCoordinate cc = CoordinateConverter.ConvertToCartesian(hc);
 
 			// 3. Verify
 			Assert.Equal(x, cc.X, PRECISION_DOUBLE);
@@ -183,7 +183,7 @@ namespace Twisty.Engine.Tests.Geometry
 		public void CoordinateConverter_ConvertFromCartesianToHomogeneous_BeExpected(double hx, double hy, double hz, double hw, double x, double y, double z)
 		{
 			// 1. Prepare
-			CartesianCoordinate cc = new CartesianCoordinate(x, y, z);
+			Cartesian3dCoordinate cc = new Cartesian3dCoordinate(x, y, z);
 
 			// 2. Execute
 			var hc = CoordinateConverter.ConvertToHomogeneous(cc);

@@ -9,42 +9,14 @@ namespace Twisty.Engine.Tests.Geometry
 	{
 		private const int PRECISION_DOUBLE = 10;
 
-		#region Test Data
-
-		public static readonly TheoryData<double, double> ValidAngles = new TheoryData<double, double>()
-		{
-			{0.0, 0.0},
-			{0.1, 0.1},
-			{1.0, 2.0},
-			{Math.PI * 1.5, Math.PI - 0.0000001},
-			{Math.PI * 1.9, Math.PI- 0.0000000001},
-		};
-
-		public static readonly TheoryData<double, double, double, double> NormalizeAngles = new TheoryData<double, double, double, double>()
-		{
-			{-2.0, -1.0, Math.PI -2.0, 1.0},
-			{Math.PI * 2.0, Math.PI * 2.0, 0.0, 0.0},
-			{Math.PI * 2.0 + 0.1, Math.PI * 2.0 + 0.1, 0.1, 0.1},
-			{Math.PI * 2.0 + 0.6, Math.PI * 2.0 + 0.5, 0.6, 0.5},
-			{1.0, Math.PI, 0.0, Math.PI},
-			{1.0, 0.0, 0.0, 0.0},
-		};
-
-		public static readonly TheoryData<double, double, double, double, bool> CompareAngles = new TheoryData<double, double, double, double, bool>()
-		{
-			{0.0, 0.0, 0.0, 0.0, true},
-			{5.0, 10.0, 5.0, 10.0, true},
-			{0.5, 0.10, 0.5, 0.11, false},
-			{5, 10, 50, 10, false},
-			{Math.PI * 2.0, Math.PI * 2.0, 0.0, 0.0, true},
-		};
-
-		#endregion Test Data
-
 		#region Test Methods
 
 		[Theory]
-		[MemberData(nameof(SphericalVectorTest.ValidAngles), MemberType = typeof(SphericalVectorTest))]
+		[InlineData(0.0, 0.0)]
+		[InlineData(0.1, 0.1)]
+		[InlineData(1.0, 2.0)]
+		[InlineData(Math.PI* 1.5, Math.PI - 0.0000001)]
+		[InlineData(Math.PI* 1.9, Math.PI- 0.0000000001)]
 		public void SphericalVector_CreateWithCorrectInt_ShouldBeInchanged(double phi, double theta)
 		{
 			// 1. Prepare
@@ -59,7 +31,12 @@ namespace Twisty.Engine.Tests.Geometry
 		}
 
 		[Theory]
-		[MemberData(nameof(SphericalVectorTest.NormalizeAngles), MemberType = typeof(SphericalVectorTest))]
+		[InlineData(-2.0, -1.0, Math.PI -2.0, 1.0)]
+		[InlineData(Math.PI* 2.0, Math.PI* 2.0, 0.0, 0.0)]
+		[InlineData(Math.PI* 2.0 + 0.1, Math.PI* 2.0 + 0.1, 0.1, 0.1)]
+		[InlineData(Math.PI* 2.0 + 0.6, Math.PI* 2.0 + 0.5, 0.6, 0.5)]
+		[InlineData(1.0, Math.PI, 0.0, Math.PI)]
+		[InlineData(1.0, 0.0, 0.0, 0.0)]
 		public void SphericalVector_CreateWithIntToNormalize_ShouldBeExpected(double phi, double theta, double expectedPhi, double expectedTheta)
 		{
 			// 1. Prepare
@@ -74,7 +51,11 @@ namespace Twisty.Engine.Tests.Geometry
 		}
 
 		[Theory]
-		[MemberData(nameof(SphericalVectorTest.CompareAngles), MemberType = typeof(SphericalVectorTest))]
+		[InlineData(0.0, 0.0, 0.0, 0.0, true)]
+		[InlineData(5.0, 10.0, 5.0, 10.0, true)]
+		[InlineData(0.5, 0.10, 0.5, 0.11, false)]
+		[InlineData(5, 10, 50, 10, false)]
+		[InlineData(Math.PI* 2.0, Math.PI* 2.0, 0.0, 0.0, true)]
 		public void SphericalVector_CompareSphericalVector_ShouldBeExpected(double phi1, double theta1, double phi2, double theta2, bool expected)
 		{
 			// 1. Prepare

@@ -26,7 +26,7 @@ namespace Twisty.Engine.Structure.Rubiks
             base.Position = initialPosition;
 
 			// Each corner block is unique in the cube and be identified by the combination of his 3 faces.
-			m_Id = $"Corner_{face1.Id}_{face2.Id}_{face3.Id}";
+			m_Id = $"C{face1.Id}{face2.Id}{face3.Id}";
 		}
 
 		#region Block Members

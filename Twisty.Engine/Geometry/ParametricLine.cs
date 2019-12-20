@@ -24,8 +24,8 @@ namespace Twisty.Engine.Geometry
 				if (parsed.Length != 6)
 					throw new ArgumentException("The provided coordinates are not in the expected format '(X Y Z A B C)' and does not contains 3 values.", nameof(coordinates));
 
-				this.Point = new CartesianCoordinate(parsed[0], parsed[1], parsed[2]);
-				this.Vector = new CartesianCoordinate(parsed[3], parsed[4], parsed[5]);
+				this.Point = new Cartesian3dCoordinate(parsed[0], parsed[1], parsed[2]);
+				this.Vector = new Cartesian3dCoordinate(parsed[3], parsed[4], parsed[5]);
 			}
 			catch (FormatException e)
 			{
@@ -44,17 +44,17 @@ namespace Twisty.Engine.Geometry
 		/// <param name="c">C factor of the Line formula.</param>
 		public ParametricLine(double x, double y, double z, double a, double b, double c)
 		{
-			this.Point = new CartesianCoordinate(x, y, z);
-			this.Vector = new CartesianCoordinate(a, b, c);
+			this.Point = new Cartesian3dCoordinate(x, y, z);
+			this.Vector = new Cartesian3dCoordinate(a, b, c);
 		}
 
 		/// <summary>
 		/// Create a ParametricLine starting at the initial coordinate and following a provided Vector.
 		/// </summary>
 		/// <param name="v">Vector providing the direction of the line.</param>
-		public ParametricLine(CartesianCoordinate v)
+		public ParametricLine(Cartesian3dCoordinate v)
 		{
-			this.Point = CartesianCoordinate.Zero;
+			this.Point = Cartesian3dCoordinate.Zero;
 			this.Vector = v;
 		}
 
@@ -63,7 +63,7 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		/// <param name="p">Initial point of the line.</param>
 		/// <param name="v">Vector providing the direction of the line.</param
-		public ParametricLine(CartesianCoordinate p, CartesianCoordinate v)
+		public ParametricLine(Cartesian3dCoordinate p, Cartesian3dCoordinate v)
 		{
 			this.Point = p;
 			this.Vector = v;
@@ -104,11 +104,11 @@ namespace Twisty.Engine.Geometry
 		/// <summary>
 		/// Gets the coordinates of the starting point of the line.
 		/// </summary>
-		public CartesianCoordinate Point { get; }
+		public Cartesian3dCoordinate Point { get; }
 		/// <summary>
 		/// Gets the directional vector of the line.
 		/// </summary>
-		public CartesianCoordinate Vector { get; }
+		public Cartesian3dCoordinate Vector { get; }
 
 		#endregion Public Properties
 
@@ -134,9 +134,9 @@ namespace Twisty.Engine.Geometry
 		/// <param name="p1">Starting point of the line.</param>
 		/// <param name="p2">Ending point of the line.</param>
 		/// <returns>The Parametric line linking the provided points.</returns>
-		public static ParametricLine FromTwoPoints(CartesianCoordinate p1, CartesianCoordinate p2)
+		public static ParametricLine FromTwoPoints(Cartesian3dCoordinate p1, Cartesian3dCoordinate p2)
 		{
-			return new ParametricLine(p1, new CartesianCoordinate(p2.X - p1.X, p2.Y - p1.Y, p2.Z - p1.Z));
+			return new ParametricLine(p1, new Cartesian3dCoordinate(p2.X - p1.X, p2.Y - p1.Y, p2.Z - p1.Z));
 		}
 
 		#endregion Public methods

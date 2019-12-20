@@ -13,19 +13,28 @@ namespace Twisty.Engine.Structure.Rubiks
 	{
 		#region Const Members
 
-		public const string FACE_ID_BOTTOM = "white";
-		public const string FACE_ID_TOP = "yellow";
-		public const string FACE_ID_RIGHT = "red";
-		public const string FACE_ID_LEFT = "orange";
-		public const string FACE_ID_FRONT = "blue";
-		public const string FACE_ID_BACK = "green";
+		public const string FACE_ID_DOWN = "D";
+		public const string FACE_ID_UP = "U";
+		public const string FACE_ID_RIGHT = "R";
+		public const string FACE_ID_LEFT = "L";
+		public const string FACE_ID_FRONT = "F";
+		public const string FACE_ID_BACK = "B";
 
-		public static readonly SphericalVector FACE_POSITION_BOTTOM = new SphericalVector(0.0, Math.PI);
-		public static readonly SphericalVector FACE_POSITION_TOP = new SphericalVector(0.0, 0.0);
+		public static readonly SphericalVector FACE_POSITION_DOWN = new SphericalVector(0.0, Math.PI);
+		public static readonly SphericalVector FACE_POSITION_UP = new SphericalVector(0.0, 0.0);
 		public static readonly SphericalVector FACE_POSITION_RIGHT = new SphericalVector(Math.PI / 2.0, Math.PI / 2.0);
 		public static readonly SphericalVector FACE_POSITION_LEFT = new SphericalVector(Math.PI * 1.5, Math.PI / 2.0);
 		public static readonly SphericalVector FACE_POSITION_FRONT = new SphericalVector(0.0, Math.PI / 2.0);
 		public static readonly SphericalVector FACE_POSITION_BACK = new SphericalVector(Math.PI, Math.PI / 2.0);
+
+		public static readonly SphericalVector BLOCK_POSITION_CORNER_UP_FRONT_LEFT = new SphericalVector(Math.PI / 4.0 * 7.0, Math.PI / 4.0);
+		public static readonly SphericalVector BLOCK_POSITION_CORNER_UP_FRONT_RIGHT = new SphericalVector(Math.PI / 4.0, Math.PI / 4.0);
+		public static readonly SphericalVector BLOCK_POSITION_CORNER_UP_BACK_LEFT = new SphericalVector(Math.PI / 4.0 * 5.0, Math.PI / 4.0);
+		public static readonly SphericalVector BLOCK_POSITION_CORNER_UP_BACK_RIGHT = new SphericalVector(Math.PI / 4.0 * 3.0, Math.PI / 4.0);
+		public static readonly SphericalVector BLOCK_POSITION_CORNER_DOWN_FRONT_LEFT = new SphericalVector(Math.PI / 4.0 * 7.0, Math.PI / 4.0 * 3.0);
+		public static readonly SphericalVector BLOCK_POSITION_CORNER_DOWN_FRONT_RIGHT = new SphericalVector(Math.PI / 4.0, Math.PI / 4.0 * 3.0);
+		public static readonly SphericalVector BLOCK_POSITION_CORNER_DOWN_BACK_LEFT = new SphericalVector(Math.PI / 4.0 * 5.0, Math.PI / 4.0 * 3.0);
+		public static readonly SphericalVector BLOCK_POSITION_CORNER_DOWN_BACK_RIGHT = new SphericalVector(Math.PI / 4.0 * 3.0, Math.PI / 4.0 * 3.0);
 
 		#endregion Const Members
 
@@ -57,10 +66,13 @@ namespace Twisty.Engine.Structure.Rubiks
 			if (blocks.Count == 0)
 				return;
 
-			blocks.Sort(new CircularVectorComparer(blocks[0]));
+			Plane p = new Plane(CoordinateConverter.ConvertToCartesian(axis.Vector), CoordinateConverter.ConvertToCartesian(blocks[0].Position));
+			blocks.Sort(new CircularVectorComparer(p));
+			if (isClockwise)
+				blocks.Reverse();
 
 			// Convert the rotation direction to the correct angle.
-			double theta = isClockwise ? Math.PI / 2.0 : -Math.PI / 2.0;
+			double theta = isClockwise ? -Math.PI / 2.0 : Math.PI / 2.0;
 
 			// Perform the manipulation for the 4 corners.
 			base.SwitchAndRotate(blocks.OfType<RubikCornerBlock>().ToList(), axis.Vector, theta);
@@ -76,8 +88,8 @@ namespace Twisty.Engine.Structure.Rubiks
 		{
 			return new List<RotationAxis>()
 			{
-				new RotationAxis(FACE_ID_TOP, FACE_POSITION_TOP),
-				new RotationAxis(FACE_ID_BOTTOM, FACE_POSITION_BOTTOM),
+				new RotationAxis(FACE_ID_UP, FACE_POSITION_UP),
+				new RotationAxis(FACE_ID_DOWN, FACE_POSITION_DOWN),
 				new RotationAxis(FACE_ID_FRONT, FACE_POSITION_FRONT),
 				new RotationAxis(FACE_ID_BACK, FACE_POSITION_BACK),
 				new RotationAxis(FACE_ID_RIGHT, FACE_POSITION_RIGHT),
@@ -118,58 +130,58 @@ namespace Twisty.Engine.Structure.Rubiks
 		{
 			// 4 bottoms corners.
 			blocks.Add(new RubikCornerBlock(
-				new SphericalVector(Math.PI / 4.0, Math.PI / 4.0),
-				new BlockFace(FACE_ID_BOTTOM, FACE_POSITION_BOTTOM),
+				BLOCK_POSITION_CORNER_DOWN_FRONT_RIGHT,
+				new BlockFace(FACE_ID_DOWN, FACE_POSITION_DOWN),
 				new BlockFace(FACE_ID_FRONT, FACE_POSITION_FRONT),
 				new BlockFace(FACE_ID_RIGHT, FACE_POSITION_RIGHT)
 			));
 
 			blocks.Add(new RubikCornerBlock(
-				new SphericalVector(Math.PI / 4.0 * 3.0, Math.PI / 4.0),
-				new BlockFace(FACE_ID_BOTTOM, FACE_POSITION_BOTTOM),
+				BLOCK_POSITION_CORNER_DOWN_BACK_RIGHT,
+				new BlockFace(FACE_ID_DOWN, FACE_POSITION_DOWN),
 				new BlockFace(FACE_ID_BACK, FACE_POSITION_BACK),
 				new BlockFace(FACE_ID_RIGHT, FACE_POSITION_RIGHT)
 			));
 
 			blocks.Add(new RubikCornerBlock(
-				new SphericalVector(Math.PI / 4.0 * 5.0, Math.PI / 4.0),
-				new BlockFace(FACE_ID_BOTTOM, FACE_POSITION_BOTTOM),
+				BLOCK_POSITION_CORNER_DOWN_FRONT_LEFT,
+				new BlockFace(FACE_ID_DOWN, FACE_POSITION_DOWN),
 				new BlockFace(FACE_ID_FRONT, FACE_POSITION_FRONT),
 				new BlockFace(FACE_ID_LEFT, FACE_POSITION_LEFT)
 			));
 
 			blocks.Add(new RubikCornerBlock(
-				new SphericalVector(Math.PI / 4.0 * 7.0, Math.PI / 4.0),
-				new BlockFace(FACE_ID_BOTTOM, FACE_POSITION_BOTTOM),
+				BLOCK_POSITION_CORNER_DOWN_BACK_LEFT,
+				new BlockFace(FACE_ID_DOWN, FACE_POSITION_DOWN),
 				new BlockFace(FACE_ID_BACK, FACE_POSITION_BACK),
 				new BlockFace(FACE_ID_LEFT, FACE_POSITION_LEFT)
 			));
 
 			// 4 tops corners.
 			blocks.Add(new RubikCornerBlock(
-				new SphericalVector(Math.PI / 4.0, Math.PI / 4.0 * 3.0),
-				new BlockFace(FACE_ID_TOP, FACE_POSITION_TOP),
+				BLOCK_POSITION_CORNER_UP_FRONT_RIGHT,
+				new BlockFace(FACE_ID_UP, FACE_POSITION_UP),
 				new BlockFace(FACE_ID_FRONT, FACE_POSITION_FRONT),
 				new BlockFace(FACE_ID_RIGHT, FACE_POSITION_RIGHT)
 			));
 
 			blocks.Add(new RubikCornerBlock(
-				new SphericalVector(Math.PI / 4.0 * 3.0, Math.PI / 4.0 * 3.0),
-				new BlockFace(FACE_ID_TOP, FACE_POSITION_TOP),
+				BLOCK_POSITION_CORNER_UP_BACK_RIGHT,
+				new BlockFace(FACE_ID_UP, FACE_POSITION_UP),
 				new BlockFace(FACE_ID_BACK, FACE_POSITION_BACK),
 				new BlockFace(FACE_ID_RIGHT, FACE_POSITION_RIGHT)
 			));
 
 			blocks.Add(new RubikCornerBlock(
-				new SphericalVector(Math.PI / 4.0 * 5.0, Math.PI / 4.0 * 3.0),
-				new BlockFace(FACE_ID_TOP, FACE_POSITION_TOP),
+				BLOCK_POSITION_CORNER_UP_FRONT_LEFT,
+				new BlockFace(FACE_ID_UP, FACE_POSITION_UP),
 				new BlockFace(FACE_ID_FRONT, FACE_POSITION_FRONT),
 				new BlockFace(FACE_ID_LEFT, FACE_POSITION_LEFT)
 			));
 
 			blocks.Add(new RubikCornerBlock(
-				new SphericalVector(Math.PI / 4.0 * 7.0, Math.PI / 4.0 * 3.0),
-				new BlockFace(FACE_ID_TOP, FACE_POSITION_TOP),
+				BLOCK_POSITION_CORNER_UP_BACK_LEFT,
+				new BlockFace(FACE_ID_UP, FACE_POSITION_UP),
 				new BlockFace(FACE_ID_BACK, FACE_POSITION_BACK),
 				new BlockFace(FACE_ID_LEFT, FACE_POSITION_LEFT)
 			));

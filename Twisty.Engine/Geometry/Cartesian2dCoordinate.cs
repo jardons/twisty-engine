@@ -30,7 +30,7 @@ namespace Twisty.Engine.Geometry
 		public static readonly Cartesian2dCoordinate Zero = new Cartesian2dCoordinate(0.0, 0.0);
 
 		/// <summary>
-		/// Create a new CartesianCoordinate from a coordinates string on the format "(X Y)".
+		/// Create a new Cartesian3dCoordinate from a coordinates string on the format "(X Y)".
 		/// </summary>
 		/// <param name="coordinates">Coordinates in the format "(X Y)".</param>
 		public Cartesian2dCoordinate(string coordinates)
@@ -51,7 +51,7 @@ namespace Twisty.Engine.Geometry
 		}
 
 		/// <summary>
-		/// Create a new CartesianCoordinate object.
+		/// Create a new Cartesian3dCoordinate object.
 		/// </summary>
 		/// <param name="x">Coordinates on the X axis.</param>
 		/// <param name="y">Coordinates on the Y axis.</param>
