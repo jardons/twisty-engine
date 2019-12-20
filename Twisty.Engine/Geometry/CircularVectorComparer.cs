@@ -147,7 +147,7 @@ namespace Twisty.Engine.Geometry
 			if (cc.Y > 0.0)
 				return theta;
 
-			return Math.PI * 2.0 - theta;
+			return (Math.PI * 2.0) - theta;
 		}
 
 		#endregion Private Members

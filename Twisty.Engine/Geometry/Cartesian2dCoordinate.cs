@@ -91,7 +91,7 @@ namespace Twisty.Engine.Geometry
 		///          ___________
 		/// ||V|| = V Xv² * Yv² '
 		/// </remarks>
-		public double Magnitude => Math.Sqrt(this.X * this.X + this.Y * this.Y);
+		public double Magnitude => Math.Sqrt((this.X * this.X) + (this.Y * this.Y));
 
 		/// <summary>
 		/// Gets the angle in radians between the vector and the X axis.

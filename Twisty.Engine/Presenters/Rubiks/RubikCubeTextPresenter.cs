@@ -146,14 +146,13 @@ namespace Twisty.Engine.Presenters.Rubiks
 
 		public RubikFaceTextView GetFaceAsText(string faceId)
 		{
-			// TODO review this code by sorting blocks to their correct position.
 			var axis = this.Cube.GetAxis(faceId);
 			var blocks = this.Cube.GetBlocksForFace(axis.Vector);
 
 			RubikFaceTextView faces = new RubikFaceTextView(this.Cube.N);
 			int i = 0;
 			int j = 0;
-			
+
 			var first = CoordinateConverter.ConvertToCartesian(blocks.FirstOrDefault().Position);
 			Plane p = new Plane(CoordinateConverter.ConvertToCartesian(axis.Vector), first);
 
@@ -165,9 +164,7 @@ namespace Twisty.Engine.Presenters.Rubiks
 				var face = block.GetBlockFace(axis.Vector);
 
 				RubikCubeBlockFaceTextView result = new RubikCubeBlockFaceTextView(RowsPerBlockFace, face.Id);
-				//result.Append("****");
-				//result.Append("****");
-				result.Append(block.Id);
+				result.Append("****");
 				result.Append("****");
 
 				faces[j, i++] = result;
@@ -189,8 +186,8 @@ namespace Twisty.Engine.Presenters.Rubiks
 		{
 			RubikFaceTextView faces = new RubikFaceTextView(this.Cube.N);
 			RubikCubeFacePlaceOlder result = new RubikCubeFacePlaceOlder(this.RowsPerBlockFace);
-			
-			for (int i=0;i< this.Cube.N;++i)
+
+			for (int i = 0; i < this.Cube.N; ++i)
 				for (int j = 0; j < this.Cube.N; ++j)
 					faces[i, j] = result;
 

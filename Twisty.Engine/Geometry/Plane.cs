@@ -165,12 +165,12 @@ namespace Twisty.Engine.Geometry
 				throw new InvalidOperationException("Cannot Get Intersection between a Plane and a parallel line.");
 
 			double divisor = GetSumOfAbcProduct(l);
-			double planePart = (this.A * l.X + this.B * l.Y + this.C * l.Z + this.D) / divisor;
+			double planePart = ((this.A * l.X) + (this.B * l.Y) + (this.C * l.Z) + this.D) / divisor;
 
 			return new Cartesian3dCoordinate(
-					l.X - l.A * planePart,
-					l.Y - l.B * planePart,
-					l.Z - l.C * planePart
+					l.X - (l.A * planePart),
+					l.Y - (l.B * planePart),
+					l.Z - (l.C * planePart)
 				);
 		}
 
@@ -254,14 +254,14 @@ namespace Twisty.Engine.Geometry
 			//      D1 B2 - D2 B1
 			// X = ---------------
 			//      A2 B1 - A1 B2
-			double divisor = p.A * this.B - this.A * p.B;
+			double divisor = p.A * this.B - (this.A * p.B);
 			if (divisor.IsZero())
 			{
 				cc = Cartesian3dCoordinate.Zero;
 				return false;
 			}
 
-			double x = (this.D * p.B - p.D * this.B) / divisor;
+			double x = ((this.D * p.B) - (p.D * this.B)) / divisor;
 
 			// With this X calculated and Z to 0.0, we can then resolve one of the equations for Y :
 			//
@@ -270,7 +270,7 @@ namespace Twisty.Engine.Geometry
 			//           B1
 			cc = new Cartesian3dCoordinate(
 				x,
-				-(this.A * x + this.D) / this.B,
+				-((this.A * x) + this.D) / this.B,
 				0.0
 			);
 
@@ -317,14 +317,14 @@ namespace Twisty.Engine.Geometry
 			//      D1 C2 - D2 C1
 			// X = ---------------
 			//      A2 C1 - A1 C2
-			double divisor = p.A * this.C - this.A * p.C;
+			double divisor = (p.A * this.C) - (this.A * p.C);
 			if (divisor.IsZero())
 			{
 				cc = Cartesian3dCoordinate.Zero;
 				return false;
 			}
 
-			double x = (this.D * p.C - p.D * this.C) / divisor;
+			double x = ((this.D * p.C) - (p.D * this.C)) / divisor;
 
 			// With this X calculated and Y to 0.0, we can then resolve one of the equations for Z :
 			//
@@ -334,7 +334,7 @@ namespace Twisty.Engine.Geometry
 			cc = new Cartesian3dCoordinate(
 				x,
 				0.0,
-				-(this.A * x + this.D) / this.C
+				-((this.A * x) + this.D) / this.C
 			);
 
 			return true;
@@ -379,14 +379,14 @@ namespace Twisty.Engine.Geometry
 			//      D1 C2 - D2 C1
 			// Y = ---------------
 			//      B2 C1 - B1 C2
-			double divisor = p.B * this.C - this.B * p.C;
+			double divisor = (p.B * this.C) - (this.B * p.C);
 			if (divisor.IsZero())
 			{
 				cc = Cartesian3dCoordinate.Zero;
 				return false;
 			}
 
-			double y = (this.D * p.C - p.D * this.C) / divisor;
+			double y = ((this.D * p.C) - (p.D * this.C)) / divisor;
 
 			// With this Y calculated and X to 0.0, we can then resolve one of the equations for Z :
 			//
@@ -396,7 +396,7 @@ namespace Twisty.Engine.Geometry
 			cc = new Cartesian3dCoordinate(
 				0.0,
 				y,
-				-(this.B * y + this.D) / this.C
+				-((this.B * y) + this.D) / this.C
 			);
 
 			return true;

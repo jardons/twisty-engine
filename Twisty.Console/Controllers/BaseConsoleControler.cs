@@ -7,16 +7,6 @@ using Twisty.Engine.Structure;
 
 namespace Twisty.Bash.Controllers
 {
-	public class ConsoleRouteAttribute : Attribute
-	{
-		public ConsoleRouteAttribute(string route)
-		{
-			this.Route = route;
-		}
-
-		public string Route { get; }
-	}
-
 	public abstract class BaseConsoleControler<T>
 		where T : RotationCore
 	{

@@ -104,7 +104,7 @@ namespace Twisty.Engine.Geometry
 				this.Phi = NormalizeValue(HALF_ANGLE + this.Phi);
 
 				// Calculate the mirror value for Theta relative to the new Phi value.
-				this.Theta = this.Theta - (this.Theta - HALF_ANGLE) * 2.0;
+				this.Theta = this.Theta - ((this.Theta - HALF_ANGLE) * 2.0);
 			}
 		}
 
@@ -171,7 +171,7 @@ namespace Twisty.Engine.Geometry
 		/// <returns>A general hascode unique to this object.</returns>
 		public override int GetHashCode()
 		{
-			return (Theta + Phi * 100000.0).GetHashCode();
+			return (Theta + (Phi * 100000.0)).GetHashCode();
 		}
 
 		/// <summary>

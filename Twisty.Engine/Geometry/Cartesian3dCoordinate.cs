@@ -89,7 +89,7 @@ namespace Twisty.Engine.Geometry
 		///          _________________
 		/// ||V|| = V Xv² * Yv² * Zv² '
 		/// </remarks>
-		public double Magnitude => Math.Sqrt(this.X * this.X + this.Y * this.Y + this.Z * this.Z);
+		public double Magnitude => Math.Sqrt((this.X * this.X) + (this.Y * this.Y) + (this.Z * this.Z));
 
 		/// <summary>
 		/// Gets the angle in radians between the vector and the X axis.
@@ -150,8 +150,8 @@ namespace Twisty.Engine.Geometry
 
 			return new Cartesian3dCoordinate(
 				this.X,
-				this.Y * cosTheta - this.Z * sinTheta,
-				this.Y * sinTheta + this.Z * cosTheta
+				(this.Y * cosTheta) - (this.Z * sinTheta),
+				(this.Y * sinTheta) + (this.Z * cosTheta)
 			);
 		}
 
@@ -174,9 +174,9 @@ namespace Twisty.Engine.Geometry
 			double sinTheta = Sin(theta);
 
 			return new Cartesian3dCoordinate(
-				this.X * cosTheta + this.Z * sinTheta,
+				(this.X * cosTheta) + (this.Z * sinTheta),
 				this.Y,
-				this.Z * cosTheta - this.X * sinTheta
+				(this.Z * cosTheta) - (this.X * sinTheta)
 			);
 		}
 
@@ -199,8 +199,8 @@ namespace Twisty.Engine.Geometry
 			double sinTheta = Sin(theta);
 
 			return new Cartesian3dCoordinate(
-				this.X * cosTheta - this.Y * sinTheta,
-				this.X * sinTheta + this.Y * cosTheta,
+				(this.X * cosTheta) - (this.Y * sinTheta),
+				(this.X * sinTheta) + (this.Y * cosTheta),
 				this.Z
 			);
 		}
@@ -227,7 +227,7 @@ namespace Twisty.Engine.Geometry
 
 			k = k.Normalize();
 
-			return this * cosTheta + (-sinTheta) * CrossProduct(k) + (1.0 - cosTheta) * this.DotProduct(k) * k;
+			return (this * cosTheta) + ((-sinTheta) * CrossProduct(k)) + ((1.0 - cosTheta) * this.DotProduct(k) * k);
 		}
 
 		/// <summary>
@@ -270,7 +270,7 @@ namespace Twisty.Engine.Geometry
 		/// <returns>Calculated vector from the dot product of the 2 vectors.</returns>
 		public double DotProduct(Cartesian3dCoordinate c)
 		{
-			return this.X * c.X + this.Y * c.Y + this.Z * c.Z;
+			return (this.X * c.X) + (this.Y * c.Y) + (this.Z * c.Z);
 		}
 
 		/// <summary>
@@ -281,9 +281,9 @@ namespace Twisty.Engine.Geometry
 		public Cartesian3dCoordinate CrossProduct(Cartesian3dCoordinate v)
 		{
 			return new Cartesian3dCoordinate(
-				this.Y * v.Z - this.Z * v.Y,
-				this.Z * v.X - this.X * v.Z,
-				this.X * v.Y - this.Y * v.X
+				(this.Y * v.Z) - (this.Z * v.Y),
+				(this.Z * v.X) - (this.X * v.Z),
+				(this.X * v.Y) - (this.Y * v.X)
 			);
 		}
 

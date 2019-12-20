@@ -125,7 +125,7 @@ namespace Twisty.Engine.Geometry
 		/// </remarks>
 		public bool IsParallelTo(Plane p)
 		{
-			return (this.A * p.A + this.B * p.B + this.C * p.C).IsZero();
+			return ((this.A * p.A) + (this.B * p.B) + (this.C * p.C)).IsZero();
 		}
 
 		/// <summary>
