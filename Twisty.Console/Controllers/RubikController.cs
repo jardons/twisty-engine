@@ -107,6 +107,10 @@ namespace Twisty.Bash.Controllers
 			}
 		}
 
+		/// <summary>
+		/// Sets the Color used to print in the console.
+		/// </summary>
+		/// <param name="id">Id of the color that will be used to print in the console.</param>
 		private void SetConsolColor(string id)
 		{
 			switch (id)
