@@ -163,33 +163,6 @@ namespace Twisty.Engine.Geometry
 
 		#endregion Operators Overrides
 
-		#region Objects overrides
-
-		/// <summary>
-		/// Provide the standard Hash code for this object.
-		/// </summary>
-		/// <returns>A general hascode unique to this object.</returns>
-		public override int GetHashCode()
-		{
-			return (Theta + (Phi * 100000.0)).GetHashCode();
-		}
-
-		/// <summary>
-		/// Determine whether the specified object is equals to the current object or not.
-		/// </summary>
-		/// <param name="obj">The object to compare to the current object.</param>
-		/// <returns>A boolean indicating whther the 2 objects are equals or not.</returns>
-		public override bool Equals(object obj)
-		{
-			if (!(obj is SphericalVector))
-				return false;
-
-			SphericalVector o = (SphericalVector)obj;
-			return o.Theta.IsEqualTo(this.Theta) && o.Phi.IsEqualTo(this.Phi);
-		}
-
-		#endregion Objects overrides
-
 		#region Private Methods
 
 		/// <summary>

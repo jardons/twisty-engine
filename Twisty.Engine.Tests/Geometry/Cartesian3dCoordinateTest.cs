@@ -252,7 +252,7 @@ namespace Twisty.Engine.Tests.Geometry
 
 		[Theory]
 		[MemberData(nameof(Cartesian3dCoordinateTest.CalculateTheta), MemberType = typeof(Cartesian3dCoordinateTest))]
-		public void CatesianCoordinate_CalculateThetaBetweenVector_ReturnExpected(Cartesian3dCoordinate c1, Cartesian3dCoordinate c2, double expected)
+		public void Cartesian3dCoordinate_CalculateThetaBetweenVector_ReturnExpected(Cartesian3dCoordinate c1, Cartesian3dCoordinate c2, double expected)
 		{
 			// 1. Prepare
 			// Nothing to prepare.

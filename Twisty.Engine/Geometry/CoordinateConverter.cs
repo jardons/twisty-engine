@@ -69,12 +69,12 @@ namespace Twisty.Engine.Geometry
 		/// <returns>The Vector converted to a Cartesian representation.</returns>
 		public static Cartesian3dCoordinate ConvertToCartesian(SphericalVector sc)
 		{
-			double sinTheta = Math.Sin(sc.Theta);
+			double sinTheta = Trigonometry.Sin(sc.Theta);
 
 			return new Cartesian3dCoordinate(
-				sinTheta * Math.Cos(sc.Phi),
-				sinTheta * Math.Sin(sc.Phi),
-				Math.Cos(sc.Theta)
+				sinTheta * Trigonometry.Cos(sc.Phi),
+				sinTheta * Trigonometry.Sin(sc.Phi),
+				Trigonometry.Cos(sc.Theta)
 			);
 		}
 
