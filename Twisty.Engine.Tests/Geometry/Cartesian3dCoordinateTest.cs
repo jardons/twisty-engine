@@ -266,6 +266,34 @@ namespace Twisty.Engine.Tests.Geometry
 			Assert.Equal(expected, r2, PRECISION_DOUBLE);
 		}
 
+		[Theory]
+		[InlineData("(1 1 1)", "(0.577350269189626 0.577350269189626 0.577350269189626)")]
+		[InlineData("(0.5 0.5 0.5)", "(0.577350269189626 0.577350269189626 0.577350269189626)")]
+		[InlineData("(2 2 2)", "(0.577350269189626 0.577350269189626 0.577350269189626)")]
+		[InlineData("(666 666 666)", "(0.577350269189626 0.577350269189626 0.577350269189626)")]
+		[InlineData("(1 0 0)", "(1 0 0)")]
+		[InlineData("(0 1 0)", "(0 1 0)")]
+		[InlineData("(0 0 1)", "(0 0 1)")]
+		[InlineData("(10 0 0)", "(1 0 0)")]
+		[InlineData("(0 10 0)", "(0 1 0)")]
+		[InlineData("(0 0 10)", "(0 0 1)")]
+		[InlineData("(4 5 6)", "(0.455842305838552 0.56980288229819 0.683763458757828)")]
+		[InlineData("(3 2 1)", "(0.801783725737273 0.534522483824849 0.267261241912424)")]
+		public void Cartesian3dCoordinate_NormalizeValues_ShouldMatch(string coord, string expected)
+		{
+			// 1. Prepare
+			Cartesian3dCoordinate cc = new Cartesian3dCoordinate(coord);
+			Cartesian3dCoordinate expectedCoordinates = new Cartesian3dCoordinate(expected);
+
+			// 2. Execute
+			Cartesian3dCoordinate r = cc.Normalize();
+
+			// 3. Verify
+			Assert.Equal(expectedCoordinates.X, r.X, PRECISION_DOUBLE);
+			Assert.Equal(expectedCoordinates.Y, r.Y, PRECISION_DOUBLE);
+			Assert.Equal(expectedCoordinates.Z, r.Z, PRECISION_DOUBLE);
+		}
+
 		#endregion Test Methods
 	}
 }
