@@ -28,6 +28,18 @@ namespace Twisty.Engine.Structure
 			this.Vector = axis;
 		}
 
+		/// <summary>
+		/// Create a new RotationAxis object.
+		/// </summary>
+		/// <param name="id">Id of the RotationAxis.</param>
+		/// <param name="axis">Rotation Axis coordinate starting from the core center.</param>
+		/// <exception cref="System.ArgumentNullException">Axis id is mandatory.</exception>
+		/// <exception cref="System.ArgumentException">Axis id cannot be an empty or a white string.</exception>
+		public RotationAxis(string id, Cartesian3dCoordinate axis)
+			: this(id, CoordinateConverter.ConvertToSpherical(axis))
+		{
+		}
+
 		#region Public Properties
 
 		/// <summary>

@@ -19,6 +19,17 @@ namespace Twisty.Engine.Structure
 		}
 
 		/// <summary>
+		/// Create a new objet representing a block face.
+		/// </summary>
+		/// <param name="identifier">Identifier of the BlockFaces that should match the expected face.</param>
+		/// <param name="p"></param>
+		public BlockFace(string identifier, Cartesian3dCoordinate p)
+		{
+			this.Position = CoordinateConverter.ConvertToSpherical(p);
+			this.Id = identifier;
+		}
+
+		/// <summary>
 		/// Indicate the position of the face in the block.
 		/// Position is relative to the Block Center.
 		/// </summary>

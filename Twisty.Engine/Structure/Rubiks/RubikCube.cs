@@ -20,21 +20,21 @@ namespace Twisty.Engine.Structure.Rubiks
 		public const string FACE_ID_FRONT = "F";
 		public const string FACE_ID_BACK = "B";
 
-		public static readonly SphericalVector FACE_POSITION_DOWN = new SphericalVector(0.0, Math.PI);
-		public static readonly SphericalVector FACE_POSITION_UP = new SphericalVector(0.0, 0.0);
-		public static readonly SphericalVector FACE_POSITION_RIGHT = new SphericalVector(Math.PI / 2.0, Math.PI / 2.0);
-		public static readonly SphericalVector FACE_POSITION_LEFT = new SphericalVector(Math.PI * 1.5, Math.PI / 2.0);
-		public static readonly SphericalVector FACE_POSITION_FRONT = new SphericalVector(0.0, Math.PI / 2.0);
-		public static readonly SphericalVector FACE_POSITION_BACK = new SphericalVector(Math.PI, Math.PI / 2.0);
+		public static readonly Cartesian3dCoordinate FACE_POSITION_DOWN = CoordinateConverter.ConvertToCartesian(new SphericalVector(0.0, Math.PI));
+		public static readonly Cartesian3dCoordinate FACE_POSITION_UP = CoordinateConverter.ConvertToCartesian(new SphericalVector(0.0, 0.0));
+		public static readonly Cartesian3dCoordinate FACE_POSITION_RIGHT = CoordinateConverter.ConvertToCartesian(new SphericalVector(Math.PI / 2.0, Math.PI / 2.0));
+		public static readonly Cartesian3dCoordinate FACE_POSITION_LEFT = CoordinateConverter.ConvertToCartesian(new SphericalVector(Math.PI * 1.5, Math.PI / 2.0));
+		public static readonly Cartesian3dCoordinate FACE_POSITION_FRONT = CoordinateConverter.ConvertToCartesian(new SphericalVector(0.0, Math.PI / 2.0));
+		public static readonly Cartesian3dCoordinate FACE_POSITION_BACK = CoordinateConverter.ConvertToCartesian(new SphericalVector(Math.PI, Math.PI / 2.0));
 
-		public static readonly SphericalVector BLOCK_POSITION_CORNER_UP_FRONT_LEFT = new SphericalVector(Math.PI / 4.0 * 7.0, Math.PI / 4.0);
-		public static readonly SphericalVector BLOCK_POSITION_CORNER_UP_FRONT_RIGHT = new SphericalVector(Math.PI / 4.0, Math.PI / 4.0);
-		public static readonly SphericalVector BLOCK_POSITION_CORNER_UP_BACK_LEFT = new SphericalVector(Math.PI / 4.0 * 5.0, Math.PI / 4.0);
-		public static readonly SphericalVector BLOCK_POSITION_CORNER_UP_BACK_RIGHT = new SphericalVector(Math.PI / 4.0 * 3.0, Math.PI / 4.0);
-		public static readonly SphericalVector BLOCK_POSITION_CORNER_DOWN_FRONT_LEFT = new SphericalVector(Math.PI / 4.0 * 7.0, Math.PI / 4.0 * 3.0);
-		public static readonly SphericalVector BLOCK_POSITION_CORNER_DOWN_FRONT_RIGHT = new SphericalVector(Math.PI / 4.0, Math.PI / 4.0 * 3.0);
-		public static readonly SphericalVector BLOCK_POSITION_CORNER_DOWN_BACK_LEFT = new SphericalVector(Math.PI / 4.0 * 5.0, Math.PI / 4.0 * 3.0);
-		public static readonly SphericalVector BLOCK_POSITION_CORNER_DOWN_BACK_RIGHT = new SphericalVector(Math.PI / 4.0 * 3.0, Math.PI / 4.0 * 3.0);
+		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_UP_FRONT_LEFT = CoordinateConverter.ConvertToCartesian(new SphericalVector(Math.PI / 4.0 * 7.0, Math.PI / 4.0));
+		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_UP_FRONT_RIGHT = CoordinateConverter.ConvertToCartesian(new SphericalVector(Math.PI / 4.0, Math.PI / 4.0));
+		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_UP_BACK_LEFT = CoordinateConverter.ConvertToCartesian(new SphericalVector(Math.PI / 4.0 * 5.0, Math.PI / 4.0));
+		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_UP_BACK_RIGHT = CoordinateConverter.ConvertToCartesian(new SphericalVector(Math.PI / 4.0 * 3.0, Math.PI / 4.0));
+		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_DOWN_FRONT_LEFT = CoordinateConverter.ConvertToCartesian(new SphericalVector(Math.PI / 4.0 * 7.0, Math.PI / 4.0 * 3.0));
+		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_DOWN_FRONT_RIGHT = CoordinateConverter.ConvertToCartesian(new SphericalVector(Math.PI / 4.0, Math.PI / 4.0 * 3.0));
+		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_DOWN_BACK_LEFT = CoordinateConverter.ConvertToCartesian(new SphericalVector(Math.PI / 4.0 * 5.0, Math.PI / 4.0 * 3.0));
+		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_DOWN_BACK_RIGHT = CoordinateConverter.ConvertToCartesian(new SphericalVector(Math.PI / 4.0 * 3.0, Math.PI / 4.0 * 3.0));
 
 		#endregion Const Members
 
@@ -113,11 +113,15 @@ namespace Twisty.Engine.Structure.Rubiks
 			// Corner are identical in all cubes.
 			AddCornerToList(blocks);
 
-			// Center are only available for cube of size N where N is even.
+			// Center are only available for cube of size N where N is odd.
+			if (n % 2 == 1)
+				AddCentersToList(blocks);
 
 			// For block of size N > 3, Single Face blocks must be created between center and borders.
 
 			// Border count is related to the value of N.
+			if (n > 2)
+				AddEdgesToList(blocks);
 
 			return blocks;
 		}
@@ -185,6 +189,66 @@ namespace Twisty.Engine.Structure.Rubiks
 				new BlockFace(FACE_ID_BACK, FACE_POSITION_BACK),
 				new BlockFace(FACE_ID_LEFT, FACE_POSITION_LEFT)
 			));
+		}
+
+		/// <summary>
+		/// Add the 6 centers for Rubiks' cube of even size.
+		/// </summary>
+		/// <param name="blocks">List of block to which created centers will be added.</param>
+		private static void AddCentersToList(IList<Block> blocks)
+		{
+			blocks.Add(new RubikCenterBlock(FACE_POSITION_DOWN, new BlockFace(FACE_ID_DOWN, FACE_POSITION_DOWN)));
+			blocks.Add(new RubikCenterBlock(FACE_POSITION_UP, new BlockFace(FACE_ID_UP, FACE_POSITION_UP)));
+			blocks.Add(new RubikCenterBlock(FACE_POSITION_LEFT, new BlockFace(FACE_ID_LEFT, FACE_POSITION_LEFT)));
+			blocks.Add(new RubikCenterBlock(FACE_POSITION_RIGHT, new BlockFace(FACE_ID_RIGHT, FACE_POSITION_RIGHT)));
+			blocks.Add(new RubikCenterBlock(FACE_POSITION_FRONT, new BlockFace(FACE_ID_FRONT, FACE_POSITION_FRONT)));
+			blocks.Add(new RubikCenterBlock(FACE_POSITION_BACK, new BlockFace(FACE_ID_BACK, FACE_POSITION_BACK)));
+		}
+
+		/// <summary>
+		/// Add the edges for Rubiks' cube bigger than 2.
+		/// </summary>
+		/// <param name="blocks">List of block to which created edges will be added.</param>
+		private static void AddEdgesToList(IList<Block> blocks)
+		{
+			blocks.Add(new RubikEdgeBlock(FACE_POSITION_DOWN + FACE_POSITION_FRONT,
+				new BlockFace(FACE_ID_DOWN, FACE_POSITION_DOWN),
+				new BlockFace(FACE_ID_FRONT, FACE_POSITION_FRONT)));
+			blocks.Add(new RubikEdgeBlock(FACE_POSITION_DOWN + FACE_POSITION_LEFT,
+				new BlockFace(FACE_ID_DOWN, FACE_POSITION_DOWN),
+				new BlockFace(FACE_ID_LEFT, FACE_POSITION_LEFT)));
+			blocks.Add(new RubikEdgeBlock(FACE_POSITION_DOWN + FACE_POSITION_BACK,
+				new BlockFace(FACE_ID_DOWN, FACE_POSITION_DOWN),
+				new BlockFace(FACE_ID_BACK, FACE_POSITION_BACK)));
+			blocks.Add(new RubikEdgeBlock(FACE_POSITION_DOWN + FACE_POSITION_RIGHT,
+				new BlockFace(FACE_ID_DOWN, FACE_POSITION_DOWN),
+				new BlockFace(FACE_ID_RIGHT, FACE_POSITION_RIGHT)));
+
+			blocks.Add(new RubikEdgeBlock(FACE_POSITION_UP + FACE_POSITION_FRONT,
+				new BlockFace(FACE_ID_UP, FACE_POSITION_UP),
+				new BlockFace(FACE_ID_FRONT, FACE_POSITION_FRONT)));
+			blocks.Add(new RubikEdgeBlock(FACE_POSITION_UP + FACE_POSITION_LEFT,
+				new BlockFace(FACE_ID_UP, FACE_POSITION_UP),
+				new BlockFace(FACE_ID_LEFT, FACE_POSITION_LEFT)));
+			blocks.Add(new RubikEdgeBlock(FACE_POSITION_UP + FACE_POSITION_BACK,
+				new BlockFace(FACE_ID_UP, FACE_POSITION_UP),
+				new BlockFace(FACE_ID_BACK, FACE_POSITION_BACK)));
+			blocks.Add(new RubikEdgeBlock(FACE_POSITION_UP + FACE_POSITION_RIGHT,
+				new BlockFace(FACE_ID_UP, FACE_POSITION_UP),
+				new BlockFace(FACE_ID_RIGHT, FACE_POSITION_RIGHT)));
+
+			blocks.Add(new RubikEdgeBlock(FACE_POSITION_LEFT + FACE_POSITION_FRONT,
+				new BlockFace(FACE_ID_LEFT, FACE_POSITION_LEFT),
+				new BlockFace(FACE_ID_FRONT, FACE_POSITION_FRONT)));
+			blocks.Add(new RubikEdgeBlock(FACE_POSITION_FRONT + FACE_POSITION_RIGHT,
+				new BlockFace(FACE_ID_FRONT, FACE_POSITION_FRONT),
+				new BlockFace(FACE_ID_RIGHT, FACE_POSITION_RIGHT)));
+			blocks.Add(new RubikEdgeBlock(FACE_POSITION_RIGHT + FACE_POSITION_BACK,
+				new BlockFace(FACE_ID_RIGHT, FACE_POSITION_RIGHT),
+				new BlockFace(FACE_ID_BACK, FACE_POSITION_BACK)));
+			blocks.Add(new RubikEdgeBlock(FACE_POSITION_BACK + FACE_POSITION_LEFT,
+				new BlockFace(FACE_ID_BACK, FACE_POSITION_BACK),
+				new BlockFace(FACE_ID_LEFT, FACE_POSITION_LEFT)));
 		}
 
 		#endregion Private Members
