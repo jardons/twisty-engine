@@ -11,7 +11,7 @@ namespace Twisty.Bash.Controllers
 	public class RubikController : BaseConsoleControler<RubikCube>
 	{
 		public RubikController()
-			: base(new RubikCube(2), new RubikOperationsParser())
+			: base(new RubikCube(3), new RubikOperationsParser())
 		{
 		}
 

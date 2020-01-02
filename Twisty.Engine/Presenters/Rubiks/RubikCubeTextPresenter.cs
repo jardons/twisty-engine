@@ -178,7 +178,7 @@ namespace Twisty.Engine.Presenters.Rubiks
 				result.Append("****");
 
 				faces[j, i++] = result;
-				if (i >= 2)
+				if (i >= this.Cube.N)
 				{
 					i = 0;
 					++j;
