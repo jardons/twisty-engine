@@ -267,7 +267,15 @@ namespace Twisty.Engine.Tests.Geometry
 		}
 
 		[Theory]
+		// Exceptions to formula
+		[InlineData("(1 0 0)", "(1 0 0)", "(1 0 0)")]
+		[InlineData("(1 0 0)", "(1 2 3)", "(1 2 3)")]
+		[InlineData("(-1 0 0)", "(1 0 0)", "(-1 0 0)")]
+		[InlineData("(-1 0 0)", "(1 2 3)", "(-1 -2 -3)")]
+		// Calculated rotations
 		[InlineData("(0 1 0)", "(1 0 0)", "(0 -1 0)")]
+		[InlineData("(0 0 1)", "(1 0 0)", "(0 0 -1)")]
+		[InlineData("(0 0 -1)", "(1 0 0)", "(0 0 1)")]
 		public void Cartesian3dCoordinate_TransposeFromReferential_Expected(string originCoordinate, string vectorCoordinate, string expectedCoordiante)
 		{
 			// 1. Prepare

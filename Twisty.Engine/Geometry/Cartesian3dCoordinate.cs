@@ -263,6 +263,16 @@ namespace Twisty.Engine.Geometry
 		/// </remarks>
 		public Cartesian3dCoordinate TransposeFromReferential(Cartesian3dCoordinate referential)
 		{
+			if (referential.IsOnX)
+			{
+				if (referential.X > 0.0)
+					// No need to change referential when we are on the correct one.
+					return this;
+				else
+					// Formula is not working for reverse referential vector, we just reverse the current coordinates.
+					return new Cartesian3dCoordinate(-this.X, -this.Y, -this.Z);
+			}
+
 			Cartesian3dCoordinate origin = new Cartesian3dCoordinate(1, 0, 0);
 
 			// Calculate formula variables.
