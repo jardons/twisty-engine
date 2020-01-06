@@ -276,6 +276,7 @@ namespace Twisty.Engine.Tests.Geometry
 		[InlineData("(0 1 0)", "(1 0 0)", "(0 -1 0)")]
 		[InlineData("(0 0 1)", "(1 0 0)", "(0 0 -1)")]
 		[InlineData("(0 0 -1)", "(1 0 0)", "(0 0 1)")]
+		[InlineData("(0 1 0)", "(1 2 3)", "(2 -1 3)")]
 		public void Cartesian3dCoordinate_TransposeFromReferential_Expected(string originCoordinate, string vectorCoordinate, string expectedCoordiante)
 		{
 			// 1. Prepare
