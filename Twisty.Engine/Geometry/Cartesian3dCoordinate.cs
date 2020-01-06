@@ -283,31 +283,36 @@ namespace Twisty.Engine.Geometry
 			// Calculate last part.
 			double cPart = 1.0 / (1.0 + c);
 
+			// Calculate poer values.
+			double x2 = v.X * v.X;
+			double y2 = v.Y * v.Y;
+			double z2 = v.Z * v.Z;
+
 			// Calculate the rotation matrix
 			double[,] matrix = new double[3, 3]
 			{
 				{
-					((-v.Z * v.Z + v.Y * -v.Y) * cPart) + 1.0,
+					1.0 - ((z2 + y2) * cPart),
 					(v.Y * -v.X * cPart) - v.Z,
 					(v.Z * v.X * cPart) + v.Y,
 				},
 				{
 					(v.X * v.Y * cPart) + v.Z,
-					((v.Z * -v.Z + v.X * -v.X) * cPart) + 1.0,
+					1.0 - ((z2 + x2) * cPart),
 					(v.Z * v.Y * cPart) - v.X,
 				},
 				{
 					(v.X * v.Z * cPart) - v.Y,
 					(v.Y * v.Z * cPart) + v.X,
-					((-v.Y * v.Y + v.X * -v.X) * cPart) + 1.0,
+					1.0 - ((y2 + x2) * cPart),
 				},
 			};
 
 			// Apply rotation matrix to vector.
 			return new Cartesian3dCoordinate(
-				this.X * matrix[0, 0] + this.Y * matrix[0, 1] + this.Z * matrix[0, 2],
-				this.X * matrix[1, 0] + this.Y * matrix[1, 1] + this.Z * matrix[1, 2],
-				this.X * matrix[2, 0] + this.Y * matrix[2, 1] + this.Z * matrix[2, 2]);
+				(this.X * matrix[0, 0]) + (this.Y * matrix[0, 1]) + (this.Z * matrix[0, 2]),
+				(this.X * matrix[1, 0]) + (this.Y * matrix[1, 1]) + (this.Z * matrix[1, 2]),
+				(this.X * matrix[2, 0]) + (this.Y * matrix[2, 1]) + (this.Z * matrix[2, 2]));
 		}
 
 		/// <summary>
