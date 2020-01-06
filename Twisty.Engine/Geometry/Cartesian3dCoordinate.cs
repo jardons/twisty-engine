@@ -231,6 +231,76 @@ namespace Twisty.Engine.Geometry
 		}
 
 		/// <summary>
+		/// Get the vector corresponding to this vector in the current referential as if this vector was related to another referential vector.
+		/// </summary>
+		/// <param name="referential">Vector correspoding to the X axis vector in the referential coordinates.</param>
+		/// <returns>A new coordinates sets in the global coordinates system corresponding to the translated coordinates.</returns>
+		/// <remarks>
+		/// Assuming a transposition of A on B.
+		/// 
+		/// Let V = a X b
+		/// Let s = ||V|| (sin of angle)
+		/// Let c = A . B (cos of angle)
+		/// 
+		/// Rotation matrix can be calculated by:
+		/// 
+		/// R = I + [V]x + [V]×² (1 − c) / s²
+		/// 
+		/// As a reminder:
+		/// 
+		///        (  0  -Vz  Vy )         ( 1 0 0 )
+		/// [V]x = (  Vz  0  -Vx )     I = ( 0 1 0 )
+		///        ( -Vy  Vx  0  )         ( 0 0 1 )
+		///     
+		/// I + [V]x is then always :
+		/// 
+		///      (  1  -Vz  Vy )
+		/// VI = (  Vz  1  -Vx )
+		///      ( -Vy  Vx  1  )
+		///
+		/// We can also simplify :
+		/// (1 − c) / s² = (1 − c) / (1 − c²) = 1 / (1 + c)
+		/// </remarks>
+		public Cartesian3dCoordinate TransposeFromReferential(Cartesian3dCoordinate referential)
+		{
+			Cartesian3dCoordinate origin = new Cartesian3dCoordinate(1, 0, 0);
+
+			// Calculate formula variables.
+			Cartesian3dCoordinate v = referential.CrossProduct(origin);
+			double s = v.Magnitude;
+			double c = referential.DotProduct(origin);
+
+			// Calculate last part.
+			double cPart = 1.0 / (1.0 + c);
+
+			// Calculate the rotation matrix
+			double[,] matrix = new double[3, 3]
+			{
+				{
+					1.0 + ((0.0 * 0.0 + -v.Z * v.Z + v.Y * -v.Y) * cPart),
+					-v.Z + ((0.0 * -v.Z + -v.Z * 0.0 + v.Y * -v.X) * cPart),
+					v.Y + ((0.0 * v.Y + -v.Z * -v.X + v.Y * 0.0) * cPart),
+				},
+				{
+					v.Z + ((v.Z * 0.0 + 0.0 * v.Z + -v.X * -v.Y) * cPart),
+					1.0 + ((v.Z * -v.Z + 0.0 * 0.0 + -v.X * -v.X) * cPart),
+					-v.X + ((v.Z * v.Y + 0.0 * -v.X + -v.X * 0.0) * cPart),
+				},
+				{
+					-v.Y + ((-v.Y * 0.0 + v.X * v.Z + 0.0 * -v.Y) * cPart),
+					v.X + ((-v.Y * -v.Z + v.X * 0.0 + 0.0 * -v.X) * cPart),
+					1.0 + ((-v.Y * v.Y + v.X * -v.X + 0.0 * 0.0) * cPart),
+				},
+			};
+
+			// Apply rotation matrix to vector.
+			return new Cartesian3dCoordinate(
+				this.X * matrix[0, 0] + this.Y * matrix[0, 1] + this.Z * matrix[0, 2],
+				this.X * matrix[1, 0] + this.Y * matrix[1, 1] + this.Z * matrix[1, 2],
+				this.X * matrix[2, 0] + this.Y * matrix[2, 1] + this.Z * matrix[2, 2]);
+		}
+
+		/// <summary>
 		/// Gets the normalized coordinate of this vector.
 		/// </summary>
 		/// <returns>A new Cartesian3dCoordinate containing the normalized coordinate of this vector.</returns>

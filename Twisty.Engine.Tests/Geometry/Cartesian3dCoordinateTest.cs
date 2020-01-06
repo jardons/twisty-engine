@@ -266,6 +266,24 @@ namespace Twisty.Engine.Tests.Geometry
 			Assert.Equal(expected, r2, PRECISION_DOUBLE);
 		}
 
+		[Theory]
+		[InlineData("(0 1 0)", "(1 0 0)", "(0 -1 0)")]
+		public void Cartesian3dCoordinate_TransposeFromReferential_Expected(string originCoordinate, string vectorCoordinate, string expectedCoordiante)
+		{
+			// 1. Prepare
+			Cartesian3dCoordinate origin = new Cartesian3dCoordinate(originCoordinate);
+			Cartesian3dCoordinate vector = new Cartesian3dCoordinate(vectorCoordinate);
+			Cartesian3dCoordinate expected = new Cartesian3dCoordinate(expectedCoordiante);
+
+			// 2. Execute
+			Cartesian3dCoordinate r = vector.TransposeFromReferential(origin);
+
+			// 3. Verify
+			Assert.Equal(expected.X, r.X, PRECISION_DOUBLE);
+			Assert.Equal(expected.Y, r.Y, PRECISION_DOUBLE);
+			Assert.Equal(expected.Z, r.Z, PRECISION_DOUBLE);
+		}
+
 		#endregion Test Methods
 	}
 }
