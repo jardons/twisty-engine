@@ -277,19 +277,19 @@ namespace Twisty.Engine.Geometry
 			double[,] matrix = new double[3, 3]
 			{
 				{
-					1.0 + ((0.0 * 0.0 + -v.Z * v.Z + v.Y * -v.Y) * cPart),
-					-v.Z + ((0.0 * -v.Z + -v.Z * 0.0 + v.Y * -v.X) * cPart),
-					v.Y + ((0.0 * v.Y + -v.Z * -v.X + v.Y * 0.0) * cPart),
+					1.0 + ((-v.Z * v.Z + v.Y * -v.Y) * cPart),
+					-v.Z + (v.Y * -v.X * cPart),
+					v.Y + (-v.Z * -v.X * cPart),
 				},
 				{
-					v.Z + ((v.Z * 0.0 + 0.0 * v.Z + -v.X * -v.Y) * cPart),
-					1.0 + ((v.Z * -v.Z + 0.0 * 0.0 + -v.X * -v.X) * cPart),
-					-v.X + ((v.Z * v.Y + 0.0 * -v.X + -v.X * 0.0) * cPart),
+					v.Z + (-v.X * -v.Y * cPart),
+					1.0 + ((v.Z * -v.Z + -v.X * -v.X) * cPart),
+					-v.X + (v.Z * v.Y * cPart),
 				},
 				{
-					-v.Y + ((-v.Y * 0.0 + v.X * v.Z + 0.0 * -v.Y) * cPart),
-					v.X + ((-v.Y * -v.Z + v.X * 0.0 + 0.0 * -v.X) * cPart),
-					1.0 + ((-v.Y * v.Y + v.X * -v.X + 0.0 * 0.0) * cPart),
+					-v.Y + (v.X * v.Z * cPart),
+					v.X + (-v.Y * -v.Z * cPart),
+					1.0 + ((-v.Y * v.Y + v.X * -v.X) * cPart),
 				},
 			};
 
