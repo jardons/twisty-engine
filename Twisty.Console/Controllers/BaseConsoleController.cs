@@ -1,19 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using Twisty.Engine.Operations;
 using Twisty.Engine.Operations.Rubiks;
 using Twisty.Engine.Structure;
 
 namespace Twisty.Bash.Controllers
 {
-	public abstract class BaseConsoleControler<T>
+	/// <summary>
+	/// Controller objet that will handle interaction between the consol and the Twisty Engine Cores.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	public abstract class BaseConsoleController<T>
 		where T : RotationCore
 	{
 		private Dictionary<string, MethodInfo> m_Routes;
 		private IOperationsParser<T> m_Parser;
 
-		protected BaseConsoleControler(T rotationCore, IOperationsParser<T> parser)
+		protected BaseConsoleController(T rotationCore, IOperationsParser<T> parser)
 		{
 			m_Parser = parser;
 			m_Routes = new Dictionary<string, MethodInfo>();
@@ -28,6 +33,9 @@ namespace Twisty.Bash.Controllers
 			}
 		}
 
+		/// <summary>
+		/// Gets the Rotation Core controlled by this Controller.
+		/// </summary>
 		public T Core { get; }
 
 		public void Start()
@@ -36,7 +44,7 @@ namespace Twisty.Bash.Controllers
 
 			while (true)
 			{
-				string line = Console.ReadLine().Trim();
+				string line = ReadLine();
 				if (line.StartsWith("/"))
 				{
 					string[] command = line.Substring(1).Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -76,5 +84,47 @@ namespace Twisty.Bash.Controllers
 		}
 
 		protected abstract void Render();
+
+		/// <summary>
+		/// Read a line in the Console.
+		/// </summary>
+		/// <returns></returns>
+		private string ReadLine()
+		{
+			StringBuilder b = new StringBuilder();
+
+			while (true)
+			{
+				var key = Console.ReadKey(true);
+
+				// Keep accepted chars.
+				if (Char.IsLetterOrDigit(key.KeyChar)
+					|| key.KeyChar == '\''
+					|| key.KeyChar == '/'
+					|| key.KeyChar == '-'
+					|| key.KeyChar == ' ')
+				{
+					Console.Write(key.KeyChar);
+					b.Append(key.KeyChar);
+					continue;
+				}
+
+				// Handle backspace.
+				if (key.KeyChar == '\b')
+				{
+					// Backspace doesn't erase previous char in console if we don't rewrite a space over it.
+					Console.Write("\b \b");
+					b.Remove(b.Length - 1, 1);
+					continue;
+				}
+
+				// Detect the end of line.
+				if (key.KeyChar == '\r')
+				{
+					Console.WriteLine();
+					return b.ToString();
+				}
+			}
+		}
 	}
 }

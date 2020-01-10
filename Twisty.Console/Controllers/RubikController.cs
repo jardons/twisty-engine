@@ -8,7 +8,7 @@ using Twisty.Engine.Structure.Rubiks;
 
 namespace Twisty.Bash.Controllers
 {
-	public class RubikController : BaseConsoleControler<RubikCube>
+	public class RubikController : BaseConsoleController<RubikCube>
 	{
 		public RubikController()
 			: base(new RubikCube(2), new RubikOperationsParser())
