@@ -94,17 +94,17 @@ namespace Twisty.Engine.Geometry
 		/// <summary>
 		/// Gets the angle in radians between the vector and the X axis.
 		/// </summary>
-		public double ThetaToX => Math.Acos(this.X / this.Magnitude);
+		public double ThetaToX => Trigonometry.Acos(this.X / this.Magnitude);
 
 		/// <summary>
 		/// Gets the angle in radians between the vector and the Y axis.
 		/// </summary>
-		public double ThetaToY => Math.Acos(this.Y / this.Magnitude);
+		public double ThetaToY => Trigonometry.Acos(this.Y / this.Magnitude);
 
 		/// <summary>
 		/// Gets the angle in radians between the vector and the Z axis.
 		/// </summary>
-		public double ThetaToZ => Math.Acos(this.Z / this.Magnitude);
+		public double ThetaToZ => Trigonometry.Acos(this.Z / this.Magnitude);
 
 		/// <summary>
 		/// Gets a boolean indicating if whether the current coordonate is on the X axis or not.
@@ -248,18 +248,9 @@ namespace Twisty.Engine.Geometry
 		/// 
 		/// As a reminder:
 		/// 
-		///        (  0  -Vz  Vy )         ( 1 0 0 )
-		/// [V]x = (  Vz  0  -Vx )     I = ( 0 1 0 )
-		///        ( -Vy  Vx  0  )         ( 0 0 1 )
-		///     
-		/// I + [V]x is then always :
-		/// 
-		///      (  1  -Vz  Vy )
-		/// VI = (  Vz  1  -Vx )
-		///      ( -Vy  Vx  1  )
-		///
-		/// We can also simplify :
-		/// (1 − c) / s² = (1 − c) / (1 − c²) = 1 / (1 + c)
+		///        (  0  -Vz  Vy )         ( 1 0 0 )               (  1  -Vz  Vy )
+		/// [V]x = (  Vz  0  -Vx )     I = ( 0 1 0 )    [V]x + I = (  Vz  1  -Vx )
+		///        ( -Vy  Vx  0  )         ( 0 0 1 )               ( -Vy  Vx  1  )
 		/// </remarks>
 		public Cartesian3dCoordinate TransposeFromReferential(Cartesian3dCoordinate referential)
 		{
@@ -276,12 +267,11 @@ namespace Twisty.Engine.Geometry
 			Cartesian3dCoordinate origin = new Cartesian3dCoordinate(1, 0, 0);
 
 			// Calculate formula variables.
-			Cartesian3dCoordinate v = referential.CrossProduct(origin);
-			double s = v.Magnitude;
-			double c = referential.DotProduct(origin);
+			Cartesian3dCoordinate v = origin.CrossProduct(referential);
+			double c = origin.DotProduct(referential);
 
 			// Calculate last part.
-			double cPart = 1.0 / (1.0 + c);
+			double cPart = (1.0 - c) / ((v.X * v.X) + (v.Y * v.Y) + (v.Z * v.Z));
 
 			// Calculate poer values.
 			double x2 = v.X * v.X;
