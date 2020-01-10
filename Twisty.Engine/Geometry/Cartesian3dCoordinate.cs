@@ -94,17 +94,17 @@ namespace Twisty.Engine.Geometry
 		/// <summary>
 		/// Gets the angle in radians between the vector and the X axis.
 		/// </summary>
-		public double ThetaToX => Math.Acos(this.X / this.Magnitude);
+		public double ThetaToX => Trigonometry.Acos(this.X / this.Magnitude);
 
 		/// <summary>
 		/// Gets the angle in radians between the vector and the Y axis.
 		/// </summary>
-		public double ThetaToY => Math.Acos(this.Y / this.Magnitude);
+		public double ThetaToY => Trigonometry.Acos(this.Y / this.Magnitude);
 
 		/// <summary>
 		/// Gets the angle in radians between the vector and the Z axis.
 		/// </summary>
-		public double ThetaToZ => Math.Acos(this.Z / this.Magnitude);
+		public double ThetaToZ => Trigonometry.Acos(this.Z / this.Magnitude);
 
 		/// <summary>
 		/// Gets a boolean indicating if whether the current coordonate is on the X axis or not.
@@ -228,6 +228,81 @@ namespace Twisty.Engine.Geometry
 			k = k.Normalize();
 
 			return (this * cosTheta) + ((-sinTheta) * CrossProduct(k)) + ((1.0 - cosTheta) * this.DotProduct(k) * k);
+		}
+
+		/// <summary>
+		/// Get the vector corresponding to this vector in the current referential as if this vector was related to another referential vector.
+		/// </summary>
+		/// <param name="referential">Vector correspoding to the X axis vector in the referential coordinates.</param>
+		/// <returns>A new coordinates sets in the global coordinates system corresponding to the translated coordinates.</returns>
+		/// <remarks>
+		/// Assuming a transposition of A on B.
+		/// 
+		/// Let V = a X b
+		/// Let s = ||V|| (sin of angle)
+		/// Let c = A . B (cos of angle)
+		/// 
+		/// Rotation matrix can be calculated by:
+		/// 
+		/// R = I + [V]x + [V]×² (1 − c) / s²
+		/// 
+		/// As a reminder:
+		/// 
+		///        (  0  -Vz  Vy )         ( 1 0 0 )               (  1  -Vz  Vy )
+		/// [V]x = (  Vz  0  -Vx )     I = ( 0 1 0 )    [V]x + I = (  Vz  1  -Vx )
+		///        ( -Vy  Vx  0  )         ( 0 0 1 )               ( -Vy  Vx  1  )
+		/// </remarks>
+		public Cartesian3dCoordinate TransposeFromReferential(Cartesian3dCoordinate referential)
+		{
+			if (referential.IsOnX)
+			{
+				if (referential.X > 0.0)
+					// No need to change referential when we are on the correct one.
+					return this;
+				else
+					// Formula is not working for reverse referential vector, we just reverse the current coordinates.
+					return new Cartesian3dCoordinate(-this.X, -this.Y, -this.Z);
+			}
+
+			Cartesian3dCoordinate origin = new Cartesian3dCoordinate(1, 0, 0);
+
+			// Calculate formula variables.
+			Cartesian3dCoordinate v = origin.CrossProduct(referential);
+			double c = origin.DotProduct(referential);
+
+			// Calculate last part.
+			double cPart = (1.0 - c) / ((v.X * v.X) + (v.Y * v.Y) + (v.Z * v.Z));
+
+			// Calculate poer values.
+			double x2 = v.X * v.X;
+			double y2 = v.Y * v.Y;
+			double z2 = v.Z * v.Z;
+
+			// Calculate the rotation matrix
+			double[,] matrix = new double[3, 3]
+			{
+				{
+					1.0 - ((z2 + y2) * cPart),
+					(v.Y * -v.X * cPart) - v.Z,
+					(v.Z * v.X * cPart) + v.Y,
+				},
+				{
+					(v.X * v.Y * cPart) + v.Z,
+					1.0 - ((z2 + x2) * cPart),
+					(v.Z * v.Y * cPart) - v.X,
+				},
+				{
+					(v.X * v.Z * cPart) - v.Y,
+					(v.Y * v.Z * cPart) + v.X,
+					1.0 - ((y2 + x2) * cPart),
+				},
+			};
+
+			// Apply rotation matrix to vector.
+			return new Cartesian3dCoordinate(
+				(this.X * matrix[0, 0]) + (this.Y * matrix[0, 1]) + (this.Z * matrix[0, 2]),
+				(this.X * matrix[1, 0]) + (this.Y * matrix[1, 1]) + (this.Z * matrix[1, 2]),
+				(this.X * matrix[2, 0]) + (this.Y * matrix[2, 1]) + (this.Z * matrix[2, 2]));
 		}
 
 		/// <summary>
