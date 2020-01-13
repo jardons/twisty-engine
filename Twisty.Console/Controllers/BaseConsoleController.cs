@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using Twisty.Engine.Operations;
@@ -124,7 +125,48 @@ namespace Twisty.Bash.Controllers
 					Console.WriteLine();
 					return b.ToString();
 				}
+
+				// Handle auto-complete
+				if (key.KeyChar == '\t' && b[0] == '/')
+				{
+					string route = b.ToString(1, b.Length - 1);
+					b.Clear();
+					b.Append("/");
+					b.Append(AutoCompleteRoute(route));
+
+					Console.SetCursorPosition(0, Console.CursorTop);
+					Console.Write(b.ToString());
+				}
 			}
+		}
+
+		/// <summary>
+		/// Auto complete the string builder command from the availables routes.
+		/// </summary>
+		/// <param name="route">Route to auto complete.</param>
+		/// <returns>COmpleted route with all common char to all possible route. A space follow the route if it has been fully completed.</returns>
+		private string AutoCompleteRoute(string route)
+		{
+			var routes = m_Routes.Keys.Where(s => s.StartsWith(route));
+
+			// No Routes
+			if (routes.Count() == 0)
+				return route;
+
+			// If only one possibility, we can validate this route.
+			if (routes.Count() == 1)
+				return routes.FirstOrDefault() + " ";
+
+			StringBuilder r = new StringBuilder(route);
+
+			routes = routes.Select(s => s.Substring(route.Length));
+			while (routes.All(s => s.Length > 0 && s[0] == routes.First()[0]))
+			{
+				r.Append(routes.First()[0]);
+				routes = routes.Select(s => s.Substring(1));
+			}
+
+			return r.ToString();
 		}
 	}
 }
