@@ -9,10 +9,7 @@ namespace Twisty.Bash
 		static void Main(string[] args)
 		{
 			RubikController c = new RubikController();
-
 			c.Start();
-			
-			Console.ReadLine();
 		}
 	}
 }

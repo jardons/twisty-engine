@@ -39,6 +39,10 @@ namespace Twisty.Bash.Controllers
 		/// </summary>
 		public T Core { get; }
 
+		/// <summary>
+		/// Start the Execution of the Console Control process.
+		/// </summary>
+		/// <remarks>Method will only terminate once the user enter the '/exit' or '/quit' command.</remarks>
 		public void Start()
 		{
 			Render();
@@ -46,11 +50,13 @@ namespace Twisty.Bash.Controllers
 			while (true)
 			{
 				string line = ReadLine();
+
+				// Functionnal operation start with a '/', otherwise, we are on simple manipulation operation.
 				if (line.StartsWith("/"))
 				{
 					string[] command = line.Substring(1).Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-					if (command[0] == "/exit" || command[0] == "/quit")
+					if (command[0] == "exit" || command[0] == "quit")
 						return;
 
 					if (m_Routes.ContainsKey(command[0]))
@@ -58,10 +64,17 @@ namespace Twisty.Bash.Controllers
 						MethodInfo info = m_Routes[command[0]];
 
 						var p = info.GetParameters();
+						if (p.Length > command.Length - 1)
+						{
+							string c = "/" + string.Join(' ', command);
+							WriteError("Missing arguments", c, c.Length + 1);
+							continue;
+						}
 
 						object[] args = new object[p.Length];
 						for (int i = 0; i < p.Length; ++i)
 							args[i] = command[i + 1];
+
 						info.Invoke(this, args);
 						continue;
 					}
@@ -78,13 +91,24 @@ namespace Twisty.Bash.Controllers
 				}
 				catch (OperationParsingException e)
 				{
-					Console.WriteLine("Invalid Command: " + e.Command);
-					Console.WriteLine(string.Empty.PadLeft(17 + e.Index, '-') + '^');
+					WriteError("Invalid Command", e.Command, e.Index);
 				}
 			}
 		}
 
 		protected abstract void Render();
+
+		/// <summary>
+		/// Write Error message relative to an invalid command.
+		/// </summary>
+		/// <param name="title">Title describing the cause of the error.</param>
+		/// <param name="command">Command which caused the error.</param>
+		/// <param name="errorIndex">Index of the error causes in the command.</param>
+		private void WriteError(string title, string command, int errorIndex)
+		{
+			Console.WriteLine($"{title}: {command}");
+			Console.WriteLine(string.Empty.PadLeft(title.Length + 2 + errorIndex, '-') + '^');
+		}
 
 		/// <summary>
 		/// Read a line in the Console.
@@ -144,7 +168,7 @@ namespace Twisty.Bash.Controllers
 		/// Auto complete the string builder command from the availables routes.
 		/// </summary>
 		/// <param name="route">Route to auto complete.</param>
-		/// <returns>COmpleted route with all common char to all possible route. A space follow the route if it has been fully completed.</returns>
+		/// <returns>Completed route with all common char to all possible route. A space follow the route if it has been fully completed.</returns>
 		private string AutoCompleteRoute(string route)
 		{
 			var routes = m_Routes.Keys.Where(s => s.StartsWith(route));
@@ -159,6 +183,7 @@ namespace Twisty.Bash.Controllers
 
 			StringBuilder r = new StringBuilder(route);
 
+			// As long as the next char is common to all routes, add it.
 			routes = routes.Select(s => s.Substring(route.Length));
 			while (routes.All(s => s.Length > 0 && s[0] == routes.First()[0]))
 			{
