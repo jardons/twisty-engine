@@ -33,6 +33,17 @@ namespace Twisty.Engine.Geometry
 		/// <summary>
 		/// Create a new Plane.
 		/// </summary>
+		/// <param name="n">Normal used to define a plane.</param>
+		/// <param name="d">D factor of the formula 'ax + by + cz + d = 0' used to define a plane.</param>
+		public Plane(Cartesian3dCoordinate n, double d)
+		{
+			this.Normal = n;
+			this.D = d;
+		}
+
+		/// <summary>
+		/// Create a new Plane.
+		/// </summary>
 		/// <param name="a">A factor of the formula 'ax + by + cz + d = 0' used to define a plane.</param>
 		/// <param name="b">B factor of the formula 'ax + by + cz + d = 0' used to define a plane.</param>
 		/// <param name="c">C factor of the formula 'ax + by + cz + d = 0' used to define a plane.</param>

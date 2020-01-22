@@ -21,7 +21,7 @@ namespace Twisty.Bash.Controllers
 			foreach (RotationAxis a in Core.Axes)
 			{
 				Cartesian3dCoordinate cc = CoordinateConverter.ConvertToCartesian(a.Vector);
-				System.Console.WriteLine($"{a.Id} ({a.Vector.Phi}, {a.Vector.Theta}) ({cc.X}, {cc.Y}, {cc.Z})");
+				System.Console.WriteLine($"{a.Id} {FormatCoordinates(a.Vector)} {FormatCoordinates(cc)}");
 			}
 		}
 
@@ -43,7 +43,7 @@ namespace Twisty.Bash.Controllers
 			{
 				Cartesian3dCoordinate cc = CoordinateConverter.ConvertToCartesian(b.Position);
 				Cartesian2dCoordinate c2 = c.ConvertTo2d(cc);
-				System.Console.WriteLine($"{b.Id} ({b.Position.Phi}, {b.Position.Theta}) ({cc.X}, {cc.Y}, {cc.Z}) ({c2.X}, {c2.Y})");
+				System.Console.WriteLine($"{b.Id} {FormatCoordinates(b.Position)} {FormatCoordinates(cc)} {FormatCoordinates(c2)}");
 			}
 		}
 
@@ -57,8 +57,8 @@ namespace Twisty.Bash.Controllers
 
 			foreach (BlockFace face in b.Faces)
 			{
-				Cartesian3dCoordinate ccf = CoordinateConverter.ConvertToCartesian(face.Position);
-				System.Console.WriteLine($"{face.Id} ({face.Position.Phi}, {face.Position.Theta}) ({ccf.X}, {ccf.Y}, {ccf.Z})");
+				SphericalVector ccf = CoordinateConverter.ConvertToSpherical(face.Position);
+				System.Console.WriteLine($"{face.Id} {FormatCoordinates(face.Position)} {FormatCoordinates(ccf)}");
 			}
 		}
 

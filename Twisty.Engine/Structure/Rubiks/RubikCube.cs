@@ -20,21 +20,21 @@ namespace Twisty.Engine.Structure.Rubiks
 		public const string FACE_ID_FRONT = "F";
 		public const string FACE_ID_BACK = "B";
 
-		public static readonly Cartesian3dCoordinate FACE_POSITION_DOWN = CoordinateConverter.ConvertToCartesian(new SphericalVector(0.0, Math.PI));
-		public static readonly Cartesian3dCoordinate FACE_POSITION_UP = CoordinateConverter.ConvertToCartesian(new SphericalVector(0.0, 0.0));
-		public static readonly Cartesian3dCoordinate FACE_POSITION_RIGHT = CoordinateConverter.ConvertToCartesian(new SphericalVector(Math.PI / 2.0, Math.PI / 2.0));
-		public static readonly Cartesian3dCoordinate FACE_POSITION_LEFT = CoordinateConverter.ConvertToCartesian(new SphericalVector(Math.PI * 1.5, Math.PI / 2.0));
-		public static readonly Cartesian3dCoordinate FACE_POSITION_FRONT = CoordinateConverter.ConvertToCartesian(new SphericalVector(0.0, Math.PI / 2.0));
-		public static readonly Cartesian3dCoordinate FACE_POSITION_BACK = CoordinateConverter.ConvertToCartesian(new SphericalVector(Math.PI, Math.PI / 2.0));
+		public static readonly Cartesian3dCoordinate FACE_POSITION_UP = new Cartesian3dCoordinate(0.0, 0.0, 1.0);
+		public static readonly Cartesian3dCoordinate FACE_POSITION_DOWN = new Cartesian3dCoordinate(0.0, 0.0, -1.0);
+		public static readonly Cartesian3dCoordinate FACE_POSITION_RIGHT = new Cartesian3dCoordinate(0.0, 1.0, 0.0);
+		public static readonly Cartesian3dCoordinate FACE_POSITION_LEFT = new Cartesian3dCoordinate(0.0, -1.0, 0.0);
+		public static readonly Cartesian3dCoordinate FACE_POSITION_FRONT = new Cartesian3dCoordinate(1.0, 0.0, 0.0);
+		public static readonly Cartesian3dCoordinate FACE_POSITION_BACK = new Cartesian3dCoordinate(-1.0, 0.0, 0.0);
 
-		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_UP_FRONT_LEFT = CoordinateConverter.ConvertToCartesian(new SphericalVector(Math.PI / 4.0 * 7.0, Math.PI / 4.0));
-		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_UP_FRONT_RIGHT = CoordinateConverter.ConvertToCartesian(new SphericalVector(Math.PI / 4.0, Math.PI / 4.0));
-		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_UP_BACK_LEFT = CoordinateConverter.ConvertToCartesian(new SphericalVector(Math.PI / 4.0 * 5.0, Math.PI / 4.0));
-		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_UP_BACK_RIGHT = CoordinateConverter.ConvertToCartesian(new SphericalVector(Math.PI / 4.0 * 3.0, Math.PI / 4.0));
-		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_DOWN_FRONT_LEFT = CoordinateConverter.ConvertToCartesian(new SphericalVector(Math.PI / 4.0 * 7.0, Math.PI / 4.0 * 3.0));
-		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_DOWN_FRONT_RIGHT = CoordinateConverter.ConvertToCartesian(new SphericalVector(Math.PI / 4.0, Math.PI / 4.0 * 3.0));
-		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_DOWN_BACK_LEFT = CoordinateConverter.ConvertToCartesian(new SphericalVector(Math.PI / 4.0 * 5.0, Math.PI / 4.0 * 3.0));
-		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_DOWN_BACK_RIGHT = CoordinateConverter.ConvertToCartesian(new SphericalVector(Math.PI / 4.0 * 3.0, Math.PI / 4.0 * 3.0));
+		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_UP_FRONT_LEFT = new Cartesian3dCoordinate(1.0, -1.0, 1.0);
+		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_UP_FRONT_RIGHT = new Cartesian3dCoordinate(1.0, 1.0, 1.0);
+		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_UP_BACK_LEFT = new Cartesian3dCoordinate(-1.0, -1.0, 1.0);
+		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_UP_BACK_RIGHT = new Cartesian3dCoordinate(-1.0, 1.0, 1.0);
+		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_DOWN_FRONT_LEFT = new Cartesian3dCoordinate(1.0, -1.0, -1.0);
+		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_DOWN_FRONT_RIGHT = new Cartesian3dCoordinate(1.0, 1.0, -1.0);
+		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_DOWN_BACK_LEFT = new Cartesian3dCoordinate(-1.0, -1.0, -1.0);
+		public static readonly Cartesian3dCoordinate BLOCK_POSITION_CORNER_DOWN_BACK_RIGHT = new Cartesian3dCoordinate(-1.0, 1.0, -1.0);
 
 		#endregion Const Members
 
@@ -44,7 +44,7 @@ namespace Twisty.Engine.Structure.Rubiks
 		/// <param name="n">Indicate the number of rows per face of the cube that is currently generated.</param>
 		/// <exception cref="ArgumentException">Size of the Rubik's Cube should be bigger than 1.</exception>
 		public RubikCube(int n)
-			: base(GenerateBlocks(n), GenerateAxes())
+			: base(GenerateBlocks(n), GenerateAxes(), GenerateFaces())
 		{
 			this.N = n;
 		}
@@ -61,24 +61,46 @@ namespace Twisty.Engine.Structure.Rubiks
 		/// <param name="isClockwise">Boolean indicating if whether the rotation is clockwise or not.</param>
 		public void RotateAround(RotationAxis axis, bool isClockwise)
 		{
+			// Gets Blocks ordered in rotation order.
+			var blocks = GetOrderedBlocks(axis, isClockwise);
+			if (blocks.Count == 0)
+				return;
+
+			// Convert the rotation direction to the correct angle.
+			double theta = isClockwise ? -Math.PI / 2.0 : Math.PI / 2.0;
+
+			// Perform the manipulation for the 4 corners.
+			base.SwitchAndRotate(blocks.OfType<RubikCornerBlock>().ToList(), CoordinateConverter.ConvertToCartesian(axis.Vector), theta);
+
+			// Perform the edges rotation.
+			base.SwitchAndRotate(blocks.OfType<RubikEdgeBlock>().ToList(), CoordinateConverter.ConvertToCartesian(axis.Vector), theta);
+
+			// Perform the center rotation.
+			base.SwitchAndRotate(blocks.OfType<RubikCenterBlock>().ToList(), CoordinateConverter.ConvertToCartesian(axis.Vector), theta);
+		}
+
+		#region Private Members
+
+		/// <summary>
+		/// Gets the block ordered in a rotational order arround the provided axis.
+		/// </summary>
+		/// <param name="axis">Axis around which the blocks will be ordered.</param>
+		/// <param name="isClockwise">Boolean indicating if whether the rotation direction is clockwise or not.</param>
+		/// <returns>The ordered collection of blocks.</returns>
+		private IList<IPositionnedBySphericalVector> GetOrderedBlocks(RotationAxis axis, bool isClockwise)
+		{
 			// Select all blocks that will be included in the rotation.
 			var blocks = base.GetBlocksForFace(axis.Vector).OfType<IPositionnedBySphericalVector>().ToList();
 			if (blocks.Count == 0)
-				return;
+				return blocks;
 
 			Plane p = new Plane(CoordinateConverter.ConvertToCartesian(axis.Vector), CoordinateConverter.ConvertToCartesian(blocks[0].Position));
 			blocks.Sort(new CircularVectorComparer(p));
 			if (isClockwise)
 				blocks.Reverse();
 
-			// Convert the rotation direction to the correct angle.
-			double theta = isClockwise ? -Math.PI / 2.0 : Math.PI / 2.0;
-
-			// Perform the manipulation for the 4 corners.
-			base.SwitchAndRotate(blocks.OfType<RubikCornerBlock>().ToList(), axis.Vector, theta);
+			return blocks;
 		}
-
-		#region Private Members
 
 		/// <summary>
 		/// Generate the axes that will be available for the rotation of the cube.
@@ -94,6 +116,23 @@ namespace Twisty.Engine.Structure.Rubiks
 				new RotationAxis(FACE_ID_BACK, FACE_POSITION_BACK),
 				new RotationAxis(FACE_ID_RIGHT, FACE_POSITION_RIGHT),
 				new RotationAxis(FACE_ID_LEFT, FACE_POSITION_LEFT),
+			};
+		}
+
+		/// <summary>
+		/// Generate the axes that will be available for the rotation of the cube.
+		/// </summary>
+		/// <returns>The list of faces available on a Rubik's cube.</returns>
+		private static IEnumerable<CoreFace> GenerateFaces()
+		{
+			return new List<CoreFace>()
+			{
+				new CoreFace(FACE_ID_UP, new Plane(FACE_POSITION_UP, 1.0)),
+				new CoreFace(FACE_ID_DOWN, new Plane(FACE_POSITION_DOWN, 1.0)),
+				new CoreFace(FACE_ID_FRONT, new Plane(FACE_POSITION_FRONT, 1.0)),
+				new CoreFace(FACE_ID_BACK, new Plane(FACE_POSITION_BACK, 1.0)),
+				new CoreFace(FACE_ID_RIGHT, new Plane(FACE_POSITION_RIGHT, 1.0)),
+				new CoreFace(FACE_ID_LEFT, new Plane(FACE_POSITION_LEFT, 1.0)),
 			};
 		}
 

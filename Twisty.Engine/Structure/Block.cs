@@ -67,11 +67,8 @@ namespace Twisty.Engine.Structure
 		/// </summary>
 		/// <param name="axis">Vector indicating the axis of rotation around which the block will be rotated.</param>
 		/// <param name="theta">Angle of the rotation in radians.</param>
-		public void RotateAround(SphericalVector axis, double theta)
+		public void RotateAround(Cartesian3dCoordinate axis, double theta)
 		{
-			if (axis == null)
-				throw new ArgumentNullException("Orientation is mandatory", nameof(axis));
-
 			foreach (BlockFace face in m_Faces)
 				face.MoveAround(axis, theta);
 		}
@@ -86,8 +83,15 @@ namespace Twisty.Engine.Structure
 			if (o == null)
 				throw new ArgumentNullException("Orientation is mandatory", nameof(o));
 
-			return m_Faces.FirstOrDefault(f => f.Position == o);
+			return m_Faces.FirstOrDefault(f => f.Position.IsSameVector(CoordinateConverter.ConvertToCartesian(o)));
 		}
+
+		/// <summary>
+		/// Gets a block face based on its orientation.
+		/// </summary>
+		/// <param name="cc">Vector indicating the orientation of the face we try to get.</param>
+		/// <returns>The searched Blockface if found, otherwise, null is returned.</returns>
+		public BlockFace GetBlockFace(Cartesian3dCoordinate cc) => m_Faces.FirstOrDefault(f => f.Position.IsSameVector(cc));
 
 		/// <summary>
 		/// Gets a block face based on its Id.

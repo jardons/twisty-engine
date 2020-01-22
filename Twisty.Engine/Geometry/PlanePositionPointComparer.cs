@@ -43,8 +43,13 @@ namespace Twisty.Engine.Geometry
 		/// </returns>
 		public int Compare(Cartesian3dCoordinate x, Cartesian3dCoordinate y)
 		{
-			Cartesian2dCoordinate x2 = m_Converter.ConvertTo2d(x);
-			Cartesian2dCoordinate y2 = m_Converter.ConvertTo2d(y);
+			// Calculate intersection with plane to have all point on same plane.
+			Cartesian3dCoordinate intersectX = m_Converter.Plane.GetIntersection(x);
+			Cartesian3dCoordinate intersectY = m_Converter.Plane.GetIntersection(y);
+
+			// Convert in a 2D referential to facilitate the comparison.
+			Cartesian2dCoordinate x2 = m_Converter.ConvertTo2d(intersectX);
+			Cartesian2dCoordinate y2 = m_Converter.ConvertTo2d(intersectY);
 
 			if (x2.Y.IsEqualTo(y2.Y))
 			{

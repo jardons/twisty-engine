@@ -23,22 +23,12 @@ namespace Twisty.Engine.Tests.Geometry
 			{ "(1.5 -1.5 2.2 3.3)", 1.5, -1.5, 2.2, 3.3 },
 		};
 
-		public static readonly TheoryData<string, ParametricLine, string> LineIntersection = new TheoryData<string, ParametricLine, string>()
-		{
-			{ "(2 3 4 -20)", new ParametricLine(-2.0, 0.0, 0.0, 6.0, 5.0, 6.0), "(0.823529411764706 2.35294117647059 2.82352941176471)"},
-		};
-
 		public static readonly TheoryData<string, string, string> PlaneIntersection = new TheoryData<string, string, string>()
 		{
 			//{ "(1 0 0 0)", "(0 1 0 0)", "(0 0 0 0 0 1)"},
 			{ "(4 3 2 1)", "(1 2 3 4)", "(2 -3 0 1 -2 1)"},
 			{ "(7 8 7 8)", "(8 7 8 7)", "(0 -1 0 1 0 -1)"},
 			{ "(50 20 40 60)", "(2 4 8 16)", "(0.5 -4.25 0 0 -2 1)"},
-		};
-
-		public static readonly TheoryData<string, string, string> VectorIntersection = new TheoryData<string, string, string>()
-		{
-			{ "(2 3 4 -29)", "(2 3 4)", "(2 3 4)"},
 		};
 
 		#endregion Test Data
@@ -129,11 +119,12 @@ namespace Twisty.Engine.Tests.Geometry
 		}
 
 		[Theory]
-		[MemberData(nameof(PlaneTest.LineIntersection), MemberType = typeof(PlaneTest))]
-		public void Plane_GetIntersectionFromLine_Expected(string planeCoordinate, ParametricLine line, string expectedCoordinate)
+		[InlineData("(2 3 4 -20)", "(-2.0 0.0 0.0 6.0 5.0 6.0)", "(0.823529411764706 2.35294117647059 2.82352941176471)")]
+		public void Plane_GetIntersectionFromLine_Expected(string planeCoordinate, string lineCoordinate, string expectedCoordinate)
 		{
 			// 1. Prepare
 			Cartesian3dCoordinate expected = new Cartesian3dCoordinate(expectedCoordinate);
+			ParametricLine line = new ParametricLine(lineCoordinate);
 			Plane p = new Plane(planeCoordinate);
 
 			// 2. Execute
@@ -146,7 +137,10 @@ namespace Twisty.Engine.Tests.Geometry
 		}
 
 		[Theory]
-		[MemberData(nameof(PlaneTest.VectorIntersection), MemberType = typeof(PlaneTest))]
+		[InlineData("(2 3 4 -29)", "(2 3 4)", "(2 3 4)")]
+		[InlineData("(2 3 4 -29)", "(4 6 8)", "(2 3 4)")]
+		[InlineData("(2 3 4 -29)", "(6 9 12)", "(2 3 4)")]
+		[InlineData("(2 3 4 -29)", "(1 1.5 2)", "(2 3 4)")]
 		public void Plane_GetIntersectionFromCartesian3dCoordinate_Expected(string planeCoordinate, string Cartesian3dCoordinate, string expectedCoordinate)
 		{
 			// 1. Prepare
