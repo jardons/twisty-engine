@@ -12,16 +12,6 @@ namespace Twisty.Engine.Tests.Structure.Rubiks
 	{
 		#region Test Data
 
-		public static readonly TheoryData<string, Cartesian3dCoordinate> FacesIds = new TheoryData<string, Cartesian3dCoordinate>()
-		{
-			{ RubikCube.FACE_ID_BACK, RubikCube.FACE_POSITION_BACK },
-			{ RubikCube.FACE_ID_FRONT, RubikCube.FACE_POSITION_FRONT },
-			{ RubikCube.FACE_ID_RIGHT, RubikCube.FACE_POSITION_RIGHT },
-			{ RubikCube.FACE_ID_LEFT, RubikCube.FACE_POSITION_LEFT },
-			{ RubikCube.FACE_ID_UP, RubikCube.FACE_POSITION_UP },
-			{ RubikCube.FACE_ID_DOWN, RubikCube.FACE_POSITION_DOWN },
-		};
-
 		// (string faceId, bool isClockwise, SphericalVector blockPosition, string checkedFace, string expectedBlockFace)
 		public static readonly TheoryData<string, bool, Cartesian3dCoordinate, string, string> FacesRotations = new TheoryData<string, bool, Cartesian3dCoordinate, string, string>()
 		{
@@ -34,34 +24,18 @@ namespace Twisty.Engine.Tests.Structure.Rubiks
 		#region Test Methods
 
 		[Theory]
-		[MemberData(nameof(RubikCubeTest.FacesIds), MemberType = typeof(RubikCubeTest))]
-		public void RubikCube_CreateSize2_ContainsFourBlockPerFace(string faceId, Cartesian3dCoordinate cc)
-		{
-			// 1. Prepare
-			RubikCube c = new RubikCube(2);
-			SphericalVector v = CoordinateConverter.ConvertToSpherical(cc);
-
-			// 2. Execute
-			int count = c.GetBlocksForFace(v).Count();
-
-			// 3. Verify
-			Assert.Equal(4, count);
-		}
-
-		[Theory]
 		[MemberData(nameof(RubikCubeTest.FacesRotations), MemberType = typeof(RubikCubeTest))]
-		public void RubikCube_RotateOnceOnSize2_FindExpectedFace(string faceId, bool isClockwise, Cartesian3dCoordinate block3dPosition, string checkedFace, string expectedBlockFace)
+		public void RubikCube_RotateOnceOnSize2_FindExpectedFace(string faceId, bool isClockwise, Cartesian3dCoordinate blockPosition, string checkedFace, string expectedBlockFace)
 		{
 			// 1. Prepare
 			RubikCube c = new RubikCube(2);
-			SphericalVector blockPosition = CoordinateConverter.ConvertToSpherical(block3dPosition);
 			var axis = c.Axes.FirstOrDefault(a => a.Id == faceId);
 			var checkedAxis = c.Axes.FirstOrDefault(a => a.Id == checkedFace);
-			var initialBlock = c.Blocks.FirstOrDefault(b => b.Position == blockPosition);
+			var initialBlock = c.Blocks.FirstOrDefault(b => b.Position.IsSameVector(blockPosition));
 
 			// 2. Execute
 			c.RotateAround(axis, isClockwise);
-			var block = c.Blocks.FirstOrDefault(b => b.Position == blockPosition);
+			var block = c.Blocks.FirstOrDefault(b => b.Position.IsSameVector(blockPosition));
 			var face = block.GetBlockFace(checkedAxis.Vector);
 
 			// 3. Verify

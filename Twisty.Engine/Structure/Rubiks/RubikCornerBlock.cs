@@ -20,26 +20,10 @@ namespace Twisty.Engine.Structure.Rubiks
 		/// <param name="face1">First visible face of the block.</param>
 		/// <param name="face2">Second visible face of the block.</param>
 		/// <param name="face3">Third visible face of the block.</param>
-		public RubikCornerBlock(SphericalVector initialPosition, BlockFace face1, BlockFace face2, BlockFace face3)
-			: base(new BlockFace[] { face1, face2, face3 })
-        {
-            base.Position = initialPosition;
-
-			// Each corner block is unique in the cube and be identified by the combination of his 3 faces.
-			m_Id = $"C{face1.Id}{face2.Id}{face3.Id}";
-		}
-
-		/// <summary>
-		/// Create a standard Rubik Corner.
-		/// </summary>
-		/// <param name="initialPosition">Initial position vector of the block in the cube.</param>
-		/// <param name="face1">First visible face of the block.</param>
-		/// <param name="face2">Second visible face of the block.</param>
-		/// <param name="face3">Third visible face of the block.</param>
 		public RubikCornerBlock(Cartesian3dCoordinate initialPosition, BlockFace face1, BlockFace face2, BlockFace face3)
 			: base(new BlockFace[] { face1, face2, face3 })
 		{
-			base.Position = CoordinateConverter.ConvertToSpherical(initialPosition);
+			base.Position = initialPosition;
 
 			// Each corner block is unique in the cube and be identified by the combination of his 3 faces.
 			m_Id = $"C{face1.Id}{face2.Id}{face3.Id}";

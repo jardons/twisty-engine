@@ -70,13 +70,13 @@ namespace Twisty.Engine.Structure.Rubiks
 			double theta = isClockwise ? -Math.PI / 2.0 : Math.PI / 2.0;
 
 			// Perform the manipulation for the 4 corners.
-			base.SwitchAndRotate(blocks.OfType<RubikCornerBlock>().ToList(), CoordinateConverter.ConvertToCartesian(axis.Vector), theta);
+			base.SwitchAndRotate(blocks.OfType<RubikCornerBlock>().ToList(), axis.Vector, theta);
 
 			// Perform the edges rotation.
-			base.SwitchAndRotate(blocks.OfType<RubikEdgeBlock>().ToList(), CoordinateConverter.ConvertToCartesian(axis.Vector), theta);
+			base.SwitchAndRotate(blocks.OfType<RubikEdgeBlock>().ToList(), axis.Vector, theta);
 
 			// Perform the center rotation.
-			base.SwitchAndRotate(blocks.OfType<RubikCenterBlock>().ToList(), CoordinateConverter.ConvertToCartesian(axis.Vector), theta);
+			base.SwitchAndRotate(blocks.OfType<RubikCenterBlock>().ToList(), axis.Vector, theta);
 		}
 
 		#region Private Members
@@ -87,14 +87,14 @@ namespace Twisty.Engine.Structure.Rubiks
 		/// <param name="axis">Axis around which the blocks will be ordered.</param>
 		/// <param name="isClockwise">Boolean indicating if whether the rotation direction is clockwise or not.</param>
 		/// <returns>The ordered collection of blocks.</returns>
-		private IList<IPositionnedBySphericalVector> GetOrderedBlocks(RotationAxis axis, bool isClockwise)
+		private IList<IPositionnedByCartesian3dVector> GetOrderedBlocks(RotationAxis axis, bool isClockwise)
 		{
 			// Select all blocks that will be included in the rotation.
-			var blocks = base.GetBlocksForFace(axis.Vector).OfType<IPositionnedBySphericalVector>().ToList();
+			var blocks = base.GetBlocksForFace(axis.Vector).OfType<IPositionnedByCartesian3dVector>().ToList();
 			if (blocks.Count == 0)
 				return blocks;
 
-			Plane p = new Plane(CoordinateConverter.ConvertToCartesian(axis.Vector), CoordinateConverter.ConvertToCartesian(blocks[0].Position));
+			Plane p = new Plane(axis.Vector, blocks[0].Position);
 			blocks.Sort(new CircularVectorComparer(p));
 			if (isClockwise)
 				blocks.Reverse();

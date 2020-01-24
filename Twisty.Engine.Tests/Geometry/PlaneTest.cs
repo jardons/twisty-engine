@@ -58,13 +58,13 @@ namespace Twisty.Engine.Tests.Geometry
 		[InlineData("(1 2)")]
 		[InlineData("(1 2 3)")]
 		[InlineData("(1 2 3 4 5)")]
-		public void Plane_CreateFromInvalidString_ThrowArgumentException(string planCoordinates)
+		public void Plane_CreateFromInvalidString_ThrowArgumentException(string planeCoordinates)
 		{
 			// 1. Prepare
 			// Nothing to prepare
 
 			// 2. Execute
-			Action a = () => new Plane(planCoordinates);
+			Action a = () => new Plane(planeCoordinates);
 
 			// 3. Verify
 			Assert.Throws<ArgumentException>(a);
@@ -72,7 +72,7 @@ namespace Twisty.Engine.Tests.Geometry
 
 		[Theory]
 		[MemberData(nameof(PlaneTest.CreationFromString), MemberType = typeof(PlaneTest))]
-		public void Plane_CreateFromDoubles_BeExpected(string planCoordinates, double expectedA, double expectedB, double expectedC, double expectedD)
+		public void Plane_CreateFromDoubles_BeExpected(string planeCoordinates, double expectedA, double expectedB, double expectedC, double expectedD)
 		{
 			// 1. Prepare
 			// Nothing to prepare

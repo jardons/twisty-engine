@@ -19,7 +19,7 @@ namespace Twisty.Engine.Geometry
 	///    7    |
 	///        -y
 	/// </remarks>
-	public class PlanePositionPointComparer : IComparer<Cartesian3dCoordinate>, IComparer<IPositionnedBySphericalVector>
+	public class PlanePositionPointComparer : IComparer<Cartesian3dCoordinate>, IComparer<IPositionnedByCartesian3dVector>
 	{
 		private CartesianCoordinatesConverter m_Converter;
 
@@ -78,10 +78,7 @@ namespace Twisty.Engine.Geometry
 		/// - If 0, x equals y.
 		/// - If greater than 0, x is greater than y.
 		/// </returns>
-		public int Compare(IPositionnedBySphericalVector x, IPositionnedBySphericalVector y)
-		{
-			return this.Compare(CoordinateConverter.ConvertToCartesian(x.Position), CoordinateConverter.ConvertToCartesian(y.Position));
-		}
+		public int Compare(IPositionnedByCartesian3dVector x, IPositionnedByCartesian3dVector y) => this.Compare(x.Position, y.Position);
 
 		#endregion IComparer<IPositionnedBySphericalVector> Members
 	}

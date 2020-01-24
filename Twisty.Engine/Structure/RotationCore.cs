@@ -74,13 +74,7 @@ namespace Twisty.Engine.Structure
 		/// <param name="v">Orientation of the face of the puzzle.</param>
 		/// <returns>The list of blocks currently visible on the requested face.</returns>
 		/// <remarks>Logic is only valid for standard forms. Any shapeshifting form would need to improve this logic.</remarks>
-		public IEnumerable<Block> GetBlocksForFace(SphericalVector v)
-		{
-			if (v == null)
-				throw new ArgumentNullException("Orientation is mandatory", nameof(v));
-
-			return m_Blocks.Where(b => b.GetBlockFace(v) != null);
-		}
+		public IEnumerable<Block> GetBlocksForFace(Cartesian3dCoordinate v) => m_Blocks.Where(b => b.GetBlockFace(v) != null);
 
 		/// <summary>
 		/// Gets an axis using its id.

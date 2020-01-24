@@ -10,7 +10,7 @@ namespace Twisty.Engine.Structure
 	/// Class describing a block moving around the rotation core.
 	/// </summary>
 	[DebuggerDisplay("{Id}")]
-	public abstract class Block : IPositionnedBySphericalVector
+	public abstract class Block : IPositionnedByCartesian3dVector
 	{
 		private List<BlockFace> m_Faces;
 
@@ -46,7 +46,7 @@ namespace Twisty.Engine.Structure
 		/// <summary>
 		/// Position is stored using the direction relative to the Form center.
 		/// </summary>
-		public SphericalVector Position { get; set; }
+		public Cartesian3dCoordinate Position { get; set; }
 
 		/// <summary>
 		/// Gets the unique ID of the block.

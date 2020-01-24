@@ -16,24 +16,10 @@ namespace Twisty.Engine.Structure.Rubiks
 		/// </summary>
 		/// <param name="initialPosition">Initial position vector of the block in the cube.</param>
 		/// <param name="face">Visible face of the block.</param>
-		public RubikCenterBlock(SphericalVector initialPosition, BlockFace face)
-			: base(face)
-		{
-			base.Position = initialPosition;
-
-			// Each corner block is unique in the cube and be identified by his face.
-			Id = $"CF_{face.Id}";
-		}
-
-		/// <summary>
-		/// Create a standard Rubik Corner.
-		/// </summary>
-		/// <param name="initialPosition">Initial position vector of the block in the cube.</param>
-		/// <param name="face">Visible face of the block.</param>
 		public RubikCenterBlock(Cartesian3dCoordinate initialPosition, BlockFace face)
 			: base(face)
 		{
-			base.Position = CoordinateConverter.ConvertToSpherical(initialPosition);
+			base.Position = initialPosition;
 
 			// Each corner block is unique in the cube and be identified by his face.
 			Id = $"CF_{face.Id}";

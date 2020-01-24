@@ -20,8 +20,7 @@ namespace Twisty.Bash.Controllers
 		{
 			foreach (RotationAxis a in Core.Axes)
 			{
-				Cartesian3dCoordinate cc = CoordinateConverter.ConvertToCartesian(a.Vector);
-				System.Console.WriteLine($"{a.Id} {FormatCoordinates(a.Vector)} {FormatCoordinates(cc)}");
+				System.Console.WriteLine($"{a.Id} {FormatCoordinates(a.Vector)}");
 			}
 		}
 
@@ -30,20 +29,19 @@ namespace Twisty.Bash.Controllers
 		{
 			RotationAxis a = Core.GetAxis(faceId);
 			Plane p = new Plane(
-				CoordinateConverter.ConvertToCartesian(a.Vector),
-				CoordinateConverter.ConvertToCartesian(Core.GetBlocksForFace(a.Vector).FirstOrDefault().Position));
+				a.Vector,
+				Core.GetBlocksForFace(a.Vector).FirstOrDefault().Position);
 			CartesianCoordinatesConverter c = new CartesianCoordinatesConverter(p);
 
 			var blocks = Core.GetBlocksForFace(a.Vector)
-				.OfType<IPositionnedBySphericalVector>()
+				.OfType<IPositionnedByCartesian3dVector>()
 				.ToList();
 			blocks.Sort(new PlanePositionPointComparer(p));
 
 			foreach (Block b in blocks.OfType<Block>())
 			{
-				Cartesian3dCoordinate cc = CoordinateConverter.ConvertToCartesian(b.Position);
-				Cartesian2dCoordinate c2 = c.ConvertTo2d(cc);
-				System.Console.WriteLine($"{b.Id} {FormatCoordinates(b.Position)} {FormatCoordinates(cc)} {FormatCoordinates(c2)}");
+				Cartesian2dCoordinate c2 = c.ConvertTo2d(b.Position);
+				System.Console.WriteLine($"{b.Id} {FormatCoordinates(b.Position)} {FormatCoordinates(c2)}");
 			}
 		}
 
@@ -51,9 +49,8 @@ namespace Twisty.Bash.Controllers
 		private void GetBlock(string blockId)
 		{
 			Block b = Core.Blocks.FirstOrDefault(block => block.Id == blockId);
-
-			Cartesian3dCoordinate cc = CoordinateConverter.ConvertToCartesian(b.Position);
-			Console.WriteLine($"{b.Id} ({b.Position.Phi}, {b.Position.Theta}) ({cc.X}, {cc.Y}, {cc.Z})");
+			
+			Console.WriteLine($"{b.Id} {FormatCoordinates(b.Position)}");
 
 			foreach (BlockFace face in b.Faces)
 			{
