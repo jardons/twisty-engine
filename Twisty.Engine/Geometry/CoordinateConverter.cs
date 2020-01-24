@@ -111,7 +111,7 @@ namespace Twisty.Engine.Geometry
 
 			return new SphericalVector(
 				Math.Atan2(cc.Y, cc.X),
-				Math.Acos(cc.Z / cc.Magnitude)
+				Trigonometry.Acos(cc.Z / cc.Magnitude)
 			);
 		}
 	}

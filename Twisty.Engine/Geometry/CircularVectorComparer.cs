@@ -6,19 +6,19 @@ namespace Twisty.Engine.Geometry
 	/// <summary>
 	/// Interface used to identify objects positionned using a SphericalVector relative to a central point.
 	/// </summary>
-	public interface IPositionnedBySphericalVector
+	public interface IPositionnedByCartesian3dVector
 	{
 		/// <summary>
 		/// Position is stored using the direction relative to the a center.
 		/// </summary>
-		SphericalVector Position { get; }
+		Cartesian3dCoordinate Position { get; }
 	}
 
 	/// <summary>
 	/// Comparer allowing to compare vector based on their angular distance to the X axis in a Plane.
 	/// The sorting direction is counter-clockwise.
 	/// </summary>
-	public class CircularVectorComparer : IComparer<SphericalVector>, IComparer<Cartesian3dCoordinate>, IComparer<IPositionnedBySphericalVector>
+	public class CircularVectorComparer : IComparer<SphericalVector>, IComparer<Cartesian3dCoordinate>, IComparer<IPositionnedByCartesian3dVector>
 	{
 		private CartesianCoordinatesConverter m_Converter;
 
@@ -127,7 +127,7 @@ namespace Twisty.Engine.Geometry
 		/// - If 0, x equals y.
 		/// - If greater than 0, x is greater than y.
 		/// </returns>
-		public int Compare(IPositionnedBySphericalVector x, IPositionnedBySphericalVector y)
+		public int Compare(IPositionnedByCartesian3dVector x, IPositionnedByCartesian3dVector y)
 		{
 			return this.Compare(x.Position, y.Position);
 		}

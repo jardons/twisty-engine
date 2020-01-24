@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Twisty.Engine.Geometry;
 using Twisty.Engine.Operations;
 using Twisty.Engine.Operations.Rubiks;
 using Twisty.Engine.Structure;
@@ -75,6 +76,20 @@ namespace Twisty.Bash.Controllers
 			}
 		}
 
+		#region Abstract Members
+
 		protected abstract void Render();
+
+		#endregion Abstract Members
+
+		#region Protected Members
+
+		protected string FormatCoordinates(SphericalVector v) => $"({v.Phi:0.00}, {v.Theta:0.00})";
+
+		protected string FormatCoordinates(Cartesian3dCoordinate cc) => $"({cc.X:0.00}, {cc.Y:0.00}, {cc.Z:0.00})";
+
+		protected string FormatCoordinates(Cartesian2dCoordinate cc) => $"({cc.X:0.00}, {cc.Y:0.00})";
+
+		#endregion Protected Members
 	}
 }
