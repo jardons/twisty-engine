@@ -301,6 +301,122 @@ namespace Twisty.Engine.Tests.Geometry
 			Assert.Equal(expected.X, r.X, PRECISION_DOUBLE);
 			Assert.Equal(expected.Y, r.Y, PRECISION_DOUBLE);
 			Assert.Equal(expected.Z, r.Z, PRECISION_DOUBLE);
+    }
+
+    [Theory]
+		[InlineData("(1 1 1)", "(0.577350269189626 0.577350269189626 0.577350269189626)")]
+		[InlineData("(0.5 0.5 0.5)", "(0.577350269189626 0.577350269189626 0.577350269189626)")]
+		[InlineData("(2 2 2)", "(0.577350269189626 0.577350269189626 0.577350269189626)")]
+		[InlineData("(666 666 666)", "(0.577350269189626 0.577350269189626 0.577350269189626)")]
+		[InlineData("(1 0 0)", "(1 0 0)")]
+		[InlineData("(0 1 0)", "(0 1 0)")]
+		[InlineData("(0 0 1)", "(0 0 1)")]
+		[InlineData("(10 0 0)", "(1 0 0)")]
+		[InlineData("(0 10 0)", "(0 1 0)")]
+		[InlineData("(0 0 10)", "(0 0 1)")]
+		[InlineData("(4 5 6)", "(0.455842305838552 0.56980288229819 0.683763458757828)")]
+		[InlineData("(3 2 1)", "(0.801783725737273 0.534522483824849 0.267261241912424)")]
+		public void Cartesian3dCoordinate_NormalizeValues_ShouldMatch(string coord, string expected)
+		{
+			// 1. Prepare
+			Cartesian3dCoordinate cc = new Cartesian3dCoordinate(coord);
+			Cartesian3dCoordinate expectedCoordinates = new Cartesian3dCoordinate(expected);
+
+			// 2. Execute
+			Cartesian3dCoordinate r = cc.Normalize();
+
+			// 3. Verify
+			Assert.Equal(expectedCoordinates.X, r.X, PRECISION_DOUBLE);
+			Assert.Equal(expectedCoordinates.Y, r.Y, PRECISION_DOUBLE);
+			Assert.Equal(expectedCoordinates.Z, r.Z, PRECISION_DOUBLE);
+		}
+
+		[Theory]
+		[InlineData("(0 0 0)", "(0 0 0)")]
+		[InlineData("(1 1 1)", "(1 1 1)")]
+		[InlineData("(-1 2 3)", "(-1 2 3)")]
+		[InlineData("(0.5 0.5 0.5)", "(0.5 0.5 0.5)")]
+		[InlineData("(0.5 0.5 0.5)", "(0.4999999999999 0.5000000000001 0.5)")]
+		public void Cartesian3dCoordinate_IsSamePoint_True(string cc1, string cc2)
+		{
+			// 1. Prepare
+			Cartesian3dCoordinate c1 = new Cartesian3dCoordinate(cc1);
+			Cartesian3dCoordinate c2 = new Cartesian3dCoordinate(cc2);
+
+			// 2. Execute
+			bool r1 = c1.IsSamePoint(c2);
+			bool r2 = c2.IsSamePoint(c1);
+
+			// 3. Verify
+			Assert.True(r1);
+			Assert.True(r2);
+		}
+
+		[Theory]
+		[InlineData("(0 0 0)", "(1 1 1)")]
+		[InlineData("(1 1 1)", "(1 2 1)")]
+		[InlineData("(-1 2 3)", "(1 2 3)")]
+		[InlineData("(0.5 0.5 0.5)", "(1 1 1)")]
+		[InlineData("(0.5 0.5 0.5)", "(0.4999999 0.5 0.5)")]
+		[InlineData("(0.5 0.5 0.5)", "(0.5 0.500001 0.5)")]
+		public void Cartesian3dCoordinate_IsSamePoint_False(string cc1, string cc2)
+		{
+			// 1. Prepare
+			Cartesian3dCoordinate c1 = new Cartesian3dCoordinate(cc1);
+			Cartesian3dCoordinate c2 = new Cartesian3dCoordinate(cc2);
+
+			// 2. Execute
+			bool r1 = c1.IsSamePoint(c2);
+			bool r2 = c2.IsSamePoint(c1);
+
+			// 3. Verify
+			Assert.False(r1);
+			Assert.False(r2);
+		}
+
+		[Theory]
+		[InlineData("(0 0 0)", "(0 0 0)")]
+		[InlineData("(1 1 1)", "(1 1 1)")]
+		[InlineData("(1 1 1)", "(2 2 2)")]
+		[InlineData("(-1 2 3)", "(-1 2 3)")]
+		[InlineData("(0.5 0.5 0.5)", "(0.5 0.5 0.5)")]
+		[InlineData("(0.5 0.5 0.5)", "(1 1 1)")]
+		[InlineData("(0.5 0.5 0.5)", "(0.4999999999999 0.5000000000001 0.5)")]
+		public void Cartesian3dCoordinate_IsSameVector_True(string cc1, string cc2)
+		{
+			// 1. Prepare
+			Cartesian3dCoordinate c1 = new Cartesian3dCoordinate(cc1);
+			Cartesian3dCoordinate c2 = new Cartesian3dCoordinate(cc2);
+
+			// 2. Execute
+			bool r1 = c1.IsSameVector(c2);
+			bool r2 = c2.IsSameVector(c1);
+
+			// 3. Verify
+			Assert.True(r1);
+			Assert.True(r2);
+		}
+
+		[Theory]
+		[InlineData("(0 0 0)", "(1 1 1)")]
+		[InlineData("(1 1 1)", "(1 2 1)")]
+		[InlineData("(-1 2 3)", "(1 2 3)")]
+		[InlineData("(0.5 0.5 0.5)", "(1 2 3)")]
+		[InlineData("(0.5 0.5 0.5)", "(0.4999999 0.5 0.5)")]
+		[InlineData("(0.5 0.5 0.5)", "(0.5 0.500001 0.5)")]
+		public void Cartesian3dCoordinate_IsSameVector_False(string cc1, string cc2)
+		{
+			// 1. Prepare
+			Cartesian3dCoordinate c1 = new Cartesian3dCoordinate(cc1);
+			Cartesian3dCoordinate c2 = new Cartesian3dCoordinate(cc2);
+
+			// 2. Execute
+			bool r1 = c1.IsSameVector(c2);
+			bool r2 = c2.IsSameVector(c1);
+
+			// 3. Verify
+			Assert.False(r1);
+			Assert.False(r2);
 		}
 
 		#endregion Test Methods

@@ -362,6 +362,20 @@ namespace Twisty.Engine.Geometry
 			);
 		}
 
+		/// <summary>
+		/// Evaluate if the 2 Cartesian3dCoordinate are concidered as equal points in this context.
+		/// </summary>
+		/// <param name="cc">Coordinates to compare to the current object.</param>
+		/// <returns>A boolean indicating whether the 2 coordinates are equals or not.</returns>
+		public bool IsSamePoint(Cartesian3dCoordinate cc) => this.X.IsEqualTo(cc.X) && this.Y.IsEqualTo(cc.Y) && this.Z.IsEqualTo(cc.Z);
+
+		/// <summary>
+		/// Evaluate if the 2 Cartesian3dCoordinate are concidered as equal vector in this context.
+		/// </summary>
+		/// <param name="cc">Coordinates to compare to the current object.</param>
+		/// <returns>A boolean indicating whether the 2 coordinates are equals or not.</returns>
+		public bool IsSameVector(Cartesian3dCoordinate cc) => this.Normalize().IsSamePoint(cc.Normalize());
+
 		#endregion Public Methods
 
 		#region Operators

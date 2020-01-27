@@ -16,7 +16,7 @@ namespace Twisty.Engine.Structure
 		/// <param name="axis">Rotation Axis coordinate starting from the core center.</param>
 		/// <exception cref="System.ArgumentNullException">Axis id is mandatory.</exception>
 		/// <exception cref="System.ArgumentException">Axis id cannot be an empty or a white string.</exception>
-		public RotationAxis(string id, SphericalVector axis)
+		public RotationAxis(string id, Cartesian3dCoordinate axis)
 		{
 			if (id == null)
 				throw new ArgumentNullException(nameof(id), "Axis id is mandatory.");
@@ -38,7 +38,7 @@ namespace Twisty.Engine.Structure
 		/// <summary>
 		/// Gets the Axis coordinate used for the rotation.
 		/// </summary>
-		public SphericalVector Vector { get; }
+		public Cartesian3dCoordinate Vector { get; }
 
 		#endregion Public Properties
 	}

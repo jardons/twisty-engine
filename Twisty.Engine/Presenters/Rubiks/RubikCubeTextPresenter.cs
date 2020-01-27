@@ -163,10 +163,10 @@ namespace Twisty.Engine.Presenters.Rubiks
 			int i = 0;
 			int j = 0;
 
-			var first = CoordinateConverter.ConvertToCartesian(blocks.FirstOrDefault().Position);
-			Plane p = new Plane(CoordinateConverter.ConvertToCartesian(axis.Vector), first);
+			var first = blocks.FirstOrDefault().Position;
+			Plane p = new Plane(axis.Vector, first);
 
-			var sortedBlocks = blocks.OfType<IPositionnedBySphericalVector>().ToList();
+			var sortedBlocks = blocks.OfType<IPositionnedByCartesian3dVector>().ToList();
 			sortedBlocks.Sort(new PlanePositionPointComparer(p));
 
 			foreach (var block in sortedBlocks.OfType<Block>())
@@ -178,7 +178,7 @@ namespace Twisty.Engine.Presenters.Rubiks
 				result.Append("****");
 
 				faces[j, i++] = result;
-				if (i >= 2)
+				if (i >= this.Cube.N)
 				{
 					i = 0;
 					++j;

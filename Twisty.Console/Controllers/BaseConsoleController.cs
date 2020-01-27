@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Twisty.Engine.Geometry;
 using Twisty.Engine.Operations;
 using Twisty.Engine.Operations.Rubiks;
 using Twisty.Engine.Structure;
@@ -96,7 +97,21 @@ namespace Twisty.Bash.Controllers
 			}
 		}
 
+		#region Abstract Members
+
 		protected abstract void Render();
+
+		#endregion Abstract Members
+
+		#region Protected Members
+
+		protected string FormatCoordinates(SphericalVector v) => $"({v.Phi:0.00}, {v.Theta:0.00})";
+
+		protected string FormatCoordinates(Cartesian3dCoordinate cc) => $"({cc.X:0.00}, {cc.Y:0.00}, {cc.Z:0.00})";
+
+		protected string FormatCoordinates(Cartesian2dCoordinate cc) => $"({cc.X:0.00}, {cc.Y:0.00})";
+
+		#endregion Protected Members
 
 		/// <summary>
 		/// Write Error message relative to an invalid command.
