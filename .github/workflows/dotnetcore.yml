@@ -17,7 +17,7 @@ jobs:
       run: dotnet build --configuration Release
     - name: Run Units Tests
       run: dotnet test
-      
+
   sonarCloudTrigger:
     name: SonarCloud Trigger
     runs-on: ubuntu-latest
