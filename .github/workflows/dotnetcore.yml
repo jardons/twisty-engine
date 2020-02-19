@@ -19,6 +19,7 @@ jobs:
       run: dotnet test
 
   sonarCloudTrigger:
+    needs: build
     name: SonarCloud Trigger
     runs-on: ubuntu-latest
     steps:
