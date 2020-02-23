@@ -15,8 +15,12 @@ jobs:
         dotnet-version: 2.2.108
     - name: Setup SonarSource
       run: dotnet tool install --global dotnet-sonarscanner --version 4.7.1
+    - name: Prepare SonarCube Analysis
+      run: dotnet sonarscanner begin /k:"jardons_twisty-engine" /o:"jardons"  /d:sonar.host.url=https://sonarcloud.io /d:"sonar.login=${{ secrets.SONAR_TOKEN }}"
     - name: Build with dotnet
-      run: dotnet build --configuration Release
+      run: dotnet build
+    - name: Publish to SonarSource
+      run: dotnet sonarscanner end /d:"sonar.login=${{ secrets.SONAR_TOKEN }}"
     - name: Run Units Tests
       run: dotnet test
 
