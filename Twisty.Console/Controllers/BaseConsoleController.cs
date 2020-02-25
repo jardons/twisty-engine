@@ -13,7 +13,7 @@ namespace Twisty.Bash.Controllers
 	/// <summary>
 	/// Controller objet that will handle interaction between the consol and the Twisty Engine Cores.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
+	/// <typeparam name="T">RotationCore type for which this controller is designed.</typeparam>
 	public abstract class BaseConsoleController<T>
 		where T : RotationCore
 	{
