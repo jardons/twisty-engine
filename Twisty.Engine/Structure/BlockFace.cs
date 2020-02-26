@@ -40,7 +40,5 @@ namespace Twisty.Engine.Structure
 		/// Textual identifier used to identify BlockFaces among them and should match the correct face of the owner.
 		/// </summary>
 		public string Id { get; }
-
-		public void MoveAround(Cartesian3dCoordinate axis, double theta) => this.Position = this.Position.RotateAroundVector(axis, theta);
 	}
 }

@@ -25,6 +25,8 @@ namespace Twisty.Engine.Structure
 
 			m_Faces = new List<BlockFace>();
 			m_Faces.Add(face);
+
+			this.Orientation = Cartesian3dCoordinate.XAxis;
 		}
 
 		/// <summary>
@@ -39,6 +41,8 @@ namespace Twisty.Engine.Structure
 			m_Faces = new List<BlockFace>(faces);
 			if (m_Faces.Count == 0)
 				throw new ArgumentException("A block need at least one visible BlockFace", nameof(faces));
+
+			this.Orientation = Cartesian3dCoordinate.XAxis;
 		}
 
 		#region Public Properties
@@ -47,6 +51,11 @@ namespace Twisty.Engine.Structure
 		/// Position is stored using the direction relative to the Form center.
 		/// </summary>
 		public Cartesian3dCoordinate Position { get; set; }
+
+		/// <summary>
+		/// Current Orientation of the block.
+		/// </summary>
+		public Cartesian3dCoordinate Orientation { get; set; }
 
 		/// <summary>
 		/// Gets the unique ID of the block.
@@ -67,11 +76,7 @@ namespace Twisty.Engine.Structure
 		/// </summary>
 		/// <param name="axis">Vector indicating the axis of rotation around which the block will be rotated.</param>
 		/// <param name="theta">Angle of the rotation in radians.</param>
-		public void RotateAround(Cartesian3dCoordinate axis, double theta)
-		{
-			foreach (BlockFace face in m_Faces)
-				face.MoveAround(axis, theta);
-		}
+		public void RotateAround(Cartesian3dCoordinate axis, double theta) => this.Orientation = this.Orientation.RotateAroundVector(axis, theta);
 
 		/// <summary>
 		/// Gets a block face based on its orientation.
@@ -83,7 +88,7 @@ namespace Twisty.Engine.Structure
 			if (o == null)
 				throw new ArgumentNullException("Orientation is mandatory", nameof(o));
 
-			return m_Faces.FirstOrDefault(f => f.Position.IsSameVector(CoordinateConverter.ConvertToCartesian(o)));
+			return m_Faces.FirstOrDefault(f => f.Position.TransposeFromReferential(this.Orientation).IsSameVector(CoordinateConverter.ConvertToCartesian(o)));
 		}
 
 		/// <summary>
@@ -91,7 +96,7 @@ namespace Twisty.Engine.Structure
 		/// </summary>
 		/// <param name="cc">Vector indicating the orientation of the face we try to get.</param>
 		/// <returns>The searched Blockface if found, otherwise, null is returned.</returns>
-		public BlockFace GetBlockFace(Cartesian3dCoordinate cc) => m_Faces.FirstOrDefault(f => f.Position.IsSameVector(cc));
+		public BlockFace GetBlockFace(Cartesian3dCoordinate cc) => m_Faces.FirstOrDefault(f => f.Position.TransposeFromReferential(this.Orientation).IsSameVector(cc));
 
 		/// <summary>
 		/// Gets a block face based on its Id.
