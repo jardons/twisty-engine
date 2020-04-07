@@ -1,4 +1,6 @@
-﻿namespace Twisty.Engine.Geometry.Rotations
+﻿using System;
+
+namespace Twisty.Engine.Geometry.Rotations
 {
 	/// <summary>
 	/// Class describing a Rotation using the rotation matrix formula.
@@ -46,7 +48,22 @@
 		}
 
 		/// <summary>
-		/// ROtate the provided vector based using this rotation.
+		/// Create a new rotation matrix based on a the matrix as a table format.
+		/// </summary>
+		/// <param name="matrix">Precalculated matrix as a table format.</param>
+		private RotationMatrix3d(double[,] matrix)
+		{
+			if (matrix == null)
+				throw new ArgumentNullException(nameof(matrix));
+
+			if (matrix.Length != 9)
+				throw new ArgumentException("Matrix size is expected to be [3, 3].");
+
+			this.m_Matrix = matrix;
+		}
+
+		/// <summary>
+		/// Rotate the provided vector based using this rotation.
 		/// </summary>
 		/// <param name="cc">Cartesian COordiante of the point to rotate.</param>
 		/// <returns>Rotated value.</returns>
@@ -56,6 +73,35 @@
 				(cc.X * m_Matrix[0, 0]) + (cc.Y * m_Matrix[0, 1]) + (cc.Z * m_Matrix[0, 2]),
 				(cc.X * m_Matrix[1, 0]) + (cc.Y * m_Matrix[1, 1]) + (cc.Z * m_Matrix[1, 2]),
 				(cc.X * m_Matrix[2, 0]) + (cc.Y * m_Matrix[2, 1]) + (cc.Z * m_Matrix[2, 2]));
+		}
+
+		/// <summary>
+		/// Rotate the provided vector based using this rotation.
+		/// </summary>
+		/// <param name="cc">Cartesian COordiante of the point to rotate.</param>
+		/// <returns>Rotated value.</returns>
+		public RotationMatrix3d Rotate(RotationMatrix3d cc)
+		{
+			return new RotationMatrix3d(
+				new double[3, 3]
+				{
+					{
+						(cc.m_Matrix[0, 0] * this.m_Matrix[0, 0]) + (cc.m_Matrix[0, 1] * this.m_Matrix[1, 0]) + (cc.m_Matrix[0, 2] * this.m_Matrix[2, 0]),
+						(cc.m_Matrix[0, 0] * this.m_Matrix[0, 1]) + (cc.m_Matrix[0, 1] * this.m_Matrix[1, 1]) + (cc.m_Matrix[0, 2] * this.m_Matrix[2, 1]),
+						(cc.m_Matrix[0, 0] * this.m_Matrix[0, 2]) + (cc.m_Matrix[0, 1] * this.m_Matrix[1, 2]) + (cc.m_Matrix[0, 2] * this.m_Matrix[2, 2])
+					},
+					{
+						(cc.m_Matrix[1, 0] * this.m_Matrix[0, 0]) + (cc.m_Matrix[1, 1] * this.m_Matrix[1, 0]) + (cc.m_Matrix[1, 2] * this.m_Matrix[2, 0]),
+						(cc.m_Matrix[1, 0] * this.m_Matrix[0, 1]) + (cc.m_Matrix[1, 1] * this.m_Matrix[1, 1]) + (cc.m_Matrix[1, 2] * this.m_Matrix[2, 1]),
+						(cc.m_Matrix[1, 0] * this.m_Matrix[0, 2]) + (cc.m_Matrix[1, 1] * this.m_Matrix[1, 2]) + (cc.m_Matrix[1, 2] * this.m_Matrix[2, 2])
+					},
+					{
+						(cc.m_Matrix[2, 0] * this.m_Matrix[0, 0]) + (cc.m_Matrix[2, 1] * this.m_Matrix[1, 0]) + (cc.m_Matrix[2, 2] * this.m_Matrix[2, 0]),
+						(cc.m_Matrix[2, 0] * this.m_Matrix[0, 1]) + (cc.m_Matrix[2, 1] * this.m_Matrix[1, 1]) + (cc.m_Matrix[2, 2] * this.m_Matrix[2, 1]),
+						(cc.m_Matrix[2, 0] * this.m_Matrix[0, 2]) + (cc.m_Matrix[2, 1] * this.m_Matrix[1, 2]) + (cc.m_Matrix[2, 2] * this.m_Matrix[2, 2])
+					}
+				}
+			);
 		}
 	}
 }
