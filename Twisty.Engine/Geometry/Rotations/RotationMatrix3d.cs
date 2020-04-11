@@ -35,9 +35,9 @@ namespace Twisty.Engine.Geometry.Rotations
 			// Create the matrix
 			m_Matrix = new double[3, 3];
 
-			m_Matrix[0, 0] = c + axis.X * axis.X * t;
-			m_Matrix[1, 1] = c + axis.Y * axis.Y * t;
-			m_Matrix[2, 2] = c + axis.Z * axis.Z * t;
+			m_Matrix[0, 0] = c + (axis.X * axis.X * t);
+			m_Matrix[1, 1] = c + (axis.Y * axis.Y * t);
+			m_Matrix[2, 2] = c + (axis.Z * axis.Z * t);
 
 			double part1 = axis.X * axis.Y * t;
 			double part2 = axis.Z * s;
