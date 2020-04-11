@@ -10,6 +10,14 @@ namespace Twisty.Engine.Geometry.Rotations
 		private readonly double[,] m_Matrix;
 
 		/// <summary>
+		/// Create a unrotated rotation matrix.
+		/// </summary>
+		public RotationMatrix3d()
+		{
+			this.m_Matrix = new double[,] { { 1.0, 0.0, 0.0 }, { 0.0, 1.0, 0.0 }, { 0.0, 0.0, 1.0 } };
+		}
+
+		/// <summary>
 		/// Create a new rotation matrix based on a rotation axis and an angle.
 		/// </summary>
 		/// <param name="axis">Axis around which the rotation is executed</param>
