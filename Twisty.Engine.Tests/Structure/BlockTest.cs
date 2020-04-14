@@ -72,43 +72,21 @@ namespace Twisty.Engine.Tests.Structure
 		}
 
 		[Theory]
-
-		[InlineData("(0 0 1)", Math.PI /2.0, "(0 1 1)")]
-		public void Block_RotateAndGetFace_ShouldFindFace(string axisCc, double theta, string expectedCc)
+		[InlineData("(0 0 1)", Math.PI /2.0, "(1 0 0)", "(0 -1 0)")]
+		[InlineData("(0 0 1)", Math.PI / 2.0, "(0 1 0)", "(1 0 0)")]
+		[InlineData("(0 0 1)", Math.PI / 2.0, "(-1 0 0)", "(0 1 0)")]
+		[InlineData("(0 0 1)", Math.PI / 2.0, "(0 -1 0)", "(-1 0 0)")]
+		public void Block_RotateAndGetFace_FindFace(string axisCc, double theta, string faceCc, string expectedCc)
 		{
 			// 1. Prepare
 			Cartesian3dCoordinate axis = new Cartesian3dCoordinate(axisCc);
-			Cartesian3dCoordinate expected = new Cartesian3dCoordinate(expectedCc);
-			SphericalVector faceOrientation = new SphericalVector(Math.PI, Math.PI);
+			Cartesian3dCoordinate faceOrientation = new Cartesian3dCoordinate(faceCc);
+			Cartesian3dCoordinate expectedOrientation = new Cartesian3dCoordinate(expectedCc);
 			Block b = new TestBlock(new BlockFace("test", faceOrientation));
 
 			// 2. Execute
 			b.RotateAround(axis, theta);
-			faceOrientation = faceOrientation.RotateAround(CoordinateConverter.ConvertToSpherical(axis), theta);
-			BlockFace f = b.GetBlockFace(faceOrientation);
-
-			// 3. Verify
-			Assert.NotNull(f);
-		}
-
-		[Theory]
-		[InlineData("(0 0 1)", Math.PI / 2.0, "(0 1 1)")]
-		public void Block_CreateRotateTwiceAndGetFace_ShouldFindFace(string axisCc, double theta, string expectedCc)
-		{
-			// 1. Prepare
-			Cartesian3dCoordinate axis = new Cartesian3dCoordinate(axisCc);
-			Cartesian3dCoordinate expected = new Cartesian3dCoordinate(expectedCc);
-			Cartesian3dCoordinate faceOrientation = new Cartesian3dCoordinate(1.0, 0.0, 0.0);
-			Block b = new TestBlock(new BlockFace("test", faceOrientation));
-
-			b.RotateAround(axis, theta);
-			faceOrientation = faceOrientation.RotateAroundVector(axis, theta);
-
-			b.RotateAround(axis, theta);
-			faceOrientation = faceOrientation.RotateAroundVector(axis, theta);
-
-			// 2. Execute
-			BlockFace f = b.GetBlockFace(faceOrientation);
+			BlockFace f = b.GetBlockFace(expectedOrientation);
 
 			// 3. Verify
 			Assert.NotNull(f);
