@@ -58,7 +58,7 @@ namespace Twisty.Engine.Geometry
 	/// Note that this class is following the ISO convention.
 	/// When used in mathematics theory, it can happen that the meaning of Phi and Theta are swapped together.
 	/// </remarks>
-	[DebuggerDisplay("({Phi},{Theta})")]
+	[DebuggerDisplay("({Phi}, {Theta})")]
 	public struct SphericalVector
 	{
 		#region Const Members

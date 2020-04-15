@@ -10,24 +10,15 @@ namespace Twisty.Engine.Tests.Structure.Rubiks
 	[Trait("Category", "Structure")]
 	public class RubikCubeTest
 	{
-		#region Test Data
-
-		// (string faceId, bool isClockwise, SphericalVector blockPosition, string checkedFace, string expectedBlockFace)
-		public static readonly TheoryData<string, bool, Cartesian3dCoordinate, string, string> FacesRotations = new TheoryData<string, bool, Cartesian3dCoordinate, string, string>()
-		{
-			{ RubikCube.FACE_ID_UP, true, RubikCube.BLOCK_POSITION_CORNER_UP_FRONT_LEFT, RubikCube.FACE_ID_FRONT, RubikCube.FACE_ID_RIGHT },
-			{ RubikCube.FACE_ID_UP, false, RubikCube.BLOCK_POSITION_CORNER_UP_FRONT_LEFT, RubikCube.FACE_ID_FRONT, RubikCube.FACE_ID_LEFT },
-		};
-
-		#endregion Test Data
-
 		#region Test Methods
 
 		[Theory]
-		[MemberData(nameof(RubikCubeTest.FacesRotations), MemberType = typeof(RubikCubeTest))]
-		public void RubikCube_RotateOnceOnSize2_FindExpectedFace(string faceId, bool isClockwise, Cartesian3dCoordinate blockPosition, string checkedFace, string expectedBlockFace)
+		[InlineData(RubikCube.FACE_ID_UP, true, "(1 -1 1)", RubikCube.FACE_ID_FRONT, RubikCube.FACE_ID_RIGHT)]
+		[InlineData(RubikCube.FACE_ID_UP, false, "(1 -1 1)", RubikCube.FACE_ID_FRONT, RubikCube.FACE_ID_LEFT)]
+		public void RubikCube_RotateOnceOnSize2_FindExpectedFace(string faceId, bool isClockwise, string blockCoordinate, string checkedFace, string expectedBlockFace)
 		{
 			// 1. Prepare
+			Cartesian3dCoordinate blockPosition = new Cartesian3dCoordinate(blockCoordinate);
 			RubikCube c = new RubikCube(2);
 			var axis = c.Axes.FirstOrDefault(a => a.Id == faceId);
 			var checkedAxis = c.Axes.FirstOrDefault(a => a.Id == checkedFace);

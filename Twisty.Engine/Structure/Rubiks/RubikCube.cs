@@ -67,7 +67,7 @@ namespace Twisty.Engine.Structure.Rubiks
 				return;
 
 			// Convert the rotation direction to the correct angle.
-			double theta = isClockwise ? -Math.PI / 2.0 : Math.PI / 2.0;
+			double theta = isClockwise ? Math.PI / 2.0 : -Math.PI / 2.0;
 
 			// Perform the manipulation for the 4 corners.
 			base.SwitchAndRotate(blocks.OfType<RubikCornerBlock>().ToList(), axis.Vector, theta);
