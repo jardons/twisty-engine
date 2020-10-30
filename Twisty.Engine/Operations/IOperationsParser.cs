@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Twisty.Engine.Structure;
 
-namespace Twisty.Engine.Operations.Rubiks
+namespace Twisty.Engine.Operations
 {
 	/// <summary>
 	/// Interface providing cube command parsing operations.

@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using System.Text;
 using Twisty.Engine.Geometry;
 
-namespace Twisty.Engine.Structure.Rubiks
+namespace Twisty.Engine.Structure
 {
 	/// <summary>
-	/// Class describing a center block in the Rubiks' cube.
+	/// Class describing a center block in the cube.
 	/// Center are the only place that never change of position and stay in their position on the rotation axis.
 	/// </summary>
-	public class RubikCenterBlock : Block
+	public class CenterBlock : Block
 	{
 		/// <summary>
-		/// Create a standard Rubik Corner.
+		/// Create a standard Cube Corner.
 		/// </summary>
 		/// <param name="initialPosition">Initial position vector of the block in the cube.</param>
 		/// <param name="face">Visible face of the block.</param>
-		public RubikCenterBlock(Cartesian3dCoordinate initialPosition, BlockFace face)
+		public CenterBlock(Cartesian3dCoordinate initialPosition, BlockFace face)
 			: base(face)
 		{
 			base.Position = initialPosition;

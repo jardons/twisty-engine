@@ -18,25 +18,22 @@ namespace Twisty.Bash.Controllers
 		[ConsoleRoute("faces")]
 		private void GetFaces()
 		{
-			foreach (RotationAxis a in Core.Axes)
+			foreach (CoreFace f in Core.Faces)
 			{
-				System.Console.WriteLine($"{a.Id} {FormatCoordinates(a.Vector)}");
+				System.Console.WriteLine($"{f.Id} {FormatCoordinates(f.Coordinates)}");
 			}
 		}
 
 		[ConsoleRoute("face-content")]
 		private void GetFace(string faceId)
 		{
-			RotationAxis a = Core.GetAxis(faceId);
-			Plane p = new Plane(
-				a.Vector,
-				Core.GetBlocksForFace(a.Vector).FirstOrDefault().Position);
-			CartesianCoordinatesConverter c = new CartesianCoordinatesConverter(p);
+			CoreFace f = Core.GetFace(faceId);
+			CartesianCoordinatesConverter c = new CartesianCoordinatesConverter(f.Coordinates);
 
-			var blocks = Core.GetBlocksForFace(a.Vector)
+			var blocks = Core.GetBlocksForFace(f.Id)
 				.OfType<IPositionnedByCartesian3dVector>()
 				.ToList();
-			blocks.Sort(new PlanePositionPointComparer(p));
+			blocks.Sort(new PlanePositionPointComparer(f.Coordinates));
 
 			foreach (Block b in blocks.OfType<Block>())
 			{
