@@ -11,9 +11,23 @@ namespace Twisty.Engine.Tests.Geometry
 
 		#region Test Data
 
-		public static readonly TheoryData<Cartesian3dCoordinate, Cartesian3dCoordinate, double, double, double, double> CreationFromNormal = new TheoryData<Cartesian3dCoordinate, Cartesian3dCoordinate, double, double, double, double>()
+		public static readonly TheoryData<Cartesian3dCoordinate, Cartesian3dCoordinate, double, double, double, double> CreationFromNormal
+			= new TheoryData<Cartesian3dCoordinate, Cartesian3dCoordinate, double, double, double, double>()
 		{
-			{new Cartesian3dCoordinate(2.0, 3.0, 4.0), new Cartesian3dCoordinate(1.0, 2.0, 3.0), 2.0, 3.0, 4.0, -20.0}
+			{ new Cartesian3dCoordinate(2.0, 3.0, 4.0), new Cartesian3dCoordinate(1.0, 2.0, 3.0), 2.0, 3.0, 4.0, -20.0 }
+		};
+
+		public static readonly TheoryData<Cartesian3dCoordinate, Cartesian3dCoordinate, Cartesian3dCoordinate, bool> IsAbovePlane
+			= new TheoryData<Cartesian3dCoordinate, Cartesian3dCoordinate, Cartesian3dCoordinate, bool>()
+		{
+			{ new Cartesian3dCoordinate(1.0, 0.0, 0.0), new Cartesian3dCoordinate(0.0, 0.0, 0.0), new Cartesian3dCoordinate(-1.0, 0.0, 0.0), false },
+			{ new Cartesian3dCoordinate(1.0, 0.0, 0.0), new Cartesian3dCoordinate(0.0, 0.0, 0.0), new Cartesian3dCoordinate(0.0, 0.0, 0.0), false },
+			{ new Cartesian3dCoordinate(1.0, 0.0, 0.0), new Cartesian3dCoordinate(0.0, 0.0, 0.0), new Cartesian3dCoordinate(1.0, 0.0, 0.0), true },
+			{ new Cartesian3dCoordinate(1.0, 1.0, 1.0), new Cartesian3dCoordinate(1.0, 0.0, 0.0), new Cartesian3dCoordinate(-1.0, 0.0, 0.0), false },
+			{ new Cartesian3dCoordinate(1.0, 1.0, 1.0), new Cartesian3dCoordinate(1.0, 0.0, 0.0), new Cartesian3dCoordinate(0.3, 0.3, 0.3), false },
+			{ new Cartesian3dCoordinate(1.0, 1.0, 1.0), new Cartesian3dCoordinate(1.0, 0.0, 0.0), new Cartesian3dCoordinate(1.0, 1.0, 0.0), true },
+			{ new Cartesian3dCoordinate(1.0, 1.0, 1.0), new Cartesian3dCoordinate(1.0, 0.0, 0.0), new Cartesian3dCoordinate(1.0, 1.0, 2.0), true },
+			{ new Cartesian3dCoordinate(2.0, 3.0, 4.0), new Cartesian3dCoordinate(1.0, 2.0, 3.0), new Cartesian3dCoordinate(1.0, 2.0, 3.0), false }
 		};
 
 		public static readonly TheoryData<string, double, double, double, double> CreationFromString = new TheoryData<string, double, double, double, double>()
@@ -119,7 +133,22 @@ namespace Twisty.Engine.Tests.Geometry
 		}
 
 		[Theory]
-		[InlineData("(2 3 4 -20)", "(-2.0 0.0 0.0 6.0 5.0 6.0)", "(0.823529411764706 2.35294117647059 2.82352941176471)")]
+		[MemberData(nameof(PlaneTest.IsAbovePlane), MemberType = typeof(PlaneTest))]
+		public void Plane_CheckPointIsAbovePlane_Expected(Cartesian3dCoordinate planeNormal, Cartesian3dCoordinate planePoint, Cartesian3dCoordinate point, bool expected)
+		{
+			// 1. Prepare
+			Plane p = new Plane(planeNormal, planePoint);
+
+			// 2. Execute
+			bool isAbovePlane = p.IsAbovePlane(point);
+
+			// 3. Verify
+			Assert.Equal(expected, isAbovePlane);
+		}
+
+		[Theory]
+		[InlineData("(2 3 4 -20)", "(-2 0 0 6 5 6)", "(0.823529411764706 2.35294117647059 2.82352941176471)")]
+		[InlineData("(0 0 1 -1)", "(-0.5 -0.5 0.71 0 0 1)", "(-0.5 -0.5 1)")]
 		public void Plane_GetIntersectionFromLine_Expected(string planeCoordinate, string lineCoordinate, string expectedCoordinate)
 		{
 			// 1. Prepare
@@ -155,6 +184,30 @@ namespace Twisty.Engine.Tests.Geometry
 			Assert.Equal(expected.X, r.X, PRECISION_DOUBLE);
 			Assert.Equal(expected.Y, r.Y, PRECISION_DOUBLE);
 			Assert.Equal(expected.Z, r.Z, PRECISION_DOUBLE);
+		}
+
+		[Theory]
+		[InlineData("(1 0 0 -29)", "(5 0 0)", "(5 0 0 1 0 0)")]
+		[InlineData("(2 3 4 -29)", "(4 6 8)", "(4 6 8 2 3 4)")]
+		[InlineData("(2 3 4 -29)", "(6 9 12)", "(6 9 12 2 3 4)")]
+		[InlineData("(2 3 4 -29)", "(1 1.5 2)", "(1 1.5 2 2 3 4)")]
+		public void Plane_GetPerpendicular_Expected(string planeCoordinate, string Cartesian3dCoordinate, string expectedCoordinate)
+		{
+			// 1. Prepare
+			ParametricLine expected = new ParametricLine(expectedCoordinate);
+			Cartesian3dCoordinate cc = new Cartesian3dCoordinate(Cartesian3dCoordinate);
+			Plane p = new Plane(planeCoordinate);
+
+			// 2. Execute
+			ParametricLine l = p.GetPerpendicular(cc);
+
+			// 3. Verify
+			Assert.Equal(expected.X, l.X, PRECISION_DOUBLE);
+			Assert.Equal(expected.Y, l.Y, PRECISION_DOUBLE);
+			Assert.Equal(expected.Z, l.Z, PRECISION_DOUBLE);
+			Assert.Equal(expected.A, l.A, PRECISION_DOUBLE);
+			Assert.Equal(expected.B, l.B, PRECISION_DOUBLE);
+			Assert.Equal(expected.C, l.C, PRECISION_DOUBLE);
 		}
 
 		[Theory]

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Twisty.Engine.Structure.Rubiks;
+using Twisty.Engine.Structure.Skewb;
 
-namespace Twisty.Engine.Operations.Rubiks
+namespace Twisty.Engine.Operations.Skewb
 {
 	/// <summary>
-	/// Class designed to parse a list of operations to perform on a rubiks cube.
+	/// Class designed to parse a list of operations to perform on a skewb cube.
 	/// </summary>
-	public class RubikOperationsParser : IOperationsParser<RubikCube>
+	public class SkewbOperationsParser : IOperationsParser<SkewbCube>
 	{
 		/// <summary>
 		/// Parse command and generate an Operation list based on its content.
@@ -15,12 +15,12 @@ namespace Twisty.Engine.Operations.Rubiks
 		/// <param name="command">Command string containing a list of operations to execute on the cube.</param>
 		/// <returns>The collection containing the operations to execute based on the command content.</returns>
 		/// <exception cref="Twisty.Engine.Operations.OperationParsingException">The provided command contains invalid characters that cannot be parsed.</exception>
-		public IEnumerable<IOperation<RubikCube>> Parse(string command)
+		public IEnumerable<IOperation<SkewbCube>> Parse(string command)
 		{
 			if (string.IsNullOrEmpty(command))
-				return Array.Empty<IOperation<RubikCube>>();
+				return Array.Empty<IOperation<SkewbCube>>();
 
-			List<IOperation<RubikCube>> operations = new List<IOperation<RubikCube>>();
+			List<IOperation<SkewbCube>> operations = new List<IOperation<SkewbCube>>();
 			for (int i = 0; i < command.Length; ++i)
 			{
 				var c = command[i];
@@ -39,7 +39,7 @@ namespace Twisty.Engine.Operations.Rubiks
 					isClockWise = false;
 				}
 
-				operations.Add(new RubikOperation(axis, isClockWise));
+				operations.Add(new SkewbOperation(axis, isClockWise));
 			}
 
 			return operations;
@@ -55,17 +55,13 @@ namespace Twisty.Engine.Operations.Rubiks
 			switch (action)
 			{
 				case 'L':
-					return RubikCube.ID_FACE_LEFT;
+					return "DFL";
 				case 'R':
-					return RubikCube.ID_FACE_RIGHT;
-				case 'F':
-					return RubikCube.ID_FACE_FRONT;
+					return "DBR";
 				case 'B':
-					return RubikCube.ID_FACE_BACK;
+					return "DBL";
 				case 'U':
-					return RubikCube.ID_FACE_UP;
-				case 'D':
-					return RubikCube.ID_FACE_DOWN;
+					return "UBL";
 			}
 
 			return null;

@@ -3,6 +3,7 @@ using System.Linq;
 using Twisty.Engine.Geometry;
 using Twisty.Engine.Structure;
 using Twisty.Engine.Structure.Rubiks;
+using Twisty.Engine.Tests.Assertions;
 using Xunit;
 
 namespace Twisty.Engine.Tests.Structure.Rubiks
@@ -10,33 +11,26 @@ namespace Twisty.Engine.Tests.Structure.Rubiks
 	[Trait("Category", "Structure")]
 	public class RubikCubeTest
 	{
-		#region Test Data
-
-		// (string faceId, bool isClockwise, SphericalVector blockPosition, string checkedFace, string expectedBlockFace)
-		public static readonly TheoryData<string, bool, Cartesian3dCoordinate, string, string> FacesRotations = new TheoryData<string, bool, Cartesian3dCoordinate, string, string>()
-		{
-			{ RubikCube.FACE_ID_UP, true, RubikCube.BLOCK_POSITION_CORNER_UP_FRONT_LEFT, RubikCube.FACE_ID_FRONT, RubikCube.FACE_ID_RIGHT },
-			{ RubikCube.FACE_ID_UP, false, RubikCube.BLOCK_POSITION_CORNER_UP_FRONT_LEFT, RubikCube.FACE_ID_FRONT, RubikCube.FACE_ID_LEFT },
-		};
-
-		#endregion Test Data
+		private const int PRECISION_DOUBLE = 10;
 
 		#region Test Methods
 
 		[Theory]
-		[MemberData(nameof(RubikCubeTest.FacesRotations), MemberType = typeof(RubikCubeTest))]
-		public void RubikCube_RotateOnceOnSize2_FindExpectedFace(string faceId, bool isClockwise, Cartesian3dCoordinate blockPosition, string checkedFace, string expectedBlockFace)
+		[InlineData(RubikCube.ID_FACE_UP, true, "(1 -1 1)", RubikCube.ID_FACE_FRONT, RubikCube.ID_FACE_RIGHT)]
+		[InlineData(RubikCube.ID_FACE_UP, false, "(1 -1 1)", RubikCube.ID_FACE_FRONT, RubikCube.ID_FACE_LEFT)]
+		public void RubikCube_RotateOnceOnSize2_FindExpectedFace(string axisId, bool isClockwise, string blockCoordinate, string checkedFaceId, string expectedBlockFace)
 		{
 			// 1. Prepare
+			Cartesian3dCoordinate blockPosition = new Cartesian3dCoordinate(blockCoordinate);
 			RubikCube c = new RubikCube(2);
-			var axis = c.Axes.FirstOrDefault(a => a.Id == faceId);
-			var checkedAxis = c.Axes.FirstOrDefault(a => a.Id == checkedFace);
+			var axis = c.GetAxis(axisId);
 			var initialBlock = c.Blocks.FirstOrDefault(b => b.Position.IsSameVector(blockPosition));
+			var targetFaceVector = c.GetFace(checkedFaceId).Coordinates.Normal;
 
 			// 2. Execute
 			c.RotateAround(axis, isClockwise);
 			var block = c.Blocks.FirstOrDefault(b => b.Position.IsSameVector(blockPosition));
-			var face = block.GetBlockFace(checkedAxis.Vector);
+			var face = block.GetBlockFace(targetFaceVector);
 
 			// 3. Verify
 			Assert.NotEqual(initialBlock.Id, block.Id);
@@ -55,7 +49,7 @@ namespace Twisty.Engine.Tests.Structure.Rubiks
 			RubikCube c;
 
 			// 2. Execute
-			Action a = () => c = new RubikCube(size);
+			void a() => c = new RubikCube(size);
 
 			// 3. Verify
 			Assert.Throws<ArgumentException>(a);
@@ -94,6 +88,30 @@ namespace Twisty.Engine.Tests.Structure.Rubiks
 			// 3. Verify
 			for (i = 0; i < results.Length; ++i)
 				Assert.Equal(blocksCount, results[i]);
+		}
+
+		[Theory]
+		[InlineData(RubikCube.ID_FACE_BACK)]
+		[InlineData(RubikCube.ID_FACE_FRONT)]
+		[InlineData(RubikCube.ID_FACE_LEFT)]
+		[InlineData(RubikCube.ID_FACE_RIGHT)]
+		[InlineData(RubikCube.ID_FACE_UP)]
+		[InlineData(RubikCube.ID_FACE_DOWN)]
+		public void RubikCube_Rotate_CenterStayInPlace(string axisId)
+		{
+			// 1. Prepare
+			RubikCube c = new RubikCube(3);
+			var axis = c.GetAxis(axisId);
+			var center = c.Blocks.Where(b => b.Position.IsSameVector(axis.Vector)).First();
+			var initialPosition = center.Position;
+
+			// 2. Execute
+			c.RotateAround(axis, true);
+
+			// 3. Verify
+			Assert.Equal(initialPosition.X, center.Position.X, PRECISION_DOUBLE);
+			Assert.Equal(initialPosition.Y, center.Position.Y, PRECISION_DOUBLE);
+			Assert.Equal(initialPosition.Z, center.Position.Z, PRECISION_DOUBLE);
 		}
 
 		#endregion Test Methods
