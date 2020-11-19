@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Twisty.Engine.Operations;
 using Twisty.Engine.Operations.Rubiks;
+using Twisty.Engine.Operations.Skewb;
 using Xunit;
 
 namespace Twisty.Engine.Tests.Operations.Rubiks
@@ -11,90 +12,64 @@ namespace Twisty.Engine.Tests.Operations.Rubiks
 	[Trait("Category", "Operations")]
 	public class SkewbOperationsParserTest
 	{
-		#region Test Data
-
-		//(string command)
-		public static readonly TheoryData<string> Operations = new TheoryData<string>()
-		{
-			{"R"},
-			{"L"},
-			{"F"},
-			{"U"},
-			{"B"},
-			{"D"},
-		};
-
-		//(string command, int count, int cleanedCount)
-		public static readonly TheoryData<string, int, int> InputStrings = new TheoryData<string, int, int>()
-		{
-			// White values.
-			{"", 0, 0},
-			{" ", 0, 0},
-			{"   ", 0, 0},
-			{"\t", 0, 0},
-			{" \t ", 0, 0},
-			// Single operations.
-			{"R", 1, 1},
-			{"L", 1, 1},
-			{"F", 1, 1},
-			{"U", 1, 1},
-			{"B", 1, 1},
-			{"D", 1, 1},
-			{"R'", 1, 1},
-			{"L'", 1, 1},
-			{"F'", 1, 1},
-			{"U'", 1, 1},
-			{"B'", 1, 1},
-			{"D'", 1, 1},
-			// Multiple operations
-			{"RRR", 3, 3},
-			{"R R R F", 4, 4},
-			{"RL'", 2, 2},
-			{"RLFUBD'", 6, 6},
-		};
-
-		#endregion Test Data
-
 		#region Test Methods
 
 		[Theory]
-		[MemberData(nameof(SkewbOperationsParserTest.InputStrings), MemberType = typeof(SkewbOperationsParserTest))]
-		public void RubikOperationsParser_ParseCommand_ExpectedCount(string command, int count, int cleanedCount)
+		// White values.
+		[InlineData("", 0)]
+		[InlineData(" ", 0)]
+		[InlineData("   ", 0)]
+		[InlineData("\t", 0)]
+		[InlineData(" \t ", 0)]
+		// Multiple operations
+		[InlineData("RRR", 3)]
+		[InlineData("R R R U", 4)]
+		[InlineData("RL'", 2)]
+		[InlineData("RLUB'", 4)]
+		public void SkewbOperationsParser_ParseCommand_ExpectedCount(string command, int count)
 		{
 			// 1. Prepare
-			RubikOperationsParser p = new RubikOperationsParser();
+			SkewbOperationsParser p = new SkewbOperationsParser();
 
 			// 2. Execute
 			var r = p.Parse(command);
 
 			// 3. Verify
+			Assert.NotNull(r);
 			Assert.Equal(count, r.Count());
 		}
 
 		[Theory]
-		[MemberData(nameof(SkewbOperationsParserTest.Operations), MemberType = typeof(SkewbOperationsParserTest))]
-		public void RubikOperationsParser_ParseSingleOperationCheckOrientation_BeExpected(string command)
+		[InlineData("R")]
+		[InlineData("L")]
+		[InlineData("U")]
+		[InlineData("B")]
+		public void SkewbOperationsParser_ParseSingleOperationCheckOrientation_BeExpected(string command)
 		{
 			// 1. Prepare
-			RubikOperationsParser p = new RubikOperationsParser();
+			SkewbOperationsParser p = new SkewbOperationsParser();
 
 			// 2. Execute
-			var r1 = p.Parse(command).Cast<RubikOperation>().FirstOrDefault();
-			var r2 = p.Parse(command + "'").Cast<RubikOperation>().FirstOrDefault();
+			var parsed = p.Parse(command);
+			var parsedReverse = p.Parse(command + "'");
 
 			// 3. Verify
-			Assert.True(r1.IsClockwise);
-			Assert.False(r2.IsClockwise);
+			Assert.NotNull(parsed);
+			Assert.NotNull(parsedReverse);
+			Assert.Single(parsed);
+			Assert.Single(parsedReverse);
+			Assert.True(parsed.Cast<SkewbOperation>().FirstOrDefault().IsClockwise);
+			Assert.False(parsedReverse.Cast<SkewbOperation>().FirstOrDefault().IsClockwise);
 		}
 
 		[Theory]
 		[InlineData("ABCD", 0)]
 		[InlineData(" ABCD", 1)]
 		[InlineData("RR'Y", 3)]
-		public void RubikOperationsParser_ParseInvalidCommand_ThrowOperationParsingException(string command, int badIndex)
+		public void SkewbOperationsParser_ParseInvalidCommand_ThrowOperationParsingException(string command, int badIndex)
 		{
 			// 1. Prepare
-			RubikOperationsParser p = new RubikOperationsParser();
+			SkewbOperationsParser p = new SkewbOperationsParser();
 
 			// 2. Execute
 			Action a = () => p.Parse(command);

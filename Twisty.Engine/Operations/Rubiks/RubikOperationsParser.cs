@@ -55,17 +55,17 @@ namespace Twisty.Engine.Operations.Rubiks
 			switch (action)
 			{
 				case 'L':
-					return RubikCube.FACE_ID_LEFT;
+					return RubikCube.ID_FACE_LEFT;
 				case 'R':
-					return RubikCube.FACE_ID_RIGHT;
+					return RubikCube.ID_FACE_RIGHT;
 				case 'F':
-					return RubikCube.FACE_ID_FRONT;
+					return RubikCube.ID_FACE_FRONT;
 				case 'B':
-					return RubikCube.FACE_ID_BACK;
+					return RubikCube.ID_FACE_BACK;
 				case 'U':
-					return RubikCube.FACE_ID_UP;
+					return RubikCube.ID_FACE_UP;
 				case 'D':
-					return RubikCube.FACE_ID_DOWN;
+					return RubikCube.ID_FACE_DOWN;
 			}
 
 			return null;

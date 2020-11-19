@@ -10,12 +10,12 @@ namespace Twisty.Engine.Structure
 	{
 		#region Const Members
 
-		public const string FACE_ID_DOWN = "D";
-		public const string FACE_ID_UP = "U";
-		public const string FACE_ID_RIGHT = "R";
-		public const string FACE_ID_LEFT = "L";
-		public const string FACE_ID_FRONT = "F";
-		public const string FACE_ID_BACK = "B";
+		public const string ID_FACE_DOWN = "D";
+		public const string ID_FACE_UP = "U";
+		public const string ID_FACE_RIGHT = "R";
+		public const string ID_FACE_LEFT = "L";
+		public const string ID_FACE_FRONT = "F";
+		public const string ID_FACE_BACK = "B";
 
 		public static readonly Cartesian3dCoordinate POSITION_CORNER_UP_FRONT_LEFT = new Cartesian3dCoordinate(1.0, -1.0, 1.0);
 		public static readonly Cartesian3dCoordinate POSITION_CORNER_UP_FRONT_RIGHT = new Cartesian3dCoordinate(1.0, 1.0, 1.0);
@@ -51,12 +51,12 @@ namespace Twisty.Engine.Structure
 		/// <param name="blocks">List of block to which created centers will be added.</param>
 		protected static void AddCentersToList(IList<Block> blocks)
 		{
-			blocks.Add(new CenterBlock(POSITION_FACE_DOWN, new BlockFace(FACE_ID_DOWN, POSITION_FACE_DOWN)));
-			blocks.Add(new CenterBlock(POSITION_FACE_UP, new BlockFace(FACE_ID_UP, POSITION_FACE_UP)));
-			blocks.Add(new CenterBlock(POSITION_FACE_LEFT, new BlockFace(FACE_ID_LEFT, POSITION_FACE_LEFT)));
-			blocks.Add(new CenterBlock(POSITION_FACE_RIGHT, new BlockFace(FACE_ID_RIGHT, POSITION_FACE_RIGHT)));
-			blocks.Add(new CenterBlock(POSITION_FACE_FRONT, new BlockFace(FACE_ID_FRONT, POSITION_FACE_FRONT)));
-			blocks.Add(new CenterBlock(POSITION_FACE_BACK, new BlockFace(FACE_ID_BACK, POSITION_FACE_BACK)));
+			blocks.Add(new CenterBlock(POSITION_FACE_DOWN, new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN)));
+			blocks.Add(new CenterBlock(POSITION_FACE_UP, new BlockFace(ID_FACE_UP, POSITION_FACE_UP)));
+			blocks.Add(new CenterBlock(POSITION_FACE_LEFT, new BlockFace(ID_FACE_LEFT, POSITION_FACE_LEFT)));
+			blocks.Add(new CenterBlock(POSITION_FACE_RIGHT, new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)));
+			blocks.Add(new CenterBlock(POSITION_FACE_FRONT, new BlockFace(ID_FACE_FRONT, POSITION_FACE_FRONT)));
+			blocks.Add(new CenterBlock(POSITION_FACE_BACK, new BlockFace(ID_FACE_BACK, POSITION_FACE_BACK)));
 		}
 
 		/// <summary>
@@ -68,59 +68,59 @@ namespace Twisty.Engine.Structure
 			// 4 bottoms corners.
 			blocks.Add(new CornerBlock(
 				POSITION_CORNER_DOWN_FRONT_RIGHT,
-				new BlockFace(FACE_ID_DOWN, POSITION_FACE_DOWN),
-				new BlockFace(FACE_ID_FRONT, POSITION_FACE_FRONT),
-				new BlockFace(FACE_ID_RIGHT, POSITION_FACE_RIGHT)
+				new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN),
+				new BlockFace(ID_FACE_FRONT, POSITION_FACE_FRONT),
+				new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)
 			));
 
 			blocks.Add(new CornerBlock(
 				POSITION_CORNER_DOWN_BACK_RIGHT,
-				new BlockFace(FACE_ID_DOWN, POSITION_FACE_DOWN),
-				new BlockFace(FACE_ID_BACK, POSITION_FACE_BACK),
-				new BlockFace(FACE_ID_RIGHT, POSITION_FACE_RIGHT)
+				new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN),
+				new BlockFace(ID_FACE_BACK, POSITION_FACE_BACK),
+				new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)
 			));
 
 			blocks.Add(new CornerBlock(
 				POSITION_CORNER_DOWN_FRONT_LEFT,
-				new BlockFace(FACE_ID_DOWN, POSITION_FACE_DOWN),
-				new BlockFace(FACE_ID_FRONT, POSITION_FACE_FRONT),
-				new BlockFace(FACE_ID_LEFT, POSITION_FACE_LEFT)
+				new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN),
+				new BlockFace(ID_FACE_FRONT, POSITION_FACE_FRONT),
+				new BlockFace(ID_FACE_LEFT, POSITION_FACE_LEFT)
 			));
 
 			blocks.Add(new CornerBlock(
 				POSITION_CORNER_DOWN_BACK_LEFT,
-				new BlockFace(FACE_ID_DOWN, POSITION_FACE_DOWN),
-				new BlockFace(FACE_ID_BACK, POSITION_FACE_BACK),
-				new BlockFace(FACE_ID_LEFT, POSITION_FACE_LEFT)
+				new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN),
+				new BlockFace(ID_FACE_BACK, POSITION_FACE_BACK),
+				new BlockFace(ID_FACE_LEFT, POSITION_FACE_LEFT)
 			));
 
 			// 4 tops corners.
 			blocks.Add(new CornerBlock(
 				POSITION_CORNER_UP_FRONT_RIGHT,
-				new BlockFace(FACE_ID_UP, POSITION_FACE_UP),
-				new BlockFace(FACE_ID_FRONT, POSITION_FACE_FRONT),
-				new BlockFace(FACE_ID_RIGHT, POSITION_FACE_RIGHT)
+				new BlockFace(ID_FACE_UP, POSITION_FACE_UP),
+				new BlockFace(ID_FACE_FRONT, POSITION_FACE_FRONT),
+				new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)
 			));
 
 			blocks.Add(new CornerBlock(
 				POSITION_CORNER_UP_BACK_RIGHT,
-				new BlockFace(FACE_ID_UP, POSITION_FACE_UP),
-				new BlockFace(FACE_ID_BACK, POSITION_FACE_BACK),
-				new BlockFace(FACE_ID_RIGHT, POSITION_FACE_RIGHT)
+				new BlockFace(ID_FACE_UP, POSITION_FACE_UP),
+				new BlockFace(ID_FACE_BACK, POSITION_FACE_BACK),
+				new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)
 			));
 
 			blocks.Add(new CornerBlock(
 				POSITION_CORNER_UP_FRONT_LEFT,
-				new BlockFace(FACE_ID_UP, POSITION_FACE_UP),
-				new BlockFace(FACE_ID_FRONT, POSITION_FACE_FRONT),
-				new BlockFace(FACE_ID_LEFT, POSITION_FACE_LEFT)
+				new BlockFace(ID_FACE_UP, POSITION_FACE_UP),
+				new BlockFace(ID_FACE_FRONT, POSITION_FACE_FRONT),
+				new BlockFace(ID_FACE_LEFT, POSITION_FACE_LEFT)
 			));
 
 			blocks.Add(new CornerBlock(
 				POSITION_CORNER_UP_BACK_LEFT,
-				new BlockFace(FACE_ID_UP, POSITION_FACE_UP),
-				new BlockFace(FACE_ID_BACK, POSITION_FACE_BACK),
-				new BlockFace(FACE_ID_LEFT, POSITION_FACE_LEFT)
+				new BlockFace(ID_FACE_UP, POSITION_FACE_UP),
+				new BlockFace(ID_FACE_BACK, POSITION_FACE_BACK),
+				new BlockFace(ID_FACE_LEFT, POSITION_FACE_LEFT)
 			));
 		}
 
@@ -136,12 +136,12 @@ namespace Twisty.Engine.Structure
 		{
 			return new List<CoreFace>()
 			{
-				new CoreFace(FACE_ID_UP, new Plane(POSITION_FACE_UP, 1.0)),
-				new CoreFace(FACE_ID_DOWN, new Plane(POSITION_FACE_DOWN, 1.0)),
-				new CoreFace(FACE_ID_FRONT, new Plane(POSITION_FACE_FRONT, 1.0)),
-				new CoreFace(FACE_ID_BACK, new Plane(POSITION_FACE_BACK, 1.0)),
-				new CoreFace(FACE_ID_RIGHT, new Plane(POSITION_FACE_RIGHT, 1.0)),
-				new CoreFace(FACE_ID_LEFT, new Plane(POSITION_FACE_LEFT, 1.0)),
+				new CoreFace(ID_FACE_UP, new Plane(POSITION_FACE_UP, 1.0)),
+				new CoreFace(ID_FACE_DOWN, new Plane(POSITION_FACE_DOWN, 1.0)),
+				new CoreFace(ID_FACE_FRONT, new Plane(POSITION_FACE_FRONT, 1.0)),
+				new CoreFace(ID_FACE_BACK, new Plane(POSITION_FACE_BACK, 1.0)),
+				new CoreFace(ID_FACE_RIGHT, new Plane(POSITION_FACE_RIGHT, 1.0)),
+				new CoreFace(ID_FACE_LEFT, new Plane(POSITION_FACE_LEFT, 1.0)),
 			};
 		}
 

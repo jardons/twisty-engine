@@ -1,26 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Twisty.Engine.Geometry;
 
 namespace Twisty.Engine.Structure.Skewb
 {
 	/// <summary>
-	/// Class describing a Skewb cube
+	/// Class describing a Skewb cube.
 	/// </summary>
 	public class SkewbCube : CubicRotationCore
 	{
 		#region Const Members
 
-		public static readonly Cartesian3dCoordinate AXIS_UP_FRONT_LEFT = new Cartesian3dCoordinate(1.0, -1.0, 1.0);
-		public static readonly Cartesian3dCoordinate AXIS_UP_FRONT_RIGHT = new Cartesian3dCoordinate(1.0, 1.0, 1.0);
-		public static readonly Cartesian3dCoordinate AXIS_UP_BACK_LEFT = new Cartesian3dCoordinate(-1.0, -1.0, 1.0);
-		public static readonly Cartesian3dCoordinate AXIS_UP_BACK_RIGHT = new Cartesian3dCoordinate(-1.0, 1.0, 1.0);
-		public static readonly Cartesian3dCoordinate AXIS_DOWN_FRONT_LEFT = new Cartesian3dCoordinate(1.0, -1.0, -1.0);
-		public static readonly Cartesian3dCoordinate AXIS_DOWN_FRONT_RIGHT = new Cartesian3dCoordinate(1.0, 1.0, -1.0);
-		public static readonly Cartesian3dCoordinate AXIS_DOWN_BACK_LEFT = new Cartesian3dCoordinate(-1.0, -1.0, -1.0);
-		public static readonly Cartesian3dCoordinate AXIS_DOWN_BACK_RIGHT = new Cartesian3dCoordinate(-1.0, 1.0, -1.0);
+		public const string ID_AXIS_UP_FRONT_LEFT = "UFL";
+		public const string ID_AXIS_UP_FRONT_RIGHT = "UFR";
+		public const string ID_AXIS_UP_BACK_LEFT = "UBL";
+		public const string ID_AXIS_UP_BACK_RIGHT = "UBR";
+		public const string ID_AXIS_DOWN_FRONT_LEFT = "DFL";
+		public const string ID_AXIS_DOWN_FRONT_RIGHT = "DFR";
+		public const string ID_AXIS_DOWN_BACK_LEFT = "DBL";
+		public const string ID_AXIS_DOWN_BACK_RIGHT = "DBR";
 
 		#endregion Const Members
 
@@ -68,7 +67,6 @@ namespace Twisty.Engine.Structure.Skewb
 		/// <returns>The ordered collection of blocks.</returns>
 		private IList<IPositionnedByCartesian3dVector> GetOrderedBlocks(RotationAxis axis, bool isClockwise)
 		{
-			//throw new NotImplementedException();
 			Plane p = new Plane(axis.Vector, 0.0);
 
 			// Select all blocks that will be included in the rotation.
@@ -77,7 +75,7 @@ namespace Twisty.Engine.Structure.Skewb
 				return blocks;
 
 			blocks.Sort(new CircularVectorComparer(p));
-			if (isClockwise)
+			if (!isClockwise)
 				blocks.Reverse();
 
 			return blocks;
@@ -91,14 +89,14 @@ namespace Twisty.Engine.Structure.Skewb
 		{
 			return new List<RotationAxis>()
 			{
-				new RotationAxis("UFL", POSITION_CORNER_UP_FRONT_LEFT),
-				new RotationAxis("UFR", POSITION_CORNER_UP_FRONT_RIGHT),
-				new RotationAxis("UBL", POSITION_CORNER_UP_BACK_LEFT),
-				new RotationAxis("UBR", POSITION_CORNER_UP_BACK_RIGHT),
-				new RotationAxis("DFL", POSITION_CORNER_DOWN_FRONT_LEFT),
-				new RotationAxis("DFR", POSITION_CORNER_DOWN_FRONT_RIGHT),
-				new RotationAxis("DBL", POSITION_CORNER_DOWN_BACK_LEFT),
-				new RotationAxis("DBR", POSITION_CORNER_DOWN_BACK_RIGHT),
+				new RotationAxis(ID_AXIS_UP_FRONT_LEFT, POSITION_CORNER_UP_FRONT_LEFT),
+				new RotationAxis(ID_AXIS_UP_FRONT_RIGHT, POSITION_CORNER_UP_FRONT_RIGHT),
+				new RotationAxis(ID_AXIS_UP_BACK_LEFT, POSITION_CORNER_UP_BACK_LEFT),
+				new RotationAxis(ID_AXIS_UP_BACK_RIGHT, POSITION_CORNER_UP_BACK_RIGHT),
+				new RotationAxis(ID_AXIS_DOWN_FRONT_LEFT, POSITION_CORNER_DOWN_FRONT_LEFT),
+				new RotationAxis(ID_AXIS_DOWN_FRONT_RIGHT, POSITION_CORNER_DOWN_FRONT_RIGHT),
+				new RotationAxis(ID_AXIS_DOWN_BACK_LEFT, POSITION_CORNER_DOWN_BACK_LEFT),
+				new RotationAxis(ID_AXIS_DOWN_BACK_RIGHT, POSITION_CORNER_DOWN_BACK_RIGHT),
 			};
 		}
 

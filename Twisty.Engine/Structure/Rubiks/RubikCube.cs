@@ -83,12 +83,12 @@ namespace Twisty.Engine.Structure.Rubiks
 		{
 			return new List<RotationAxis>()
 			{
-				new RotationAxis(FACE_ID_UP, POSITION_FACE_UP),
-				new RotationAxis(FACE_ID_DOWN, POSITION_FACE_DOWN),
-				new RotationAxis(FACE_ID_FRONT, POSITION_FACE_FRONT),
-				new RotationAxis(FACE_ID_BACK, POSITION_FACE_BACK),
-				new RotationAxis(FACE_ID_RIGHT, POSITION_FACE_RIGHT),
-				new RotationAxis(FACE_ID_LEFT, POSITION_FACE_LEFT),
+				new RotationAxis(ID_FACE_UP, POSITION_FACE_UP),
+				new RotationAxis(ID_FACE_DOWN, POSITION_FACE_DOWN),
+				new RotationAxis(ID_FACE_FRONT, POSITION_FACE_FRONT),
+				new RotationAxis(ID_FACE_BACK, POSITION_FACE_BACK),
+				new RotationAxis(ID_FACE_RIGHT, POSITION_FACE_RIGHT),
+				new RotationAxis(ID_FACE_LEFT, POSITION_FACE_LEFT),
 			};
 		}
 
@@ -128,43 +128,43 @@ namespace Twisty.Engine.Structure.Rubiks
 		private static void AddEdgesToList(IList<Block> blocks)
 		{
 			blocks.Add(new EdgeBlock(POSITION_FACE_DOWN + POSITION_FACE_FRONT,
-				new BlockFace(FACE_ID_DOWN, POSITION_FACE_DOWN),
-				new BlockFace(FACE_ID_FRONT, POSITION_FACE_FRONT)));
+				new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN),
+				new BlockFace(ID_FACE_FRONT, POSITION_FACE_FRONT)));
 			blocks.Add(new EdgeBlock(POSITION_FACE_DOWN + POSITION_FACE_LEFT,
-				new BlockFace(FACE_ID_DOWN, POSITION_FACE_DOWN),
-				new BlockFace(FACE_ID_LEFT, POSITION_FACE_LEFT)));
+				new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN),
+				new BlockFace(ID_FACE_LEFT, POSITION_FACE_LEFT)));
 			blocks.Add(new EdgeBlock(POSITION_FACE_DOWN + POSITION_FACE_BACK,
-				new BlockFace(FACE_ID_DOWN, POSITION_FACE_DOWN),
-				new BlockFace(FACE_ID_BACK, POSITION_FACE_BACK)));
+				new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN),
+				new BlockFace(ID_FACE_BACK, POSITION_FACE_BACK)));
 			blocks.Add(new EdgeBlock(POSITION_FACE_DOWN + POSITION_FACE_RIGHT,
-				new BlockFace(FACE_ID_DOWN, POSITION_FACE_DOWN),
-				new BlockFace(FACE_ID_RIGHT, POSITION_FACE_RIGHT)));
+				new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN),
+				new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)));
 
 			blocks.Add(new EdgeBlock(POSITION_FACE_UP + POSITION_FACE_FRONT,
-				new BlockFace(FACE_ID_UP, POSITION_FACE_UP),
-				new BlockFace(FACE_ID_FRONT, POSITION_FACE_FRONT)));
+				new BlockFace(ID_FACE_UP, POSITION_FACE_UP),
+				new BlockFace(ID_FACE_FRONT, POSITION_FACE_FRONT)));
 			blocks.Add(new EdgeBlock(POSITION_FACE_UP + POSITION_FACE_LEFT,
-				new BlockFace(FACE_ID_UP, POSITION_FACE_UP),
-				new BlockFace(FACE_ID_LEFT, POSITION_FACE_LEFT)));
+				new BlockFace(ID_FACE_UP, POSITION_FACE_UP),
+				new BlockFace(ID_FACE_LEFT, POSITION_FACE_LEFT)));
 			blocks.Add(new EdgeBlock(POSITION_FACE_UP + POSITION_FACE_BACK,
-				new BlockFace(FACE_ID_UP, POSITION_FACE_UP),
-				new BlockFace(FACE_ID_BACK, POSITION_FACE_BACK)));
+				new BlockFace(ID_FACE_UP, POSITION_FACE_UP),
+				new BlockFace(ID_FACE_BACK, POSITION_FACE_BACK)));
 			blocks.Add(new EdgeBlock(POSITION_FACE_UP + POSITION_FACE_RIGHT,
-				new BlockFace(FACE_ID_UP, POSITION_FACE_UP),
-				new BlockFace(FACE_ID_RIGHT, POSITION_FACE_RIGHT)));
+				new BlockFace(ID_FACE_UP, POSITION_FACE_UP),
+				new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)));
 
 			blocks.Add(new EdgeBlock(POSITION_FACE_LEFT + POSITION_FACE_FRONT,
-				new BlockFace(FACE_ID_LEFT, POSITION_FACE_LEFT),
-				new BlockFace(FACE_ID_FRONT, POSITION_FACE_FRONT)));
+				new BlockFace(ID_FACE_LEFT, POSITION_FACE_LEFT),
+				new BlockFace(ID_FACE_FRONT, POSITION_FACE_FRONT)));
 			blocks.Add(new EdgeBlock(POSITION_FACE_FRONT + POSITION_FACE_RIGHT,
-				new BlockFace(FACE_ID_FRONT, POSITION_FACE_FRONT),
-				new BlockFace(FACE_ID_RIGHT, POSITION_FACE_RIGHT)));
+				new BlockFace(ID_FACE_FRONT, POSITION_FACE_FRONT),
+				new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)));
 			blocks.Add(new EdgeBlock(POSITION_FACE_RIGHT + POSITION_FACE_BACK,
-				new BlockFace(FACE_ID_RIGHT, POSITION_FACE_RIGHT),
-				new BlockFace(FACE_ID_BACK, POSITION_FACE_BACK)));
+				new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT),
+				new BlockFace(ID_FACE_BACK, POSITION_FACE_BACK)));
 			blocks.Add(new EdgeBlock(POSITION_FACE_BACK + POSITION_FACE_LEFT,
-				new BlockFace(FACE_ID_BACK, POSITION_FACE_BACK),
-				new BlockFace(FACE_ID_LEFT, POSITION_FACE_LEFT)));
+				new BlockFace(ID_FACE_BACK, POSITION_FACE_BACK),
+				new BlockFace(ID_FACE_LEFT, POSITION_FACE_LEFT)));
 		}
 
 		#endregion Private Members

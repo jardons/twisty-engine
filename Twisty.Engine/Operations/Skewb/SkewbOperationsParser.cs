@@ -7,7 +7,7 @@ namespace Twisty.Engine.Operations.Skewb
 	/// <summary>
 	/// Class designed to parse a list of operations to perform on a skewb cube.
 	/// </summary>
-	public class RubikOperationsParser : IOperationsParser<SkewbCube>
+	public class SkewbOperationsParser : IOperationsParser<SkewbCube>
 	{
 		/// <summary>
 		/// Parse command and generate an Operation list based on its content.
@@ -58,14 +58,10 @@ namespace Twisty.Engine.Operations.Skewb
 					return "DFL";
 				case 'R':
 					return "DBR";
-				/*case 'F':
-					return RubikCube.FACE_ID_FRONT;*/
 				case 'B':
 					return "DBL";
 				case 'U':
 					return "UBL";
-				/*case 'D':
-					return RubikCube.FACE_ID_DOWN;*/
 			}
 
 			return null;

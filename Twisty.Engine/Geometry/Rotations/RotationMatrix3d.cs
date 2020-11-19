@@ -86,7 +86,7 @@ namespace Twisty.Engine.Geometry.Rotations
 		/// <summary>
 		/// Rotate the provided vector based using this rotation.
 		/// </summary>
-		/// <param name="cc">Cartesian COordiante of the point to rotate.</param>
+		/// <param name="cc">Cartesian Coordiante of the point to rotate.</param>
 		/// <returns>Rotated value.</returns>
 		public RotationMatrix3d Rotate(RotationMatrix3d cc)
 		{
