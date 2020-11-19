@@ -300,11 +300,10 @@ namespace Twisty.Engine.Tests.Geometry
 			// 3. Verify
 			Assert.Equal(expected.X, r.X, PRECISION_DOUBLE);
 			Assert.Equal(expected.Y, r.Y, PRECISION_DOUBLE);
-			Assert.Equal(expected.Z, r.Z, PRECISION_DOUBLE);
+			Assert.Equal(expected.Z, r.Z, PRECISION_DOUBL
+		}
 
-    }
-
-    [Theory]
+		[Theory]
 		[InlineData("(1 1 1)", "(0.577350269189626 0.577350269189626 0.577350269189626)")]
 		[InlineData("(0.5 0.5 0.5)", "(0.577350269189626 0.577350269189626 0.577350269189626)")]
 		[InlineData("(2 2 2)", "(0.577350269189626 0.577350269189626 0.577350269189626)")]
