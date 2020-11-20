@@ -43,11 +43,11 @@ namespace Twisty.Engine.Presenters.Skewb
 
 			SkewbFaceTextView facesView = new SkewbFaceTextView
 			{
-				TopLeftColor = faces[0].Id,
-				TopRightColor = faces[1].Id,
+				TopLeftColor = faces[4].Id,
+				TopRightColor = faces[3].Id,
 				CenterColor = faces[2].Id,
-				BottomLeftColor = faces[3].Id,
-				BottomRightColor = faces[4].Id
+				BottomLeftColor = faces[1].Id,
+				BottomRightColor = faces[0].Id
 			};
 
 			return facesView;

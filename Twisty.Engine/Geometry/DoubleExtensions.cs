@@ -35,5 +35,27 @@ namespace Twisty.Engine.Geometry
 		/// It's usage is fair enough for the current project but can not be seen as a correct generic solution.
 		/// </remarks>
 		public static bool IsZero(this double d1) => Math.Abs(d1) < PRECISION;
+
+		/// <summary>
+		/// ALign the current double on the ratio limits to avoid precisions issues.
+		/// </summary>
+		/// <param name="d">Double value to aligne on the ratio limits</param>
+		/// <returns>
+		/// Aligned boolean aligned between -1 and 1.
+		/// Zero values will also be rounded to 0.0 to clean loss of precision.
+		/// </returns>
+		public static double AlignRatioLimits(this double d)
+		{
+			if (d.IsZero())
+				return 0.0;
+
+			if (d > 1.0)
+				return 1.0;
+
+			if (d < -1.0)
+				return -1.0;
+
+			return d;
+		}
 	}
 }

@@ -35,24 +35,24 @@ namespace Twisty.Engine.Geometry.Rotations
 			// Create the matrix
 			m_Matrix = new double[3, 3];
 
-			m_Matrix[0, 0] = c + (axis.X * axis.X * t);
-			m_Matrix[1, 1] = c + (axis.Y * axis.Y * t);
-			m_Matrix[2, 2] = c + (axis.Z * axis.Z * t);
+			m_Matrix[0, 0] = (c + (axis.X * axis.X * t)).AlignRatioLimits();
+			m_Matrix[1, 1] = (c + (axis.Y * axis.Y * t)).AlignRatioLimits();
+			m_Matrix[2, 2] = (c + (axis.Z * axis.Z * t)).AlignRatioLimits();
 
 			double part1 = axis.X * axis.Y * t;
 			double part2 = axis.Z * s;
-			m_Matrix[1, 0] = part1 + part2;
-			m_Matrix[0, 1] = part1 - part2;
+			m_Matrix[1, 0] = (part1 + part2).AlignRatioLimits();
+			m_Matrix[0, 1] = (part1 - part2).AlignRatioLimits();
 
 			part1 = axis.X * axis.Z * t;
 			part2 = axis.Y * s;
-			m_Matrix[2, 0] = part1 - part2;
-			m_Matrix[0, 2] = part1 + part2;
+			m_Matrix[2, 0] = (part1 - part2).AlignRatioLimits();
+			m_Matrix[0, 2] = (part1 + part2).AlignRatioLimits();
 
 			part1 = axis.Y * axis.Z * t;
 			part2 = axis.X * s;
-			m_Matrix[2, 1] = part1 + part2;
-			m_Matrix[1, 2] = part1 - part2;
+			m_Matrix[2, 1] = (part1 + part2).AlignRatioLimits();
+			m_Matrix[1, 2] = (part1 - part2).AlignRatioLimits();
 		}
 
 		/// <summary>

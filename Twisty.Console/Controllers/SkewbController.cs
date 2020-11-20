@@ -87,10 +87,9 @@ namespace Twisty.Bash.Controllers
 					for (int gridRow = 0; gridRow < 4; ++gridRow)
 					{
 						var cubeFace = grid[gridRow, gridLine];
-
 						if (cubeFace == null)
 						{
-							Console.Write("     ");
+							Console.Write("      ");
 							continue;
 						}
 
@@ -120,9 +119,22 @@ namespace Twisty.Bash.Controllers
 								this.WriteContent(cubeFace.BottomRightColor, 2);
 								break;
 						}
+
+						Console.Write(" ");
 					}
 
 					Console.WriteLine("");
+				}
+				
+				Console.ForegroundColor = ConsoleColor.White;
+				switch (gridLine)
+				{
+					case 0:
+						Console.WriteLine("                       U");
+						break;
+					case 1:
+						Console.WriteLine("     L     *     R     B");
+						break;
 				}
 			}
 		}
