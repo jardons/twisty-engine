@@ -64,7 +64,7 @@ namespace Twisty.Engine.Geometry
 				return GetFromBottom;
 			}
 
-			throw new NotImplementedException("Conversion to 2D on this plane doesn't exist yet.");
+			return GetFromProjection;
 		}
 
 		/// <summary>
@@ -108,6 +108,22 @@ namespace Twisty.Engine.Geometry
 		/// <param name="cc">3D coordinates to convert.</param>
 		/// <returns>The converted 2D coordinates.</returns>
 		private Cartesian2dCoordinate GetFromLeft(Cartesian3dCoordinate cc) => new Cartesian2dCoordinate(cc.X, cc.Z);
+
+		/// <summary>
+		/// Gets the 2D coordinates as seen from a calculated plane.
+		/// </summary>
+		/// <param name="cc">3D coordinates to convert.</param>
+		/// <returns>The converted 2D coordinates.</returns>
+		private Cartesian2dCoordinate GetFromProjection(Cartesian3dCoordinate cc)
+		{
+			// Project the coordinates on the reference
+			ParametricLine projectionLine = this.Plane.GetPerpendicular(cc);
+			Cartesian3dCoordinate planeCoordinate = this.Plane.GetIntersection(projectionLine);
+
+			Cartesian3dCoordinate ccOnX = planeCoordinate.TransposeFromReferential(this.Plane.Normal);
+
+			return GetFromFront(ccOnX);
+		}
 
 		#endregion Private Members
 	}

@@ -103,7 +103,7 @@ namespace Twisty.Engine.Geometry
 		public int Compare(Cartesian3dCoordinate x, Cartesian3dCoordinate y)
 		{
 			// Check perfect equality first to avoid further calculations.
-			if (x.X.IsEqualTo(y.X) && x.Y.IsEqualTo(y.Y) && x.Z.IsEqualTo(y.Z))
+			if (x.IsSamePoint(y))
 				return 0;
 
 			Cartesian2dCoordinate x2 = m_Converter.ConvertTo2d(x);

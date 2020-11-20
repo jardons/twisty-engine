@@ -50,6 +50,11 @@ namespace Twisty.Engine.Structure
 		/// </summary>
 		public IEnumerable<RotationAxis> Axes => m_Axes.Values;
 
+		/// <summary>
+		/// Gets the list of faces available for rotation around this core.
+		/// </summary>
+		public IEnumerable<CoreFace> Faces => m_Faces.Values;
+
 		#endregion Public Properties
 
 		#region Public Methods
@@ -82,6 +87,13 @@ namespace Twisty.Engine.Structure
 		/// <param name="axisId">Id of the axis we are looking up.</param>
 		/// <returns>Axis for the corresponding or null if not found.</returns>
 		public RotationAxis GetAxis(string axisId) => m_Axes[axisId];
+
+		/// <summary>
+		/// Gets a face using its id.
+		/// </summary>
+		/// <param name="faceId">Id of the face we are looking up.</param>
+		/// <returns>Face for the corresponding or null if not found.</returns>
+		public CoreFace GetFace(string faceId) => m_Faces[faceId];
 
 		#endregion Public Methods
 

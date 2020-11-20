@@ -9,6 +9,8 @@ namespace Twisty.Engine.Geometry
 	/// </summary>
 	public class Plane
 	{
+		#region ctor(s)
+
 		/// <summary>
 		/// Create a new Plane from the coordiante in a string format.
 		/// </summary>
@@ -69,6 +71,8 @@ namespace Twisty.Engine.Geometry
 			this.D = -((normal.X * point.X) + (normal.Y * point.Y) + (normal.Z * point.Z));
 		}
 
+		#endregion ctor(s)
+
 		/// <summary>
 		/// Gets the normal vector used to define this plane.
 		/// </summary>
@@ -100,7 +104,19 @@ namespace Twisty.Engine.Geometry
 		/// <param name="point">Point for which appartenance to the plane will be checked.</param>
 		/// <returns>A boolean indicating whether the point is ont the plane or not.</returns>
 		/// <remarks>Formula : ax + by + cz + d = 0</remarks>
-		public bool IsOnPlane(Cartesian3dCoordinate point) => ((this.A * point.X) + (this.B * point.Y) + (this.C * point.Z) + this.D).IsZero();
+		public bool IsOnPlane(Cartesian3dCoordinate point) => (GetSumOfAbcProduct(point) + this.D).IsZero();
+
+		/// <summary>
+		/// Indicate if a specific point is above the plane or not.
+		/// </summary>
+		/// <param name="point">Point for which position relative to the plane will be checked.</param>
+		/// <returns>A boolean indicating whether the point is above the plane or not.</returns>
+		/// <remarks>Formula : ax + by + cz + d = 0</remarks>
+		public bool IsAbovePlane(Cartesian3dCoordinate point)
+		{
+			double v = GetSumOfAbcProduct(point) + this.D;
+			return !v.IsZero() && v > 0.0;
+		}
 
 		/// <summary>
 		/// Gets the intersection point coordinate between the current plane and another specified plane.
@@ -127,9 +143,6 @@ namespace Twisty.Engine.Geometry
 		/// </remarks>
 		public ParametricLine GetIntersection(Plane p)
 		{
-			//if (l.IsParallelTo(this))
-			//throw new InvalidOperationException("Cannot Get Intersection between a Plane and a parallel line.");
-
 			// Orientation of the intersection between the plane is a vector perpendicular to the normals of both planes.
 			Cartesian3dCoordinate orientation = this.Normal.CrossProduct(p.Normal);
 
@@ -200,14 +213,21 @@ namespace Twisty.Engine.Geometry
 			if (divisor.IsZero())
 				throw new InvalidOperationException("Cannot Get Intersection between a Plane and a parallel vector.");
 
-			double planePart = this.D / divisor;
+			double planePart = - this.D / divisor;
 
 			return new Cartesian3dCoordinate(
-					- v.X * planePart,
-					- v.Y * planePart,
-					- v.Z * planePart
+					v.X * planePart,
+					v.Y * planePart,
+					v.Z * planePart
 				);
 		}
+
+		/// <summary>
+		/// Gets a ParametricLine perpendicular to the plane and passing through a provided point.
+		/// </summary>
+		/// <param name="point">Point through which the perpendicular line to the plane should go.</param>
+		/// <returns>A new line going through the provided point and the current plane.</returns>
+		public ParametricLine GetPerpendicular(Cartesian3dCoordinate point) => new ParametricLine(point, this.Normal);
 
 		#region Private Members
 
@@ -219,7 +239,7 @@ namespace Twisty.Engine.Geometry
 		private double GetSumOfAbcProduct(ParametricLine l) => (this.A * l.A) + (this.B * l.B) + (this.C * l.C);
 
 		/// <summary>
-		/// Gets the sum of products of the A, B and C factor of the plane and parametric line formula.
+		/// Gets the sum of products of the A, B and C factor of the plane and vector formula.
 		/// </summary>
 		/// <param name="cc">Parametric line with which we calculate the product.</param>
 		/// <returns>Result of the sum of the product of the A, B and C factor of the plane and parametric line formula.</returns>

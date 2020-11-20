@@ -22,29 +22,34 @@ namespace Twisty.Engine.Tests.Geometry
 		[InlineData("(1.0 0.0 0.0)", "(1.0 1.0 0.0)", "(0 0 1 1)", -1)]
 		[InlineData("(1.0 0.0 0.0)", "(1.0 2.0 0.0)", "(0 0 1 1)", -1)]
 		[InlineData("(1.0 1.0 0.0)", "(1.0 2.0 0.0)", "(0 0 1 1)", -1)]
-		// Square rotation full test
+		// Square of differents values should not loop on standard axis.
 		[InlineData("(-0.5 0.5 0.71)", "(0.5 0.5 0.71)", "(0 0 1 1)", -1)]
 		[InlineData("(0.5 -0.5 0.71)", "(0.5 0.5 0.71)", "(0 0 1 1)", -1)]
 		[InlineData("(-0.5 -0.5 0.71)", "(0.5 0.5 0.71)", "(0 0 1 1)", -1)]
 		[InlineData("(-0.5 0.5 0.71)", "(0.5 -0.5 0.71)", "(0 0 1 1)", -1)]
 		[InlineData("(-0.5 0.5 0.71)", "(-0.5 -0.5 0.71)", "(0 0 1 1)", -1)]
 		[InlineData("(-0.5 -0.5 0.71)", "(0.5 -0.5 0.71)", "(0 0 1 1)", -1)]
-		public void CircularVectorComparer_CompareVector_BeExpected(string xCoord, string yCoord, string plane, int expected)
-		{
-			// 1. Prepare
-			Cartesian3dCoordinate x = new Cartesian3dCoordinate(xCoord);
-			Cartesian3dCoordinate y = new Cartesian3dCoordinate(yCoord);
-			Plane p = new Plane(plane);
-			var comparer = new CircularVectorComparer(p);
+		public void CircularVectorComparer_Compare3dVectorWithSimplePlane_BeExpected(string xCoord, string yCoord, string plane, int expected)
+			=> CircularVectorComparer_Compare3dVector_BeExpected(xCoord, yCoord, plane, expected);
 
-			// 2. Execute
-			int result = comparer.Compare(x, y);
-			int reverse = comparer.Compare(y, x);
-
-			// 3. Verify
-			Assert.Equal(expected, result);
-			Assert.Equal(-expected, reverse);
-		}
+		[Theory]
+		// Square of differents values should not loop on slightly changed axis.
+		[InlineData("(-0.5 0.5 0.71)", "(0.5 0.5 0.71)", "(0.01 0 1 -1)", 1)]
+		[InlineData("(0.5 -0.5 0.71)", "(0.5 0.5 0.71)", "(0.01 0 1 -1)", 1)]
+		[InlineData("(-0.5 -0.5 0.71)", "(0.5 0.5 0.71)", "(0.01 0 1 -1)", 1)]
+		[InlineData("(-0.5 0.5 0.71)", "(0.5 -0.5 0.71)", "(0.01 0 1 -1)", 1)]
+		[InlineData("(-0.5 0.5 0.71)", "(-0.5 -0.5 0.71)", "(0.01 0 1 -1)", 1)]
+		[InlineData("(-0.5 -0.5 0.71)", "(0.5 -0.5 0.71)", "(0.01 0 1 -1)", 1)]
+		// Square of differents values should not loop on diagonal axis going throug it.
+		// -2 2 < 2 2 < 2 -2 < -2 -2
+		[InlineData("(-2 2 0.71)", "(2 2 0.71)", "(1 1 1 -10)", -1)]
+		[InlineData("(2 2 0.71)", "(2 -2 0.71)", "(1 1 1 -10)", -1)]
+		[InlineData("(2 2 0.71)", "(-2 -2 0.71)", "(1 1 1 -10)", -1)]
+		[InlineData("(-2 2 0.71)", "(2 -2 0.71)", "(1 1 1 -10)", -1)]
+		[InlineData("(-2 2 0.71)", "(-2 -2 0.71)", "(1 1 1 -10)", -1)]
+		[InlineData("(2 -2 0.71)", "(-2 -2 0.71)", "(1 1 1 -10)", -1)]
+		public void CircularVectorComparer_Compare3dVectorWithCOmplexPlane_BeExpected(string xCoord, string yCoord, string plane, int expected)
+			=> CircularVectorComparer_Compare3dVector_BeExpected(xCoord, yCoord, plane, expected);
 
 		[Theory]
 		// Perfect equality
@@ -82,5 +87,26 @@ namespace Twisty.Engine.Tests.Geometry
 		}
 
 		#endregion Test Methods
+
+		#region Private Methods
+
+		private void CircularVectorComparer_Compare3dVector_BeExpected(string xCoord, string yCoord, string plane, int expected)
+		{
+			// 1. Prepare
+			Cartesian3dCoordinate x = new Cartesian3dCoordinate(xCoord);
+			Cartesian3dCoordinate y = new Cartesian3dCoordinate(yCoord);
+			Plane p = new Plane(plane);
+			var comparer = new CircularVectorComparer(p);
+
+			// 2. Execute
+			int result = comparer.Compare(x, y);
+			int reverse = comparer.Compare(y, x);
+
+			// 3. Verify
+			Assert.Equal(expected, result);
+			Assert.Equal(-expected, reverse);
+		}
+
+		#endregion Private Methods
 	}
 }

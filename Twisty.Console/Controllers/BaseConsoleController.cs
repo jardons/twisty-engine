@@ -105,6 +105,8 @@ namespace Twisty.Bash.Controllers
 
 		#region Protected Members
 
+		protected string FormatCoordinates(Plane p) => $"({FormatCoordinates(p.Normal)}, {p.D:0.00})";
+
 		protected string FormatCoordinates(SphericalVector v) => $"({v.Phi:0.00}, {v.Theta:0.00})";
 
 		protected string FormatCoordinates(Cartesian3dCoordinate cc) => $"({cc.X:0.00}, {cc.Y:0.00}, {cc.Z:0.00})";

@@ -72,14 +72,18 @@ namespace Twisty.Engine.Tests.Structure
 		}
 
 		[Theory]
+		// Base Axis Rotations
 		[InlineData("(0 0 1)", Math.PI /2.0, "(1 0 0)", "(0 -1 0)")]
 		[InlineData("(0 0 1)", Math.PI / 2.0, "(0 1 0)", "(1 0 0)")]
 		[InlineData("(0 0 1)", Math.PI / 2.0, "(-1 0 0)", "(0 1 0)")]
 		[InlineData("(0 0 1)", Math.PI / 2.0, "(0 -1 0)", "(-1 0 0)")]
-		public void Block_RotateAndGetFace_FindFace(string axisCc, double theta, string faceCc, string expectedCc)
+		// Skewb rotations (120 degree corners)
+		[InlineData("(1 1 1)", Math.PI * 2.0 / 3.0, "(1 0 0)", "(0 0 1)")]
+		[InlineData("(1 1 1)", -Math.PI * 2.0 / 3.0, "(1 0 0)", "(0 1 0)")]
+		public void Block_RotateAndGetFace_FindFace(string rotationAxisCc, double theta, string faceCc, string expectedCc)
 		{
 			// 1. Prepare
-			Cartesian3dCoordinate axis = new Cartesian3dCoordinate(axisCc);
+			Cartesian3dCoordinate axis = new Cartesian3dCoordinate(rotationAxisCc);
 			Cartesian3dCoordinate faceOrientation = new Cartesian3dCoordinate(faceCc);
 			Cartesian3dCoordinate expectedOrientation = new Cartesian3dCoordinate(expectedCc);
 			Block b = new TestBlock(new BlockFace("test", faceOrientation));

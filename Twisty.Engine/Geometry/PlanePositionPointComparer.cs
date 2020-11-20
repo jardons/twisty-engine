@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Twisty.Engine.Geometry
 {
 	///<summary>
-	/// This Coparer allow to sort the point in a plane by reading them line by line.
+	/// This Comparer allow to sort the point in a plane by reading them line by line.
 	///</summary>
 	/// <remarks>
 	/// Sorting map :

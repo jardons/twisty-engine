@@ -8,35 +8,32 @@ using Twisty.Engine.Structure.Rubiks;
 
 namespace Twisty.Bash.Controllers
 {
-	public class RubikController : BaseConsoleController<RubikCube>
+	public class RubikController : CubeConsoleController<RubikCube>
 	{
-		public RubikController()
-			: base(new RubikCube(3), new RubikOperationsParser())
+		public RubikController(int n = 3)
+			: base(new RubikCube(n), new RubikOperationsParser())
 		{
 		}
 
 		[ConsoleRoute("faces")]
 		private void GetFaces()
 		{
-			foreach (RotationAxis a in Core.Axes)
+			foreach (CoreFace f in Core.Faces)
 			{
-				System.Console.WriteLine($"{a.Id} {FormatCoordinates(a.Vector)}");
+				System.Console.WriteLine($"{f.Id} {FormatCoordinates(f.Coordinates)}");
 			}
 		}
 
 		[ConsoleRoute("face-content")]
 		private void GetFace(string faceId)
 		{
-			RotationAxis a = Core.GetAxis(faceId);
-			Plane p = new Plane(
-				a.Vector,
-				Core.GetBlocksForFace(a.Vector).FirstOrDefault().Position);
-			CartesianCoordinatesConverter c = new CartesianCoordinatesConverter(p);
+			CoreFace f = Core.GetFace(faceId);
+			CartesianCoordinatesConverter c = new CartesianCoordinatesConverter(f.Coordinates);
 
-			var blocks = Core.GetBlocksForFace(a.Vector)
+			var blocks = Core.GetBlocksForFace(f.Id)
 				.OfType<IPositionnedByCartesian3dVector>()
 				.ToList();
-			blocks.Sort(new PlanePositionPointComparer(p));
+			blocks.Sort(new PlanePositionPointComparer(f.Coordinates));
 
 			foreach (Block b in blocks.OfType<Block>())
 			{
@@ -69,17 +66,17 @@ namespace Twisty.Bash.Controllers
 			RubikFaceTextView[,] grid = new RubikFaceTextView[4, 3];
 
 			grid[0, 0] = presenter.GetFacePlaceHolder();
-			grid[1, 0] = presenter.GetFaceAsText(RubikCube.FACE_ID_UP);
+			grid[1, 0] = presenter.GetFaceAsText(RubikCube.ID_FACE_UP);
 			grid[2, 0] = grid[0, 0];
 			grid[3, 0] = grid[0, 0];
 
-			grid[0, 1] = presenter.GetFaceAsText(RubikCube.FACE_ID_LEFT);
-			grid[1, 1] = presenter.GetFaceAsText(RubikCube.FACE_ID_FRONT);
-			grid[2, 1] = presenter.GetFaceAsText(RubikCube.FACE_ID_RIGHT);
-			grid[3, 1] = presenter.GetFaceAsText(RubikCube.FACE_ID_BACK);
+			grid[0, 1] = presenter.GetFaceAsText(RubikCube.ID_FACE_LEFT);
+			grid[1, 1] = presenter.GetFaceAsText(RubikCube.ID_FACE_FRONT);
+			grid[2, 1] = presenter.GetFaceAsText(RubikCube.ID_FACE_RIGHT);
+			grid[3, 1] = presenter.GetFaceAsText(RubikCube.ID_FACE_BACK);
 
 			grid[0, 2] = grid[0, 0];
-			grid[1, 2] = presenter.GetFaceAsText(RubikCube.FACE_ID_DOWN);
+			grid[1, 2] = presenter.GetFaceAsText(RubikCube.ID_FACE_DOWN);
 			grid[2, 2] = grid[0, 0];
 			grid[3, 2] = grid[0, 0];
 
@@ -101,36 +98,6 @@ namespace Twisty.Bash.Controllers
 
 					Console.WriteLine("");
 				}
-			}
-		}
-
-		/// <summary>
-		/// Sets the Color used to print in the console.
-		/// </summary>
-		/// <param name="id">Id of the color that will be used to print in the console.</param>
-		private void SetConsolColor(string id)
-		{
-			switch (id)
-			{
-				case RubikCube.FACE_ID_UP:
-					Console.ForegroundColor = ConsoleColor.Yellow;
-					break;
-				case RubikCube.FACE_ID_LEFT:
-					Console.ForegroundColor = ConsoleColor.DarkYellow;
-					break;
-				case RubikCube.FACE_ID_RIGHT:
-					Console.ForegroundColor = ConsoleColor.Red;
-					break;
-				case RubikCube.FACE_ID_FRONT:
-					Console.ForegroundColor = ConsoleColor.Blue;
-					break;
-				case RubikCube.FACE_ID_BACK:
-					Console.ForegroundColor = ConsoleColor.Green;
-					break;
-				case RubikCube.FACE_ID_DOWN:
-				default:
-					Console.ForegroundColor = ConsoleColor.White;
-					break;
 			}
 		}
 	}
