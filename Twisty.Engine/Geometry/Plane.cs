@@ -98,6 +98,22 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		public double D { get; }
 
+		#region Public Methods
+
+		/// <summary>
+		/// Evaluate if the current plane is parallel to another given plane.
+		/// </summary>
+		/// <param name="p">Plane to which the orientation of the current Plane will be compared.</param>
+		/// <returns>A boolean indicating whether both Planes are parallel or not.</returns>
+		/// <remarks>
+		/// Parallels plane share a Normal of whether the same direction or the exact opposite one.
+		/// </remarks>
+		public bool IsParallelTo(Plane p)
+		{
+			return this.Normal.IsSameVector(p.Normal)
+				|| this.Normal.IsSameVector(p.Normal.Reverse);
+		}
+
 		/// <summary>
 		/// Indicate if a specific point is on the plane or not.
 		/// </summary>
@@ -229,7 +245,9 @@ namespace Twisty.Engine.Geometry
 		/// <returns>A new line going through the provided point and the current plane.</returns>
 		public ParametricLine GetPerpendicular(Cartesian3dCoordinate point) => new ParametricLine(point, this.Normal);
 
-		#region Private Members
+		#endregion Public Methods
+
+		#region Private Methods
 
 		/// <summary>
 		/// Gets the sum of products of the A, B and C factor of the plane and parametric line formula.
@@ -433,6 +451,6 @@ namespace Twisty.Engine.Geometry
 			return true;
 		}
 
-		#endregion Private Members
+		#endregion Private Methods
 	}
 }

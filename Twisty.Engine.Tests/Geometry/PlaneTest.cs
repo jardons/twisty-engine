@@ -166,6 +166,26 @@ namespace Twisty.Engine.Tests.Geometry
 		}
 
 		[Theory]
+		[InlineData("(1 0 0 -29)", "(1 0 0 -29)", true)]
+		[InlineData("(2 3 4 -29)", "(2 3 4 -27)", true)]
+		[InlineData("(2 3 4 -29)", "(2 3 4 29)", true)]
+		[InlineData("(2 3 4 -29)", "(4 3 2 29)", false)]
+		public void Plane_IsParallelTo_Expected(string firstPlaneCoordinate, string secondPlaneCoordinate, bool expected)
+		{
+			// 1. Prepare
+			Plane p1 = new Plane(firstPlaneCoordinate);
+			Plane p2 = new Plane(secondPlaneCoordinate);
+
+			// 2. Execute
+			bool r1 = p1.IsParallelTo(p2);
+			bool r2 = p2.IsParallelTo(p1);
+
+			// 3. Verify
+			Assert.Equal(expected, r1);
+			Assert.Equal(expected, r2);
+		}
+
+		[Theory]
 		[InlineData("(2 3 4 -29)", "(2 3 4)", "(2 3 4)")]
 		[InlineData("(2 3 4 -29)", "(4 6 8)", "(2 3 4)")]
 		[InlineData("(2 3 4 -29)", "(6 9 12)", "(2 3 4)")]
