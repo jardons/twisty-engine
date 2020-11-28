@@ -70,7 +70,7 @@ namespace Twisty.Engine.Structure
 			if (!m_Faces.ContainsKey(faceId))
 				throw new ArgumentNullException("Face Id should exist.", nameof(faceId));
 
-			return m_Blocks.Where(b => b.GetBlockFace(m_Faces[faceId].Coordinates.Normal) != null);
+			return m_Blocks.Where(b => b.GetBlockFace(m_Faces[faceId].Plane.Normal) != null);
 		}
 
 		/// <summary>

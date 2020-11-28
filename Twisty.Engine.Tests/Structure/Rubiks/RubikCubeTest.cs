@@ -25,7 +25,7 @@ namespace Twisty.Engine.Tests.Structure.Rubiks
 			RubikCube c = new RubikCube(2);
 			var axis = c.GetAxis(axisId);
 			var initialBlock = c.Blocks.FirstOrDefault(b => b.Position.IsSameVector(blockPosition));
-			var targetFaceVector = c.GetFace(checkedFaceId).Coordinates.Normal;
+			var targetFaceVector = c.GetFace(checkedFaceId).Plane.Normal;
 
 			// 2. Execute
 			c.RotateAround(axis, isClockwise);

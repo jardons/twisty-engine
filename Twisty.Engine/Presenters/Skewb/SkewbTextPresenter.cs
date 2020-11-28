@@ -37,9 +37,9 @@ namespace Twisty.Engine.Presenters.Skewb
 			var blocks = this.Cube.GetBlocksForFace(faceId);
 
 			var sortedBlocks = blocks.OfType<IPositionnedByCartesian3dVector>().ToList();
-			sortedBlocks.Sort(new PlanePositionPointComparer(face.Coordinates));
+			sortedBlocks.Sort(new PlanePositionPointComparer(face.Plane));
 
-			var faces = sortedBlocks.OfType<Block>().Select(b => b.GetBlockFace(face.Coordinates.Normal)).ToList();
+			var faces = sortedBlocks.OfType<Block>().Select(b => b.GetBlockFace(face.Plane.Normal)).ToList();
 
 			SkewbFaceTextView facesView = new SkewbFaceTextView
 			{

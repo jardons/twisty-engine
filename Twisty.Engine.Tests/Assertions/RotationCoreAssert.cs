@@ -13,7 +13,7 @@ namespace Twisty.Engine.Tests.Assertions
 		{
 			foreach (var coreFace in core.Faces)
 			{
-				Plane p = new Plane(coreFace.Coordinates.Normal, Cartesian3dCoordinate.Zero);
+				Plane p = new Plane(coreFace.Plane.Normal, Cartesian3dCoordinate.Zero);
 
 				foreach (var block in core.GetBlocksForFace(coreFace.Id))
 				{

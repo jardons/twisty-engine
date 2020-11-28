@@ -20,7 +20,7 @@ namespace Twisty.Bash.Controllers
 		{
 			foreach (CoreFace f in Core.Faces)
 			{
-				System.Console.WriteLine($"{f.Id} {FormatCoordinates(f.Coordinates)}");
+				System.Console.WriteLine($"{f.Id} {FormatCoordinates(f.Plane)}");
 			}
 		}
 
@@ -28,12 +28,12 @@ namespace Twisty.Bash.Controllers
 		private void GetFace(string faceId)
 		{
 			CoreFace f = Core.GetFace(faceId);
-			CartesianCoordinatesConverter c = new CartesianCoordinatesConverter(f.Coordinates);
+			CartesianCoordinatesConverter c = new CartesianCoordinatesConverter(f.Plane);
 
 			var blocks = Core.GetBlocksForFace(f.Id)
 				.OfType<IPositionnedByCartesian3dVector>()
 				.ToList();
-			blocks.Sort(new PlanePositionPointComparer(f.Coordinates));
+			blocks.Sort(new PlanePositionPointComparer(f.Plane));
 
 			foreach (Block b in blocks.OfType<Block>())
 			{
