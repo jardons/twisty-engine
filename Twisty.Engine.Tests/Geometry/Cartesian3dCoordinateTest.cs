@@ -304,6 +304,31 @@ namespace Twisty.Engine.Tests.Geometry
 		}
 
 		[Theory]
+		[InlineData("(0 0 0)", "(0 0 0)")]
+		[InlineData("(1 1 1)", "(-1 -1 -1)")]
+		[InlineData("(1 0 0)", "(-1 0 0)")]
+		[InlineData("(0 1 0)", "(0 -1 0)")]
+		[InlineData("(0 0 1)", "(0 0 -1)")]
+		public void Cartesian3dCoordinate_Reverse_ShouldMatch(string firstCoord, string secondCoord)
+		{
+			// 1. Prepare
+			Cartesian3dCoordinate cc1 = new Cartesian3dCoordinate(firstCoord);
+			Cartesian3dCoordinate cc2 = new Cartesian3dCoordinate(secondCoord);
+
+			// 2. Execute
+			Cartesian3dCoordinate r1 = cc1.Reverse;
+			Cartesian3dCoordinate r2 = cc2.Reverse;
+
+			// 3. Verify
+			Assert.Equal(cc2.X, r1.X, PRECISION_DOUBLE);
+			Assert.Equal(cc2.Y, r1.Y, PRECISION_DOUBLE);
+			Assert.Equal(cc2.Z, r1.Z, PRECISION_DOUBLE);
+			Assert.Equal(cc1.X, r2.X, PRECISION_DOUBLE);
+			Assert.Equal(cc1.Y, r2.Y, PRECISION_DOUBLE);
+			Assert.Equal(cc1.Z, r2.Z, PRECISION_DOUBLE);
+		}
+
+		[Theory]
 		[InlineData("(1 1 1)", "(0.577350269189626 0.577350269189626 0.577350269189626)")]
 		[InlineData("(0.5 0.5 0.5)", "(0.577350269189626 0.577350269189626 0.577350269189626)")]
 		[InlineData("(2 2 2)", "(0.577350269189626 0.577350269189626 0.577350269189626)")]

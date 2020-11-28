@@ -131,6 +131,11 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		public bool IsZero => X.IsZero() && Y.IsZero() && Z.IsZero();
 
+		/// <summary>
+		/// Gets the Reverse vector of this one.
+		/// </summary>
+		public Cartesian3dCoordinate Reverse => new Cartesian3dCoordinate(-this.X, -this.Y, -this.Z);
+
 		#endregion Public Properties
 
 		#region Public Methods
