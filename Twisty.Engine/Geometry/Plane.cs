@@ -229,7 +229,7 @@ namespace Twisty.Engine.Geometry
 			if (divisor.IsZero())
 				throw new InvalidOperationException("Cannot Get Intersection between a Plane and a parallel vector.");
 
-			double planePart = - this.D / divisor;
+			double planePart = -this.D / divisor;
 
 			return new Cartesian3dCoordinate(
 					v.X * planePart,
@@ -244,6 +244,23 @@ namespace Twisty.Engine.Geometry
 		/// <param name="point">Point through which the perpendicular line to the plane should go.</param>
 		/// <returns>A new line going through the provided point and the current plane.</returns>
 		public ParametricLine GetPerpendicular(Cartesian3dCoordinate point) => new ParametricLine(point, this.Normal);
+		
+		/// <summary>
+		/// Gets the distance between a point and the plane.
+		/// </summary>
+		/// <param name="point">Coordinates of the point that will be compared to the Plane.</param>
+		/// <returns>A double value indicating the distance to the Plane. Value will be positive when above the Plan and negative when under it.</returns>
+		/// <remarks>
+		///      | Ax1 + By1 + Cz1 + D |
+		/// d = -------------------------
+		///          _______________
+		///         V A² + B² + B² '
+		/// </remarks>
+		public double GetDistanceTo(Cartesian3dCoordinate point)
+		{
+			return ((this.A * point.X) + (this.B * point.Y) + (this.C * point.Z) + D)
+				/ Math.Sqrt((this.A * this.A) + (this.B * this.B) + (this.C * this.C));
+		}
 
 		#endregion Public Methods
 

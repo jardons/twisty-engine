@@ -271,10 +271,10 @@ namespace Twisty.Engine.Geometry
 					return this;
 				else
 					// Formula is not working for reverse referential vector, we just reverse the current coordinates.
-					return new Cartesian3dCoordinate(-this.X, -this.Y, -this.Z);
+					return this.Reverse;
 			}
 
-			Cartesian3dCoordinate origin = new Cartesian3dCoordinate(1, 0, 0);
+			Cartesian3dCoordinate origin = XAxis;
 
 			// Calculate formula variables.
 			Cartesian3dCoordinate v = origin.CrossProduct(referential);

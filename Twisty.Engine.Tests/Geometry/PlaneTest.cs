@@ -186,6 +186,26 @@ namespace Twisty.Engine.Tests.Geometry
 		}
 
 		[Theory]
+		[InlineData("(2 3 4 -29)", "(2 3 4)", 0.0)]
+		[InlineData("(1 0 0 -1)", "(2 0 0)", 1.0)]
+		[InlineData("(1 0 0 -1)", "(3 0 0)", 2.0)]
+		[InlineData("(1 0 0 -1)", "(3.5 0 0)", 2.5)]
+		[InlineData("(1 0 0 -1)", "(0 0 0)", -1.0)]
+		[InlineData("(1 0 0 -1)", "(2 1 3)", 1.0)]
+		public void Plane_GetDistanceToPoint_Expected(string planeCc, string pointCc, double distance)
+		{
+			// 1. Prepare
+			Cartesian3dCoordinate cc = new Cartesian3dCoordinate(pointCc);
+			Plane p = new Plane(planeCc);
+
+			// 2. Execute
+			double r = p.GetDistanceTo(cc);
+
+			// 3. Verify
+			Assert.Equal(distance, r, PRECISION_DOUBLE);
+		}
+
+		[Theory]
 		[InlineData("(2 3 4 -29)", "(2 3 4)", "(2 3 4)")]
 		[InlineData("(2 3 4 -29)", "(4 6 8)", "(2 3 4)")]
 		[InlineData("(2 3 4 -29)", "(6 9 12)", "(2 3 4)")]
