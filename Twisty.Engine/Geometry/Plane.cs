@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Twisty.Engine.Geometry
 {
@@ -7,6 +8,7 @@ namespace Twisty.Engine.Geometry
 	/// A plane is the collection of points for which the formula 'ax + by + cz + d = 0' is true.
 	/// Note that multiple equations can describe the same plane.
 	/// </summary>
+	[DebuggerDisplay("({A}, {B}, {C} {D})")]
 	public class Plane
 	{
 		#region ctor(s)
@@ -24,6 +26,9 @@ namespace Twisty.Engine.Geometry
 					throw new ArgumentException("The provided coordinates are not in the expected format '(A B C D)' and does not contains 4 values.", nameof(coordinates));
 
 				this.Normal = new Cartesian3dCoordinate(parsed[0], parsed[1], parsed[2]);
+				if (this.Normal.IsZero)
+					throw new ArgumentException("Plane normal should be a directed vector and cannot be on the origins.", nameof(coordinates));
+
 				this.D = parsed[3];
 			}
 			catch (FormatException e)
@@ -40,6 +45,9 @@ namespace Twisty.Engine.Geometry
 		public Plane(Cartesian3dCoordinate n, double d)
 		{
 			this.Normal = n;
+			if (this.Normal.IsZero)
+				throw new ArgumentException("Plane normal should be a directed vector and cannot be on the origins.", nameof(n));
+
 			this.D = d;
 		}
 
@@ -53,6 +61,9 @@ namespace Twisty.Engine.Geometry
 		public Plane(double a, double b, double c, double d)
 		{
 			this.Normal = new Cartesian3dCoordinate(a, b, c);
+			if (this.Normal.IsZero)
+				throw new ArgumentException("Plane normal should be a directed vector and cannot be on the origins.", nameof(a));
+
 			this.D = d;
 		}
 
@@ -64,6 +75,8 @@ namespace Twisty.Engine.Geometry
 		public Plane(Cartesian3dCoordinate normal, Cartesian3dCoordinate point)
 		{
 			this.Normal = normal;
+			if (this.Normal.IsZero)
+				throw new ArgumentException("Plane normal should be a directed vector and cannot be on the origins.", nameof(normal));
 
 			// As : 0 = ax + by + cz + d
 			//      -d = ax + by + cz
@@ -164,12 +177,19 @@ namespace Twisty.Engine.Geometry
 
 			// Base on the plane equation, we need to adapt to use the correct resolution to avoid usses coming from potential divide by 0.0.
 			Cartesian3dCoordinate point;
-			if (TryGetPointAtIntersectionOnZ(p, out Cartesian3dCoordinate rZ))
+			if (this.D.IsZero() && p.D.IsZero())
+				// If both D are 0, origin will be share.
+				point = Cartesian3dCoordinate.Zero;
+			else if (TryGetPointAtIntersectionOnZUsingB(p, out Cartesian3dCoordinate rZ))
 				point = rZ;
-			else if (TryGetPointAtIntersectionOnY(p, out Cartesian3dCoordinate rY))
-				point = rY;
-			else if (TryGetPointAtIntersectionOnX(p, out Cartesian3dCoordinate rX))
-				point = rX;
+			else if (TryGetPointAtIntersectionOnYUsingC(p, out Cartesian3dCoordinate rYfromC))
+				point = rYfromC;
+			else if (TryGetPointAtIntersectionOnYUsingA(p, out Cartesian3dCoordinate rYfromA))
+				point = rYfromA;
+			else if (TryGetPointAtIntersectionOnXUsingB(p, out Cartesian3dCoordinate rXFromB))
+				point = rXFromB;
+			else if (TryGetPointAtIntersectionOnXUsingC(p, out Cartesian3dCoordinate rXFromC))
+				point = rXFromC;
 			else
 				throw new NotImplementedException("The method was not able to find a way to get the intersection between the 2 Plane with the currently implemented formula.");
 
@@ -244,7 +264,7 @@ namespace Twisty.Engine.Geometry
 		/// <param name="point">Point through which the perpendicular line to the plane should go.</param>
 		/// <returns>A new line going through the provided point and the current plane.</returns>
 		public ParametricLine GetPerpendicular(Cartesian3dCoordinate point) => new ParametricLine(point, this.Normal);
-		
+
 		/// <summary>
 		/// Gets the distance between a point and the plane.
 		/// </summary>
@@ -287,7 +307,7 @@ namespace Twisty.Engine.Geometry
 		/// <param name="p">Second Plane with which we search the intersection point.</param>
 		/// <param name="cc">Calculated coordinate of one of the intersection point between the 2 Planes in case of success.</param>
 		/// <returns>A boolean indicating whther this function was able to evaluate the expected point or not.</returns>
-		private bool TryGetPointAtIntersectionOnZ(Plane p, out Cartesian3dCoordinate cc)
+		private bool TryGetPointAtIntersectionOnZUsingB(Plane p, out Cartesian3dCoordinate cc)
 		{
 			// Avoid to divide by 0.0 at the end. (see last formula)
 			if (this.B.IsZero())
@@ -350,7 +370,7 @@ namespace Twisty.Engine.Geometry
 		/// <param name="p">Second Plane with which we search the intersection point.</param>
 		/// <param name="cc">Calculated coordinate of one of the intersection point between the 2 Planes in case of success.</param>
 		/// <returns>A boolean indicating whther this function was able to evaluate the expected point or not.</returns>
-		private bool TryGetPointAtIntersectionOnY(Plane p, out Cartesian3dCoordinate cc)
+		private bool TryGetPointAtIntersectionOnYUsingC(Plane p, out Cartesian3dCoordinate cc)
 		{
 			// Avoid to divide by 0.0 at the end. (see last formula)
 			if (this.C.IsZero())
@@ -408,11 +428,77 @@ namespace Twisty.Engine.Geometry
 
 		/// <summary>
 		/// Try to calculate a point at the intersection of 2 plane using linear combination.
+		/// As we only have 2 plane to find a point, the Y value is predefined to 0.0.
+		/// </summary>
+		/// <param name="p">Second Plane with which we search the intersection point.</param>
+		/// <param name="cc">Calculated coordinate of one of the intersection point between the 2 Planes in case of success.</param>
+		/// <returns>A boolean indicating whther this function was able to evaluate the expected point or not.</returns>
+		private bool TryGetPointAtIntersectionOnYUsingA(Plane p, out Cartesian3dCoordinate cc)
+		{
+			// Avoid to divide by 0.0 at the end. (see last formula)
+			if (this.A.IsZero())
+			{
+				cc = Cartesian3dCoordinate.Zero;
+				return false;
+			}
+
+			// We have 2 formula with 3 variables :
+			// A1 X + B1 Y + C1 Z + D1 = 0
+			// A2 X + B2 Y + C2 Z + D2 = 0
+			//
+			// We will limit equations to 2 variables by predefining Y to 0.0 :
+			// A1 X + C1 Z = -D1
+			// A2 X + C2 Z = -D2
+			//
+			// We will then use linear combination between the 2 formulas :
+			// A1 X C2 + C1 Z C2 = -D1 C2
+			// A2 X C1 + C2 Z C1 = -D2 C1
+			//
+			// A1 X A2 = -D1 A2 - C1 Z A2
+			// A2 X A1 = -D2 A1 - C2 Z A1
+			//
+			// C1 Z C2 = -D1 C2 - A1 X C2
+			// C2 Z C1 = -D2 C1 - A2 X C1
+			//
+			// This give us :
+			//
+			// C2 Z A1 - C1 Z A2 = D1 A2 - D2 A1
+			//
+			// (C2 A1 - C1 A2) Z = D1 A2 - D2 A1
+			//
+			//      D1 A2 - D2 A1
+			// Z = ---------------
+			//      C2 A1 - C1 A2
+			double divisor = (p.C * this.A) - (this.C * p.A);
+			if (divisor.IsZero())
+			{
+				cc = Cartesian3dCoordinate.Zero;
+				return false;
+			}
+
+			double z = ((this.D * p.A) - (p.D * this.A)) / divisor;
+
+			// With this Z calculated and Y to 0.0, we can then resolve one of the equations for X :
+			//
+			//        C1 X + D1
+			// Z = - -----------
+			//           A1
+			cc = new Cartesian3dCoordinate(
+				-((this.C * z) + this.D) / this.A,
+				0.0,
+				z
+			);
+
+			return true;
+		}
+
+		/// <summary>
+		/// Try to calculate a point at the intersection of 2 plane using linear combination.
 		/// As we only have 2 plane to find a point, the X value is predefined to 0.0.
 		/// </summary>
 		/// <param name="p">Second Plane with which we search the intersection point.</param>
 		/// <returns>Coordinate of one of the intersection point between the 2 Planes.</returns>
-		private bool TryGetPointAtIntersectionOnX(Plane p, out Cartesian3dCoordinate cc)
+		private bool TryGetPointAtIntersectionOnXUsingC(Plane p, out Cartesian3dCoordinate cc)
 		{
 			// Avoid to divide by 0.0 at the end. (see last formula)
 			if (this.C.IsZero())
@@ -463,6 +549,68 @@ namespace Twisty.Engine.Geometry
 				0.0,
 				y,
 				-((this.B * y) + this.D) / this.C
+			);
+
+			return true;
+		}
+
+		/// <summary>
+		/// Try to calculate a point at the intersection of 2 plane using linear combination.
+		/// As we only have 2 plane to find a point, the X value is predefined to 0.0.
+		/// </summary>
+		/// <param name="p">Second Plane with which we search the intersection point.</param>
+		/// <returns>Coordinate of one of the intersection point between the 2 Planes.</returns>
+		private bool TryGetPointAtIntersectionOnXUsingB(Plane p, out Cartesian3dCoordinate cc)
+		{
+			// Avoid to divide by 0.0 at the end. (see last formula)
+			if (this.B.IsZero())
+			{
+				cc = Cartesian3dCoordinate.Zero;
+				return false;
+			}
+
+			// We have 2 formula with 3 variables :
+			// A1 X + B1 Y + C1 Z + D1 = 0
+			// A2 X + B2 Y + C2 Z + D2 = 0
+			//
+			// We will limit equations to 2 variables by predefining X to 0.0 :
+			// B1 Y + C1 Z = -D1
+			// B2 Y + C2 Z = -D2
+			//
+			// We will then use linear combination between the 2 formulas :
+			// B1 Y B2 + C1 Z B2 = -D1 B2
+			// B2 Y B1 + C2 Z B1 = -D2 B1
+			//
+			// B1 Y B2 = -D1 B2 - C1 Z B2
+			// B2 Y B1 = -D2 B1 - C2 Z B1
+			//
+			// This give us :
+			//
+			// C2 Z B1 - C1 Z B2 = D1 B2 - D2 B1
+			//
+			// (C2 B1 - C1 B2) Z = D1 B2 - D2 B1
+			//
+			//      D1 B2 - D2 B1
+			// Z = ---------------
+			//      C2 B1 - C1 B2
+			double divisor = (p.C * this.B) - (this.C * p.B);
+			if (divisor.IsZero())
+			{
+				cc = Cartesian3dCoordinate.Zero;
+				return false;
+			}
+
+			double z = ((this.D * p.B) - (p.D * this.B)) / divisor;
+
+			// With this Z calculated and X to 0.0, we can then resolve one of the equations for Z :
+			//
+			//        C1 Z + D1
+			// Y = - -----------
+			//           B1
+			cc = new Cartesian3dCoordinate(
+				0.0,
+				-((this.C * z) + this.D) / this.B,
+				z
 			);
 
 			return true;

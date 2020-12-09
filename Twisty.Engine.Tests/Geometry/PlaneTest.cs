@@ -37,14 +37,6 @@ namespace Twisty.Engine.Tests.Geometry
 			{ "(1.5 -1.5 2.2 3.3)", 1.5, -1.5, 2.2, 3.3 },
 		};
 
-		public static readonly TheoryData<string, string, string> PlaneIntersection = new TheoryData<string, string, string>()
-		{
-			//{ "(1 0 0 0)", "(0 1 0 0)", "(0 0 0 0 0 1)"},
-			{ "(4 3 2 1)", "(1 2 3 4)", "(2 -3 0 1 -2 1)"},
-			{ "(7 8 7 8)", "(8 7 8 7)", "(0 -1 0 1 0 -1)"},
-			{ "(50 20 40 60)", "(2 4 8 16)", "(0.5 -4.25 0 0 -2 1)"},
-		};
-
 		#endregion Test Data
 
 		#region Test Methods
@@ -251,7 +243,12 @@ namespace Twisty.Engine.Tests.Geometry
 		}
 
 		[Theory]
-		[MemberData(nameof(PlaneTest.PlaneIntersection), MemberType = typeof(PlaneTest))]
+		[InlineData("(-1 0 0 0)", "(0 0 -1 0)", "(0 0 0 0 -1 0)")]
+		[InlineData("(-1 0 0 0)", "(0 0 -1 1)", "(0 0 1 0 -1 0)")]
+		[InlineData("(0 -1 0 0)", "(0 0 -1 1)", "(0 0 1 1 0 0)")]
+		[InlineData("(4 3 2 1)", "(1 2 3 4)", "(2 -3 0 1 -2 1)")]
+		[InlineData("(7 8 7 8)", "(8 7 8 7)", "(0 -1 0 1 0 -1)")]
+		[InlineData("(50 20 40 60)", "(2 4 8 16)", "(0.5 -4.25 0 0 -2 1)")]
 		public void Plane_GetIntersectionFromPlaneAndCheckResultProperties_Expected(string planeCoordinate, string secondPlaneCoordinate, string expectedCoordinate)
 		{
 			// 1. Prepare
