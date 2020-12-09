@@ -104,5 +104,37 @@ namespace Twisty.Engine.Geometry
 		public double ThetaToY => Math.Acos(this.Y / this.Magnitude);
 
 		#endregion Public Properties
+
+		#region Operators
+
+		/// <summary>
+		/// Gets the result of the substraction of 2 vectors.
+		/// </summary>
+		/// <param name="v1">First vector from which the second one will be substracted.</param>
+		/// <param name="v2">Substracted Vector.</param>
+		/// <returns>Result of the subbstraction of the 2 vectors.</returns>
+		public static Cartesian2dCoordinate operator -(Cartesian2dCoordinate v1, Cartesian2dCoordinate v2)
+		{
+			return new Cartesian2dCoordinate(
+					v1.X - v2.X,
+					v1.Y - v2.Y
+				);
+		}
+
+		/// <summary>
+		/// Gets the sum of 2 vectors.
+		/// </summary>
+		/// <param name="v1">First vector to add.</param>
+		/// <param name="v2">Second vector to add.</param>
+		/// <returns>Result of the sum of the 2 vectors.</returns>
+		public static Cartesian2dCoordinate operator +(Cartesian2dCoordinate v1, Cartesian2dCoordinate v2)
+		{
+			return new Cartesian2dCoordinate(
+					v1.X + v2.X,
+					v1.Y + v2.Y
+				);
+		}
+
+		#endregion Operators
 	}
 }
