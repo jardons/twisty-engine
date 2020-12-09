@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Twisty.Engine.Geometry
 {
@@ -10,6 +11,7 @@ namespace Twisty.Engine.Geometry
 	/// y = y1 + b * t
 	/// z = z1 + c * t
 	/// </summary>
+	[DebuggerDisplay("({Point.X}, {Point.Y}, {Point.Z} # {Vector.X}, {Vector.Y}, {Vector.Z})")]
 	public class ParametricLine
 	{
 		/// <summary>
