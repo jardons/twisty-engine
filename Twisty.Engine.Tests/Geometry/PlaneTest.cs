@@ -182,7 +182,7 @@ namespace Twisty.Engine.Tests.Geometry
 		[InlineData("(1 0 0 -1)", "(2 0 0)", 1.0)]
 		[InlineData("(1 0 0 -1)", "(3 0 0)", 2.0)]
 		[InlineData("(1 0 0 -1)", "(3.5 0 0)", 2.5)]
-		[InlineData("(1 0 0 -1)", "(0 0 0)", -1.0)]
+		[InlineData("(1 0 0 -1)", "(0 0 0)", 1.0)]
 		[InlineData("(1 0 0 -1)", "(2 1 3)", 1.0)]
 		public void Plane_GetDistanceToPoint_Expected(string planeCc, string pointCc, double distance)
 		{
@@ -246,6 +246,7 @@ namespace Twisty.Engine.Tests.Geometry
 		[InlineData("(-1 0 0 0)", "(0 0 -1 0)", "(0 0 0 0 -1 0)")]
 		[InlineData("(-1 0 0 0)", "(0 0 -1 1)", "(0 0 1 0 -1 0)")]
 		[InlineData("(0 -1 0 0)", "(0 0 -1 1)", "(0 0 1 1 0 0)")]
+		[InlineData("(-1 0 0 0)", "(0 1 0 -1)", "(0 1 0 0 0 -1)")]
 		[InlineData("(4 3 2 1)", "(1 2 3 4)", "(2 -3 0 1 -2 1)")]
 		[InlineData("(7 8 7 8)", "(8 7 8 7)", "(0 -1 0 1 0 -1)")]
 		[InlineData("(50 20 40 60)", "(2 4 8 16)", "(0.5 -4.25 0 0 -2 1)")]
