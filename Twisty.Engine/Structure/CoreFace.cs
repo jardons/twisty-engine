@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using Twisty.Engine.Geometry;
 
@@ -9,7 +10,8 @@ namespace Twisty.Engine.Structure
 	/// Class defining a face of the puzzle.
 	/// When a twisty puzle is in its solved state, all block face should be oriented on a CoreFace.
 	/// </summary>
-	public class CoreFace : IPlanarObject
+	[DebuggerDisplay("{GetType().Name} ({Id} [{Plane.A}, {Plane.B}, {Plane.C}, {Plane.D}])")]
+	public class CoreFace : IPlanar
 	{
 		/// <summary>
 		/// Create a new CoreFace for a specific Plane.

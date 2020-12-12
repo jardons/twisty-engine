@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using Twisty.Engine.Geometry;
 
@@ -8,7 +9,8 @@ namespace Twisty.Engine.Structure
 	/// <summary>
 	/// Class describing a planar separator between 2 rotation layer.
 	/// </summary>
-	public class LayerSeparator : IPlanarObject
+	[DebuggerDisplay("{GetType().Name} ({Id} [{Plane.A}, {Plane.B}, {Plane.C}, {Plane.D}])")]
+	public class LayerSeparator : IPlanar
 	{
 		public LayerSeparator(string id, Plane p)
 		{
