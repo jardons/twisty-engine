@@ -89,6 +89,13 @@ namespace Twisty.Engine.Structure
 		public RotationAxis GetAxis(string axisId) => m_Axes[axisId];
 
 		/// <summary>
+		/// Gets a block using its id.
+		/// </summary>
+		/// <param name="blockId">Id of the block we are looking up.</param>
+		/// <returns>Block for the corresponding or null if not found.</returns>
+		public Block GetBlock(string blockId) => m_Blocks.FirstOrDefault(b => b.Id == blockId);
+
+		/// <summary>
 		/// Gets a face using its id.
 		/// </summary>
 		/// <param name="faceId">Id of the face we are looking up.</param>
