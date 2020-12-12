@@ -17,7 +17,7 @@ namespace Twisty.Engine.Structure.Rubiks
 		/// <param name="n">Indicate the number of rows per face of the cube that is currently generated.</param>
 		/// <exception cref="ArgumentException">Size of the Rubik's Cube should be bigger than 1.</exception>
 		public RubikCube(int n)
-			: base(GenerateBlocks(n), GenerateAxes())
+			: base(GenerateBlocks(n), GenerateAxes(n))
 		{
 			this.N = n;
 		}
@@ -78,18 +78,39 @@ namespace Twisty.Engine.Structure.Rubiks
 		/// <summary>
 		/// Generate the axes that will be available for the rotation of the cube.
 		/// </summary>
+		/// <param name="n">Number of layers to use in the Cube.</param>
 		/// <returns>The list of axis available on a Rubik's cube.</returns>
-		private static IEnumerable<RotationAxis> GenerateAxes()
+		private static IEnumerable<RotationAxis> GenerateAxes(int n)
 		{
 			return new List<RotationAxis>()
 			{
-				new RotationAxis(ID_FACE_UP, POSITION_FACE_UP),
-				new RotationAxis(ID_FACE_DOWN, POSITION_FACE_DOWN),
-				new RotationAxis(ID_FACE_FRONT, POSITION_FACE_FRONT),
-				new RotationAxis(ID_FACE_BACK, POSITION_FACE_BACK),
-				new RotationAxis(ID_FACE_RIGHT, POSITION_FACE_RIGHT),
-				new RotationAxis(ID_FACE_LEFT, POSITION_FACE_LEFT),
+				CreateAxis(ID_FACE_UP, POSITION_FACE_UP, n),
+				CreateAxis(ID_FACE_DOWN, POSITION_FACE_DOWN, n),
+				CreateAxis(ID_FACE_FRONT, POSITION_FACE_FRONT, n),
+				CreateAxis(ID_FACE_BACK, POSITION_FACE_BACK, n),
+				CreateAxis(ID_FACE_RIGHT, POSITION_FACE_RIGHT, n),
+				CreateAxis(ID_FACE_LEFT, POSITION_FACE_LEFT, n),
 			};
+		}
+
+		/// <summary>
+		/// Create an axis with the layer description for the current size of Rubik's Cube.
+		/// </summary>
+		/// <param name="id">Id of hte axis.</param>
+		/// <param name="direction">Direction of the axis vector.</param>
+		/// <param name="n">Number of layers to use in the Cube.</param>
+		/// <returns>A newly generated RotationAxis.</returns>
+		private static RotationAxis CreateAxis(string id, Cartesian3dCoordinate direction, int n)
+		{
+			Dictionary<string, double> layers = new Dictionary<string, double>();
+			if (n % 2 == 0)
+				layers.Add($"L0_{id}", 0.0);
+
+			int n2 = (n / 2) + 1;
+			for (int i = 1; i < n2; ++i)
+				layers.Add($"L{i}_{id}", Convert.ToDouble(i) / Convert.ToDouble(n2));
+
+			return new RotationAxis(id, direction, layers);
 		}
 
 		/// <summary>
