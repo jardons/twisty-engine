@@ -36,7 +36,7 @@ namespace Twisty.Engine.Tests.Geometry
 			// Nothing to prepare
 
 			// 2. Execute
-			Action a = () => new ParametricLine(pointCoordinates);
+			void a() => new ParametricLine(pointCoordinates);
 
 			// 3. Verify
 			Assert.Throws<ArgumentException>(a);
@@ -102,6 +102,47 @@ namespace Twisty.Engine.Tests.Geometry
 
 			// 3. Verify
 			Assert.Equal(result, b);
+		}
+
+		[Theory]
+		// Same lines
+		[InlineData("(1 0 0 1 1 1)", "(-1 0 0 1 1 1)", true)]
+		[InlineData("(1 0 0 1 1 1)", "(-1 0 0 -1 -1 -1)", true)]
+		// Parallels lines
+		[InlineData("(1 0 0 17 2 3)", "(-1 27 33.5 17 2 3)", true)]
+		[InlineData("(1 0 0 10 2 4)", "(9 0 22 20 4 8)", true)]
+		// Non-Parallels lines
+		[InlineData("(1 0 0 17 2 3)", "(-1 27 33.5 17 2 3.1)", false)]
+		[InlineData("(1 0 0 17 2 3)", "(-1 27 33.5 -17 2 3)", false)]
+		public void ParametricLine_IsParallelToLine_BeExpected(string line1Coordinates, string line2Coordinates, bool expected)
+		{
+			// 1. Prepare
+			ParametricLine line1 = new ParametricLine(line1Coordinates);
+			ParametricLine line2 = new ParametricLine(line2Coordinates);
+
+			// 2. Execute
+			bool b1 = line1.IsParallelTo(line2);
+			bool b2 = line2.IsParallelTo(line1);
+
+			// 3. Verify
+			Assert.Equal(expected, b1);
+			Assert.Equal(expected, b2);
+		}
+
+		[Theory]
+		[InlineData("(1 1 1 2 0 0)", "(1 2 1)", 1)]
+		[InlineData("(1.32 2.7 3.4 5.6 7.8 11.4)", "(0.2 0.5 2.3)", 1.2164857559899611)]
+		public void ParametricLine_GetDistanceTo_BeExpected(string lineCoordiantes, string ccCoordinate, double expected)
+		{
+			// 1. Prepare
+			Cartesian3dCoordinate p = new Cartesian3dCoordinate(ccCoordinate);
+			ParametricLine line = new ParametricLine(lineCoordiantes);
+
+			// 2. Execute
+			double r = line.GetDistanceTo(p);
+
+			// 3. Verify
+			Assert.Equal(expected, r, PRECISION_DOUBLE);
 		}
 
 		#endregion Test Methods

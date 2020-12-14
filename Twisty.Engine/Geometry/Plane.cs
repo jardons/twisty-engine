@@ -271,7 +271,7 @@ namespace Twisty.Engine.Geometry
 		/// Gets the distance between a point and the plane.
 		/// </summary>
 		/// <param name="point">Coordinates of the point that will be compared to the Plane.</param>
-		/// <returns>A double value indicating the distance to the Plane. Value will be positive when above the Plan and negative when under it.</returns>
+		/// <returns>A double value indicating the distance to the Plane.</returns>
 		/// <remarks>
 		///      | Ax1 + By1 + Cz1 + D |
 		/// d = -------------------------

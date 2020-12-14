@@ -122,13 +122,44 @@ namespace Twisty.Engine.Geometry
 		/// <param name="p">Plane to which the orientation of the Line will be compared.</param>
 		/// <returns>A boolean indicating whether the Line and the Plane are parallel or not.</returns>
 		/// <remarks>
-		/// A line is parallel to a Plan when the this calculation is true :
+		/// A line is parallel to a Plan when this calculation is true :
 		/// aA + bB + cC = 0
 		/// </remarks>
 		public bool IsParallelTo(Plane p)
-		{
-			return ((this.A * p.A) + (this.B * p.B) + (this.C * p.C)).IsZero();
-		}
+			=> ((this.A * p.A) + (this.B * p.B) + (this.C * p.C)).IsZero();
+
+		/// <summary>
+		/// Evaluate if the current line is parallel to another given line.
+		/// </summary>
+		/// <param name="l">Line to which the orientation of the Line will be compared.</param>
+		/// <returns>A boolean indicating whether both the Lines are parallel or not.</returns>
+		public bool IsParallelTo(ParametricLine l)
+			=> this.Vector.IsSameVector(l.Vector) || this.Vector.IsSameVector(l.Vector.Reverse);
+
+		/// <summary>
+		/// Gets the shortest distance between a point and the line.
+		/// </summary>
+		/// <param name="point">Coordinates of the point that will be compared to the Line.</param>
+		/// <returns>A double value indicating the distance to the Line.</returns>
+		/// <remarks>
+		/// Distance can be calculated by building a parallelogram and calculate it height from its surface.
+		/// 
+		///       p1        v1
+		/// ------*===================*---------------
+		///      /                |  /
+		///     /                d| /
+		///    /                  |/
+		///   *===================*
+		///  p0
+		/// 
+		/// Surface:
+		/// S = (p1 - p0) x v1
+		/// 
+		/// Distance:
+		/// d = || S || / || v1 ||
+		/// </remarks>
+		public double GetDistanceTo(Cartesian3dCoordinate point)
+			=> (this.Point - point).CrossProduct(this.Vector).Magnitude / this.Vector.Magnitude;
 
 		/// <summary>
 		/// Create a ParametricLine between 2 lines.
