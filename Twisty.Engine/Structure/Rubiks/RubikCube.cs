@@ -103,10 +103,11 @@ namespace Twisty.Engine.Structure.Rubiks
 		private static RotationAxis CreateAxis(string id, Cartesian3dCoordinate direction, int n)
 		{
 			Dictionary<string, double> layers = new Dictionary<string, double>();
-			if (n % 2 == 0)
+			int mod2 = n % 2;
+			if (mod2 == 0)
 				layers.Add($"L0_{id}", 0.0);
 
-			int n2 = (n / 2) + 1;
+			int n2 = (n / 2) + mod2;
 			for (int i = 1; i < n2; ++i)
 				layers.Add($"L{i}_{id}", Convert.ToDouble(i) / Convert.ToDouble(n2));
 
