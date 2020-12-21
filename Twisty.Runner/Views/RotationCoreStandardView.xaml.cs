@@ -27,12 +27,12 @@ namespace Twisty.Runner.Views
 	public partial class RotationCoreStandardView : UserControl
 	{
 		private RotationCore m_Core;
-		private Dictionary<string, List<ModelVisual3D>> m_3dObjects;
+		private Dictionary<string, ModelVisual3D> m_3dObjects;
 
 		public RotationCoreStandardView()
 		{
 			m_Core = new RubikCube(3);
-			m_3dObjects = new Dictionary<string, List<ModelVisual3D>>();
+			m_3dObjects = new Dictionary<string, ModelVisual3D>();
 
 			foreach (var b in m_Core.Blocks)
 			{
@@ -41,17 +41,16 @@ namespace Twisty.Runner.Views
 
 			InitializeComponent();
 
-			foreach (var o in m_3dObjects.Values.SelectMany(o => o))
+			foreach (var o in m_3dObjects.Values)
 				MyAnimatedObject.Children.Add(o);
 
 			this.MouseDoubleClick += RotationCoreStandardView_MouseDoubleClick;
-
 		}
 
 		private void RotationCoreStandardView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
 			int i = 0;
-			foreach (var o in m_3dObjects.Values.SelectMany(o => o))
+			foreach (var o in m_3dObjects.Values)
 			{
 				o.Transform = GetTransform();
 
@@ -92,9 +91,13 @@ namespace Twisty.Runner.Views
 			}
 		}
 
-		private List<ModelVisual3D> CreateMesh(Engine.Structure.Block b)
+		private ModelVisual3D CreateMesh(Engine.Structure.Block b)
 		{
 			List<ModelVisual3D> visuals = new List<ModelVisual3D>();
+			ModelVisual3D m = new ModelVisual3D();
+			
+			Model3DGroup group = new Model3DGroup();
+			m.Content = group;
 
 			foreach (BlockFace face in b.Faces)
 			{
@@ -103,6 +106,7 @@ namespace Twisty.Runner.Views
 				GeometryModel3D model = new GeometryModel3D { Geometry = geo };
 				ModelVisual3D visual = new ModelVisual3D { Content = model };
 				visuals.Add(visual);
+				group.Children.Add(model);
 
 				StandardMaterializer materializer = new StandardMaterializer(m_Core);
 
@@ -142,12 +146,9 @@ namespace Twisty.Runner.Views
 
 				model.Material = GetBrush(face.Id);
 				model.BackMaterial = GetBrush(face.Id);
-
-				//if (b.Id.Contains("U"))
-				//	model.Transform = GetTransform();
 			}
 
-			return visuals;
+			return m;
 		}
 
 		private DiffuseMaterial GetBrush(string faceId)
