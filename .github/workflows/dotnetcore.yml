@@ -16,4 +16,4 @@ jobs:
     - name: Build with dotnet
       run: dotnet build --configuration GitHub
     - name: Run Units Tests
-      run: dotnet test
+      run: dotnet test --configuration GitHub
