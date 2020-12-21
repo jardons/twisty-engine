@@ -18,17 +18,33 @@ namespace Twisty.Engine.Geometry
 	/// Comparer allowing to compare vector based on their angular distance to the X axis in a Plane.
 	/// The sorting direction is counter-clockwise.
 	/// </summary>
-	public class CircularVectorComparer : IComparer<SphericalVector>, IComparer<Cartesian3dCoordinate>, IComparer<IPositionnedByCartesian3dVector>
+	public class CircularVectorComparer : IComparer<SphericalVector>,
+		IComparer<Cartesian3dCoordinate>,
+		IComparer<IPlanar>,
+		IComparer<IPositionnedByCartesian3dVector>
 	{
 		private CartesianCoordinatesConverter m_Converter;
+		private Cartesian2dCoordinate m_Center;
 
 		/// <summary>
-		/// Create a new CircularVectorComparer using a Plane on which we will projects the points to sort..
+		/// Create a new CircularVectorComparer using a Plane on which we will projects the points to sort.
 		/// </summary>
 		/// <param name="p">PLane used to project the points prior to sort them.</param>
 		public CircularVectorComparer(Plane p)
 		{
 			m_Converter = new CartesianCoordinatesConverter(p);
+			m_Center = Cartesian2dCoordinate.Zero;
+		}
+
+		/// <summary>
+		/// Create a new CircularVectorComparer using a Plane on which we will projects the points to sort around a specific plane point.
+		/// </summary>
+		/// <param name="p">PLane used to project the points prior to sort them.</param>
+		/// <param name="center">Rotation center used by the comparer.</param>
+		public CircularVectorComparer(Plane p, Cartesian3dCoordinate center)
+		{
+			m_Converter = new CartesianCoordinatesConverter(p);
+			m_Center = m_Converter.ConvertTo2d(center);
 		}
 
 		#region IComparer<SphericalVector> Members
@@ -70,7 +86,11 @@ namespace Twisty.Engine.Geometry
 			if (x.X.IsEqualTo(y.X) && x.Y.IsEqualTo(y.Y))
 				return 0;
 
-			// Get Theta value related to the X vector, if one in the starting one we don't need to compare further.
+			// Realign based on expected rotation center.
+			x = x - m_Center;
+			y = y - m_Center;
+
+			// Get Theta value related to the X vector, if one is the starting one we don't need to compare further.
 			double thetaX = x.ThetaToX;
 			if (thetaX.IsZero())
 				return -1;
@@ -133,6 +153,26 @@ namespace Twisty.Engine.Geometry
 		}
 
 		#endregion IComparer<IPositionnedBySphericalVector> Members
+
+		#region IComparer<IPlanar> Members
+
+		/// <summary>
+		/// Compares two objects and returns a value indicating whether one is less than, equal to, or greater than the other.
+		/// </summary>
+		/// <param name="x">The first object to compare.</param>
+		/// <param name="y">The second object to compare.</param>
+		/// <returns>
+		/// A signed integer that indicates the relative values of x and y:
+		/// - If less than 0, x is less than y.
+		/// - If 0, x equals y.
+		/// - If greater than 0, x is greater than y.
+		/// </returns>
+		public int Compare(IPlanar x, IPlanar y)
+		{
+			return this.Compare(x.Plane.Normal, y.Plane.Normal);
+		}
+
+		#endregion IComparer<IPlanar> Members
 
 		#region Private Members
 
