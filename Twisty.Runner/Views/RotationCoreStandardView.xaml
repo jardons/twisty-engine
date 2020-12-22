@@ -7,15 +7,14 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 	<Grid>
-		<Canvas Name="canvasBox" Width="600" Height="201">
+		<Canvas Name="canvasBox" Width="600" Height="200">
 
 			<!-- The Viewport3D provides a rendering surface for 3-D visual content. -->
-			<Viewport3D Name="MyAnimatedObject" ClipToBounds="True" Width="600" Height="300" Canvas.Left="0" Canvas.Top="10">
+			<Viewport3D Name="MyAnimatedObject" ClipToBounds="True" Width="600" Height="200" Canvas.Left="0" Canvas.Top="10">
 
 				<!-- Defines the camera used to view the 3D object. -->
 				<Viewport3D.Camera>
-					<!--<PerspectiveCamera x:Name="myPerspectiveCamera" Position="0,0,10" LookDirection="0,0,-1" FieldOfView="60" />-->
-					<PerspectiveCamera x:Name="myPerspectiveCamera" Position="5,5,5" LookDirection="-1,-1,-1" FieldOfView="60" />
+					<PerspectiveCamera x:Name="myPerspectiveCamera" Position="6,3,-3" LookDirection="-0.6,-0.3,0.3" UpDirection="0,0,-1" FieldOfView="70" />
 				</Viewport3D.Camera>
 
 				<!-- The ModelVisual3D children contain the 3D models -->
@@ -64,73 +63,7 @@
 						</ModelVisual3D.Content>
 					</ModelVisual3D>
 
-					<ModelVisual3D>
-						<ModelVisual3D.Content>
-							<GeometryModel3D>
-
-								<!-- The geometry specifes the shape of the 3D plane. In this case, a flat sheet is created. -->
-								<GeometryModel3D.Geometry>
-									<MeshGeometry3D
-										TriangleIndices="0,1,2 0,2,3 0,3,4 0,4,1"
-										
-										Positions="0.95,0.95,-1 1,1,-1 1,0,-1 0,0,-1 0,1,-1"
-									
-
-										/>
-									<!-- Positions="0.95,0.95,-1 1,1,-1 1,0,-1 0,0,-1 0,1,-1" -->
-									<!-- Positions="0.0,0.0,1.0 1.0,-1.0,1.0 1.0,1.0,1.0 -1.0,1.0,1.0 -1.0,-1.0,-1.0" -->
-									<!--
-									<MeshGeometry3D
-										TriangleIndices="0,1,3 3,4,5 "
-										Normals="0,0,1 0,0,1 0,0,1 0,0,1 0,0,1 0,0,1 "
-										TextureCoordinates="0,0 1,0 1,1 1,1 0,1 0,0 "
-										Positions="-0.5,-0.5,0.5 0.5,-0.5,0.5 0.5,0.5,0.5 0.5,0.5,0.5 -0.5,0.5,0.5 -0.5,-0.5,0.5 " />
-									-->
-								</GeometryModel3D.Geometry>
-
-								<!-- The material specifies the material applied to the plane. In this case it is a linear gradient.-->
-								<GeometryModel3D.Material>
-									<MaterialGroup>
-										<DiffuseMaterial>
-											<DiffuseMaterial.Brush>
-												<SolidColorBrush Color="Cyan" Opacity="0.3"/>
-											</DiffuseMaterial.Brush>
-										</DiffuseMaterial>
-									</MaterialGroup>
-								</GeometryModel3D.Material>
-
-								<!-- The Transform specifies how to transform the 3D object. The OffsetX property is animated in the Storyboard below. -->
-								<!--<GeometryModel3D.Transform>
-									<TranslateTransform3D x:Name="myTranslateTransform3D" OffsetX="0" OffsetY="0" OffsetZ="0" />
-								</GeometryModel3D.Transform>-->
-							</GeometryModel3D>
-						</ModelVisual3D.Content>
-					</ModelVisual3D>
 				</Viewport3D.Children>
-				<!-- Trigger the TranslateTransform3D animation when the 3D object loads. -->
-				<!--<Viewport3D.Triggers>
-					<EventTrigger RoutedEvent="Viewport3D.Loaded">
-						<BeginStoryboard>
-							<Storyboard>
-								< ! - - This animation animates the Rotation property of the RotateTransform
-								   causing the 3D shape to rotate and wobble as the rotation angle and 
-								   axis are animated. - - >
-												<Rotation3DAnimation
-								   Storyboard.TargetName="myRotateTransform3D" 
-								   Storyboard.TargetProperty="Rotation" 
-								   AutoReverse="True"  RepeatBehavior="1x">
-													<Rotation3DAnimation.From>
-														<AxisAngleRotation3D Axis="0,3,0" Angle="-60" />
-													</Rotation3DAnimation.From>
-													<Rotation3DAnimation.To>
-														<AxisAngleRotation3D Axis="1,0,1" Angle="60" />
-													</Rotation3DAnimation.To>
-												</Rotation3DAnimation>
-
-							</Storyboard>
-						</BeginStoryboard>
-					</EventTrigger>
-				</Viewport3D.Triggers>-->
 			</Viewport3D>
 		</Canvas>
 	</Grid>
