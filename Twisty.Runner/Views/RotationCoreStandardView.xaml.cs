@@ -45,12 +45,32 @@ namespace Twisty.Runner.Views
 				MyAnimatedObject.Children.Add(o);
 
 			this.MouseDoubleClick += RotationCoreStandardView_MouseDoubleClick;
+			this.viewSelector.SelectionChanged += OnCameraSelectionChanged;
+			this.SetCameraDirection();
 		}
+
+		private void OnCameraSelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			var val = e.AddedItems.OfType<ComboBoxItem>().First().Tag as string;
+			var coordinates = val.Split(",").Select(s => Convert.ToDouble(s)).ToList();
+
+			this.camera.Position = new Point3D(coordinates[0], coordinates[1], coordinates[2]);
+			this.SetCameraDirection();
+		}
+
+		/// <summary>
+		/// Set camera direction to ensure it's oriented in the center direction.
+		/// </summary>
+		private void SetCameraDirection()
+			=> this.camera.LookDirection = new Vector3D(
+				-this.camera.Position.X,
+				-this.camera.Position.Y,
+				-this.camera.Position.Z);
 
 		private void RotationCoreStandardView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
 			int i = 0;
-			foreach (var o in m_3dObjects.Values)
+			foreach (var o in m_3dObjects.Where(kv => kv.Key.Contains("R")).Select(kv => kv.Value))
 			{
 				o.Transform = GetTransform();
 
