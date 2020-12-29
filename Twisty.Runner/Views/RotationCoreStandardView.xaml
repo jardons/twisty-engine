@@ -21,6 +21,7 @@
 				<ComboBoxItem Tag="6,-3,-3" Content="Front Right" />
 				<ComboBoxItem Tag="6,3,3" Content="Bottom Left" />
 				<ComboBoxItem Tag="6,-3,3" Content="Bottom Right" />
+				<ComboBoxItem Tag="-6,3,-3" Content="Back Left" />
 			</ComboBox>
 		</StackPanel>
 		<Canvas Name="canvasBox" Grid.Column="1" Grid.Row="2" Width="600" Height="200">

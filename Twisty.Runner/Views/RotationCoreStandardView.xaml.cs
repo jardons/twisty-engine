@@ -42,7 +42,10 @@ namespace Twisty.Runner.Views
 
 		private void OnCameraSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			var val = e.AddedItems.OfType<ComboBoxItem>().First().Tag as string;
+			var val = e.AddedItems.OfType<ComboBoxItem>().FirstOrDefault()?.Tag as string;
+			if (string.IsNullOrWhiteSpace(val))
+				return;
+
 			var coordinates = val.Split(",").Select(s => Convert.ToDouble(s)).ToList();
 
 			this.camera.Position = new Point3D(coordinates[0], coordinates[1], coordinates[2]);
@@ -59,6 +62,31 @@ namespace Twisty.Runner.Views
 			{
 				m_Core = value;
 				this.CreateCanvasContent();
+			}
+		}
+
+		/// <summary>
+		/// Gets the list of ids for the various available cameras.
+		/// </summary>
+		public IList<string> CameraIds
+			=> this.viewSelector.Items.OfType<ComboBoxItem>().Select(i => (string)i.Tag).ToList();
+
+		public string CurrentCamera
+		{
+			get => (string)((ComboBoxItem)this.viewSelector.Items.CurrentItem).Tag;
+			set
+			{
+				var ids = this.CameraIds;
+				if (!ids.Contains(value))
+					throw new ArgumentOutOfRangeException(nameof(value));
+
+				var current = this.viewSelector.Items.OfType<ComboBoxItem>().FirstOrDefault(o => o.IsSelected);
+
+				if (((string)current.Tag) == value)
+					return; // No change.
+
+				current.IsSelected = false;
+				this.viewSelector.Items.OfType<ComboBoxItem>().FirstOrDefault(o => (string)o.Tag == value).IsSelected = true;
 			}
 		}
 
