@@ -31,18 +31,9 @@ namespace Twisty.Runner.Views
 
 		public RotationCoreStandardView()
 		{
-			m_Core = new RubikCube(3);
 			m_3dObjects = new Dictionary<string, ModelVisual3D>();
 
-			foreach (var b in m_Core.Blocks)
-			{
-				m_3dObjects.Add(b.Id, CreateMesh(b));
-			}
-
 			InitializeComponent();
-
-			foreach (var o in m_3dObjects.Values)
-				MyAnimatedObject.Children.Add(o);
 
 			this.MouseDoubleClick += RotationCoreStandardView_MouseDoubleClick;
 			this.viewSelector.SelectionChanged += OnCameraSelectionChanged;
@@ -56,6 +47,37 @@ namespace Twisty.Runner.Views
 
 			this.camera.Position = new Point3D(coordinates[0], coordinates[1], coordinates[2]);
 			this.SetCameraDirection();
+		}
+
+		/// <summary>
+		/// Gets/Sets the RotationCore object visualised in this control.
+		/// </summary>
+		public RotationCore Core
+		{
+			get => m_Core;
+			set
+			{
+				m_Core = value;
+				this.CreateCanvasContent();
+			}
+		}
+
+		private void CreateCanvasContent()
+		{
+			// Remove Previous instance of the core.
+			foreach (var o in m_3dObjects.Values)
+				MyAnimatedObject.Children.Remove(o);
+
+			m_3dObjects.Clear();
+
+			// Create new instance.
+			foreach (var b in m_Core.Blocks)
+			{
+				m_3dObjects.Add(b.Id, CreateMesh(b));
+			}
+
+			foreach (var o in m_3dObjects.Values)
+				MyAnimatedObject.Children.Add(o);
 		}
 
 		/// <summary>
@@ -75,39 +97,39 @@ namespace Twisty.Runner.Views
 				o.Transform = GetTransform();
 
 				// TODO : analyse how to animate.
-			/*
-				string name = "temp" + (i++).ToString();
-				canvasBox.RegisterName(name, o);
+				/*
+					string name = "temp" + (i++).ToString();
+					canvasBox.RegisterName(name, o);
 
-				AxisAngleRotation3D r = new AxisAngleRotation3D();
-				r.Angle = 90;
-				r.Axis = new Vector3D(1.0, 0.0, 0.0);
+					AxisAngleRotation3D r = new AxisAngleRotation3D();
+					r.Angle = 90;
+					r.Axis = new Vector3D(1.0, 0.0, 0.0);
 
-				SplineRotation3DKeyFrame kf = new SplineRotation3DKeyFrame();
-				kf.Value = r;
+					SplineRotation3DKeyFrame kf = new SplineRotation3DKeyFrame();
+					kf.Value = r;
 
-				Rotation3DAnimationUsingKeyFrames animation = new Rotation3DAnimationUsingKeyFrames();
-				animation.KeyFrames.Add(kf);
-				myRotateTransform.Rotation.BeginAnimation(AxisAngleRotation3D.AxisProperty, myVectorAnimation);
+					Rotation3DAnimationUsingKeyFrames animation = new Rotation3DAnimationUsingKeyFrames();
+					animation.KeyFrames.Add(kf);
+					myRotateTransform.Rotation.BeginAnimation(AxisAngleRotation3D.AxisProperty, myVectorAnimation);
 
-				// Demonstrates the From and To properties used together.
-				// Animates the rectangle's Width property from 50 to 300 over 10 seconds.
-				DoubleAnimation myDoubleAnimation = new DoubleAnimation();
-				myDoubleAnimation.From = 50;
-				myDoubleAnimation.To = 300;
-				myDoubleAnimation.Duration =
-					new Duration(TimeSpan.FromSeconds(10));
+					// Demonstrates the From and To properties used together.
+					// Animates the rectangle's Width property from 50 to 300 over 10 seconds.
+					DoubleAnimation myDoubleAnimation = new DoubleAnimation();
+					myDoubleAnimation.From = 50;
+					myDoubleAnimation.To = 300;
+					myDoubleAnimation.Duration =
+						new Duration(TimeSpan.FromSeconds(10));
 
-				//Storyboard.SetTargetName(myDoubleAnimation, name);
-				Storyboard.SetTargetName(animation, name);
+					//Storyboard.SetTargetName(myDoubleAnimation, name);
+					Storyboard.SetTargetName(animation, name);
 
-				Storyboard myStoryboard = new Storyboard();
-				//myStoryboard.Children.Add(myDoubleAnimation);
-				myStoryboard.Children.Add(animation);
+					Storyboard myStoryboard = new Storyboard();
+					//myStoryboard.Children.Add(myDoubleAnimation);
+					myStoryboard.Children.Add(animation);
 
-				myStoryboard.Begin();
+					myStoryboard.Begin();
 
-				canvasBox.UnregisterName(name);*/
+					canvasBox.UnregisterName(name);*/
 			}
 		}
 
@@ -115,7 +137,7 @@ namespace Twisty.Runner.Views
 		{
 			List<ModelVisual3D> visuals = new List<ModelVisual3D>();
 			ModelVisual3D m = new ModelVisual3D();
-			
+
 			Model3DGroup group = new Model3DGroup();
 			m.Content = group;
 

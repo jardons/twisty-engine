@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Twisty.Engine.Structure.Rubiks;
 
 namespace Twisty.Runner
 {
@@ -24,6 +25,8 @@ namespace Twisty.Runner
 		public MainWindow()
 		{
 			InitializeComponent();
-        }
+
+			this.CubeView.Core = new RubikCube(3);
+		}
     }
 }
