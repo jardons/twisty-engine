@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Twisty.Engine.Geometry.Rotations
 {
@@ -8,6 +9,8 @@ namespace Twisty.Engine.Geometry.Rotations
 	public class RotationMatrix3d
 	{
 		private readonly double[,] m_Matrix;
+
+		#region ctor(s)
 
 		/// <summary>
 		/// Create a unrotated rotation matrix.
@@ -23,14 +26,21 @@ namespace Twisty.Engine.Geometry.Rotations
 		/// <param name="axis">Axis around which the rotation is executed</param>
 		/// <param name="angle">Angle of the clockwise rotation.</param>
 		public RotationMatrix3d(Cartesian3dCoordinate axis, double angle)
+			: this(new SimpleRotation3d(axis, angle)) { }
+
+		/// <summary>
+		/// Create a new rotation matrix based on a rotation.
+		/// </summary>
+		/// <param name="rotation">Initial rotation applied to this matrix.</param>
+		public RotationMatrix3d(SimpleRotation3d rotation)
 		{
 			// Angle is reverse to provide a clockwise rotation.
-			double c = Trigonometry.Cos(-angle);
-			double s = Trigonometry.Sin(-angle);
+			double c = Trigonometry.Cos(-rotation.Angle);
+			double s = Trigonometry.Sin(-rotation.Angle);
 			double t = 1.0 - c;
 
 			// Need to use normalised vector.
-			axis = axis.Normalize();
+			var axis = rotation.Axis.Normalize();
 
 			// Create the matrix
 			m_Matrix = new double[3, 3];
@@ -69,6 +79,10 @@ namespace Twisty.Engine.Geometry.Rotations
 
 			this.m_Matrix = matrix;
 		}
+
+		#endregion ctor(s)
+
+		#region Public Methods
 
 		/// <summary>
 		/// Rotate the provided vector based using this rotation.
@@ -111,5 +125,82 @@ namespace Twisty.Engine.Geometry.Rotations
 				}
 			);
 		}
+
+		/// <summary>
+		/// Gets Euler angles performing the same rotation as this matrix.
+		/// Euler angles are provided in the form of up to 3 ordered rotation around the 3 principal axis.
+		/// </summary>
+		/// <returns>Collection of rotation in the order to execute to get the same rotation as the one represented by the current object.</returns>
+		/// <remarks>
+		/// Multiple euler angles can be returned for a same rotation matrix, only one solution will be generated here.
+		/// </remarks>
+		public IList<SimpleRotation3d> GetEulerAngles()
+		{
+			List<SimpleRotation3d> result = new List<SimpleRotation3d>();
+
+			// Generate rotation aroung main angles.
+			// Psi(ψ) : rotation around X axis.
+			// Thetha(θ) : rotation aroung Y axis.
+			// Phi(φ) : rotation around Z axis.
+
+			// Giving R = Rz(φ)Ry(θ)Rx(ψ)
+			//     [ cosθ cosφ     sinψ sinθ cosφ − cosψ sinφ     cosψ sinθ cosφ + sinψ sinφ ]
+			// R = [ cosθ sinφ     sinψ sinθ sinφ + cosψ cosφ     cosψ sinθ sinφ − sinψ cosφ ]
+			//     [   -sinθ               sinψ cosθ                        cosψ cosθ        ]
+
+			// As    R31 = -sinθ,
+			// Then  θ = -asin(R31)
+			var theta = -Trigonometry.Asin(this.m_Matrix[0, 2]);
+
+			var cosTheta = Trigonometry.Cos(theta);
+			if (!cosTheta.IsZero())
+			{
+				// Following method is not valid if cosθ is equal to zero as it would result in a divide per 0.
+
+				// When theta is positive :
+				// As    R32/R33 = tanψ,
+				// Then  ψ = atan2(R32,R33)
+				// We can generalize to negative theta with :
+				// ψ = atan2(R32 / cosθ,R33 / cosθ)
+				var psi = Math.Atan2(this.m_Matrix[1, 2] / cosTheta, this.m_Matrix[2, 2] / cosTheta);
+
+				// When theta is positive :
+				// As    R21/R11 = tanφ,
+				// Then  φ = atan2(R21,R11)
+				// We can generalize to negative theta with :
+				// φ = atan2(R21 / cosθ,R11 / cosθ)
+				var phi = Math.Atan2(this.m_Matrix[0, 1] / cosTheta, this.m_Matrix[0, 0] / cosTheta);
+
+				// Add operation to result
+				if (!phi.IsZero())
+					result.Add(new SimpleRotation3d(Cartesian3dCoordinate.ZAxis, phi));
+				if (!theta.IsZero())
+					result.Add(new SimpleRotation3d(Cartesian3dCoordinate.YAxis, theta));
+				if (!psi.IsZero())
+					result.Add(new SimpleRotation3d(Cartesian3dCoordinate.XAxis, psi));
+			}
+			else
+			{
+				// Using this solution when cosθ is equal to zero would lead to Gimbal lock, causing the matrix to look like :
+				//     [    0.0      sinψ sinθ cosφ − cosψ sinφ     cosψ sinθ cosφ + sinψ sinφ ]
+				// R = [    0.0      sinψ sinθ sinφ + cosψ cosφ     cosψ sinθ sinφ − sinψ cosφ ]
+				//     [   -sinθ                0.0                              0.0           ]
+
+				// As this situation lead to an infinite of ψ and φ combination, we will concentrate on the one with φ set to 0.0.
+				// By combination of R12 and R13 equations, we got :
+				// ψ = −φ + atan2(−R12,−R13)
+				var psi = Math.Atan2(-this.m_Matrix[1, 0], this.m_Matrix[2, 0]);
+
+				// Add operation to result
+				if (!theta.IsZero())
+					result.Add(new SimpleRotation3d(Cartesian3dCoordinate.YAxis, theta));
+				if (!psi.IsZero())
+					result.Add(new SimpleRotation3d(Cartesian3dCoordinate.XAxis, psi));
+			}
+
+			return result.AsReadOnly();
+		}
+
+		#endregion Public Methods
 	}
 }

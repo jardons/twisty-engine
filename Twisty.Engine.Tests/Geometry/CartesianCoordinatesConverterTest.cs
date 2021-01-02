@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Twisty.Engine.Geometry;
+using Twisty.Engine.Tests.Assertions;
 using Xunit;
 
 namespace Twisty.Engine.Tests.Geometry
@@ -9,8 +10,6 @@ namespace Twisty.Engine.Tests.Geometry
 	[Trait("Category", "Geometry")]
 	public class CartesianCoordinatesConverterTest
 	{
-		private const int PRECISION_DOUBLE = 10;
-
 		#region Test Methods
 
 		[Theory]
@@ -40,8 +39,8 @@ namespace Twisty.Engine.Tests.Geometry
 			Cartesian2dCoordinate result = converter.ConvertTo2d(source);
 
 			// 3. Verify
-			Assert.Equal(expected.X, result.X, PRECISION_DOUBLE);
-			Assert.Equal(expected.Y, result.Y, PRECISION_DOUBLE);
+			Assert.Equal(expected.X, result.X, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expected.Y, result.Y, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		#endregion Test Methods

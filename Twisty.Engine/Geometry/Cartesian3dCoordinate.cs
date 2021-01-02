@@ -35,6 +35,16 @@ namespace Twisty.Engine.Geometry
 		public static readonly Cartesian3dCoordinate XAxis = new Cartesian3dCoordinate(1.0, 0.0, 0.0);
 
 		/// <summary>
+		/// Gets the Positive Y Axis.
+		/// </summary>
+		public static readonly Cartesian3dCoordinate YAxis = new Cartesian3dCoordinate(0.0, 1.0, 0.0);
+
+		/// <summary>
+		/// Gets the Positive Z Axis.
+		/// </summary>
+		public static readonly Cartesian3dCoordinate ZAxis = new Cartesian3dCoordinate(0.0, 0.0, 1.0);
+
+		/// <summary>
 		/// Create a new Cartesian3dCoordinate from a coordinates string on the format "(X Y Z)".
 		/// </summary>
 		/// <param name="coordinates">Coordinates in the format "(X Y Z)".</param>

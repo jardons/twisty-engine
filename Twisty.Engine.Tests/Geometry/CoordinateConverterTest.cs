@@ -1,5 +1,6 @@
 ﻿using System;
 using Twisty.Engine.Geometry;
+using Twisty.Engine.Tests.Assertions;
 using Xunit;
 
 namespace Twisty.Engine.Tests.Geometry
@@ -7,8 +8,6 @@ namespace Twisty.Engine.Tests.Geometry
 	[Trait("Category", "Geometry")]
 	public class CoordinateConverterTest
 	{
-		private const int PRECISION_DOUBLE = 10;
-
 		#region Test Data
 
 		//(string s, double d1, double d2, double d3, double d4)
@@ -94,13 +93,13 @@ namespace Twisty.Engine.Tests.Geometry
 			Assert.NotNull(vals);
 			Assert.Equal(count, vals.Length);
 			if (!double.IsNaN(d1))
-				Assert.Equal(d1, vals[0], PRECISION_DOUBLE);
+				Assert.Equal(d1, vals[0], GeometryAssert.PRECISION_DOUBLE);
 			if (!double.IsNaN(d2))
-				Assert.Equal(d2, vals[1], PRECISION_DOUBLE);
+				Assert.Equal(d2, vals[1], GeometryAssert.PRECISION_DOUBLE);
 			if (!double.IsNaN(d3))
-				Assert.Equal(d3, vals[2], PRECISION_DOUBLE);
+				Assert.Equal(d3, vals[2], GeometryAssert.PRECISION_DOUBLE);
 			if (!double.IsNaN(d4))
-				Assert.Equal(d4, vals[3], PRECISION_DOUBLE);
+				Assert.Equal(d4, vals[3], GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		[Fact]
@@ -110,7 +109,7 @@ namespace Twisty.Engine.Tests.Geometry
 			// Nothing to prepare
 
 			// 2. Execute
-			Action a = () => CoordinateConverter.ParseCoordinates(null);
+			static void a() => CoordinateConverter.ParseCoordinates(null);
 
 			// 3. Verify
 			Assert.Throws<ArgumentNullException>(a);
@@ -124,7 +123,7 @@ namespace Twisty.Engine.Tests.Geometry
 			// Nothing to prepare
 
 			// 2. Execute
-			Action a = () => CoordinateConverter.ParseCoordinates(s);
+			void a() => CoordinateConverter.ParseCoordinates(s);
 
 			// 3. Verify
 			Assert.Throws<FormatException>(a);
@@ -141,9 +140,9 @@ namespace Twisty.Engine.Tests.Geometry
 			Cartesian3dCoordinate cc = CoordinateConverter.ConvertToCartesian(sc);
 
 			// 3. Verify
-			Assert.Equal(x, cc.X, PRECISION_DOUBLE);
-			Assert.Equal(y, cc.Y, PRECISION_DOUBLE);
-			Assert.Equal(z, cc.Z, PRECISION_DOUBLE);
+			Assert.Equal(x, cc.X, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(y, cc.Y, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(z, cc.Z, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		[Theory]
@@ -173,9 +172,9 @@ namespace Twisty.Engine.Tests.Geometry
 			Cartesian3dCoordinate cc = CoordinateConverter.ConvertToCartesian(hc);
 
 			// 3. Verify
-			Assert.Equal(x, cc.X, PRECISION_DOUBLE);
-			Assert.Equal(y, cc.Y, PRECISION_DOUBLE);
-			Assert.Equal(z, cc.Z, PRECISION_DOUBLE);
+			Assert.Equal(x, cc.X, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(y, cc.Y, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(z, cc.Z, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		[Theory]

@@ -24,6 +24,20 @@ namespace Twisty.Engine.Geometry
 		}
 
 		/// <summary>
+		/// Calculate the arc sinus for a value.
+		/// </summary>
+		/// <param name="d">Sinus value used to calculate angle.</param>
+		/// <returns>Calculated Arc sinus value.</returns>
+		public static double Asin(double d)
+		{
+			// Avoid NaN coming from double precissions issues. (1.0000000000001)
+			if (d.IsEqualTo(1.0))
+				return Math.PI / 2.0;
+
+			return Math.Asin(d);
+		}
+
+		/// <summary>
 		/// Calculate the Cosinus for an angle in radian by avoiding precision lost for some case causing important rounding issues with our matrix.
 		/// </summary>
 		/// <param name="rad">Angle to evaluate in radians.</param>

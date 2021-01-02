@@ -1,5 +1,6 @@
 ﻿using System;
 using Twisty.Engine.Geometry;
+using Twisty.Engine.Tests.Assertions;
 using Xunit;
 
 namespace Twisty.Engine.Tests.Geometry
@@ -7,8 +8,6 @@ namespace Twisty.Engine.Tests.Geometry
 	[Trait("Category", "Geometry")]
 	public class Cartesian3dCoordinateTest
 	{
-		private const int PRECISION_DOUBLE = 10;
-
 		#region Test Data
 
 		public static readonly TheoryData<Cartesian3dCoordinate, double, Cartesian3dCoordinate> RotateAll
@@ -85,9 +84,9 @@ namespace Twisty.Engine.Tests.Geometry
 			Cartesian3dCoordinate c = new Cartesian3dCoordinate(pointCoordinates);
 
 			// 3. Verify
-			Assert.Equal(expectedX, c.X, PRECISION_DOUBLE);
-			Assert.Equal(expectedY, c.Y, PRECISION_DOUBLE);
-			Assert.Equal(expectedZ, c.Z, PRECISION_DOUBLE);
+			Assert.Equal(expectedX, c.X, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expectedY, c.Y, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expectedZ, c.Z, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		[Theory]
@@ -102,7 +101,7 @@ namespace Twisty.Engine.Tests.Geometry
 			// Nothing to prepare
 
 			// 2. Execute
-			Action a = () => new Cartesian3dCoordinate(pointCoordinates);
+			void a() => new Cartesian3dCoordinate(pointCoordinates);
 
 			// 3. Verify
 			Assert.Throws<ArgumentException>(a);
@@ -128,12 +127,8 @@ namespace Twisty.Engine.Tests.Geometry
 			Cartesian3dCoordinate r2 = added + source;
 
 			// 3. Verify
-			Assert.Equal(expected.X, r1.X, PRECISION_DOUBLE);
-			Assert.Equal(expected.Y, r1.Y, PRECISION_DOUBLE);
-			Assert.Equal(expected.Z, r1.Z, PRECISION_DOUBLE);
-			Assert.Equal(expected.X, r2.X, PRECISION_DOUBLE);
-			Assert.Equal(expected.Y, r2.Y, PRECISION_DOUBLE);
-			Assert.Equal(expected.Z, r2.Z, PRECISION_DOUBLE);
+			GeometryAssert.SamePoint(expected, r1);
+			GeometryAssert.SamePoint(expected, r2);
 		}
 
 		[Theory]
@@ -155,9 +150,7 @@ namespace Twisty.Engine.Tests.Geometry
 			Cartesian3dCoordinate r = source - substracted;
 
 			// 3. Verify
-			Assert.Equal(expected.X, r.X, PRECISION_DOUBLE);
-			Assert.Equal(expected.Y, r.Y, PRECISION_DOUBLE);
-			Assert.Equal(expected.Z, r.Z, PRECISION_DOUBLE);
+			GeometryAssert.SamePoint(expected, r);
 		}
 
 		[Theory]
@@ -172,9 +165,7 @@ namespace Twisty.Engine.Tests.Geometry
 			Cartesian3dCoordinate r = source.RotateAroundX(theta);
 
 			// 3. Verify
-			Assert.Equal(expected.X, r.X, PRECISION_DOUBLE);
-			Assert.Equal(expected.Y, r.Y, PRECISION_DOUBLE);
-			Assert.Equal(expected.Z, r.Z, PRECISION_DOUBLE);
+			GeometryAssert.SamePoint(expected, r);
 		}
 
 		[Theory]
@@ -189,9 +180,7 @@ namespace Twisty.Engine.Tests.Geometry
 			Cartesian3dCoordinate r = source.RotateAroundY(theta);
 
 			// 3. Verify
-			Assert.Equal(expected.X, r.X, PRECISION_DOUBLE);
-			Assert.Equal(expected.Y, r.Y, PRECISION_DOUBLE);
-			Assert.Equal(expected.Z, r.Z, PRECISION_DOUBLE);
+			GeometryAssert.SamePoint(expected, r);
 		}
 
 		[Theory]
@@ -206,9 +195,7 @@ namespace Twisty.Engine.Tests.Geometry
 			Cartesian3dCoordinate r = source.RotateAroundZ(theta);
 
 			// 3. Verify
-			Assert.Equal(expected.X, r.X, PRECISION_DOUBLE);
-			Assert.Equal(expected.Y, r.Y, PRECISION_DOUBLE);
-			Assert.Equal(expected.Z, r.Z, PRECISION_DOUBLE);
+			GeometryAssert.SamePoint(expected, r);
 		}
 
 		[Theory]
@@ -222,9 +209,7 @@ namespace Twisty.Engine.Tests.Geometry
 			Cartesian3dCoordinate r = source.RotateAroundVector(k, theta);
 
 			// 3. Verify
-			Assert.Equal(expected.X, r.X, PRECISION_DOUBLE);
-			Assert.Equal(expected.Y, r.Y, PRECISION_DOUBLE);
-			Assert.Equal(expected.Z, r.Z, PRECISION_DOUBLE);
+			GeometryAssert.SamePoint(expected, r);
 		}
 
 		[Theory]
@@ -244,8 +229,8 @@ namespace Twisty.Engine.Tests.Geometry
 			double r2 = c2.GetThetaTo(c1);
 
 			// 3. Verify
-			Assert.Equal(expected, r1, PRECISION_DOUBLE);
-			Assert.Equal(expected, r2, PRECISION_DOUBLE);
+			Assert.Equal(expected, r1, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expected, r2, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		[Theory]
@@ -264,12 +249,8 @@ namespace Twisty.Engine.Tests.Geometry
 			Cartesian3dCoordinate r2 = val * original;
 
 			// 3. Verify
-			Assert.Equal(expected.X, r1.X, PRECISION_DOUBLE);
-			Assert.Equal(expected.X, r2.X, PRECISION_DOUBLE);
-			Assert.Equal(expected.Y, r1.Y, PRECISION_DOUBLE);
-			Assert.Equal(expected.Y, r2.Y, PRECISION_DOUBLE);
-			Assert.Equal(expected.Z, r1.Z, PRECISION_DOUBLE);
-			Assert.Equal(expected.Z, r2.Z, PRECISION_DOUBLE);
+			GeometryAssert.SamePoint(expected, r1);
+			GeometryAssert.SamePoint(expected, r2);
 		}
 
 		[Theory]
@@ -298,9 +279,7 @@ namespace Twisty.Engine.Tests.Geometry
 			Cartesian3dCoordinate r = vector.TransposeFromReferential(origin);
 
 			// 3. Verify
-			Assert.Equal(expected.X, r.X, PRECISION_DOUBLE);
-			Assert.Equal(expected.Y, r.Y, PRECISION_DOUBLE);
-			Assert.Equal(expected.Z, r.Z, PRECISION_DOUBLE);
+			GeometryAssert.SamePoint(expected, r);
 		}
 
 		[Theory]
@@ -320,12 +299,8 @@ namespace Twisty.Engine.Tests.Geometry
 			Cartesian3dCoordinate r2 = cc2.Reverse;
 
 			// 3. Verify
-			Assert.Equal(cc2.X, r1.X, PRECISION_DOUBLE);
-			Assert.Equal(cc2.Y, r1.Y, PRECISION_DOUBLE);
-			Assert.Equal(cc2.Z, r1.Z, PRECISION_DOUBLE);
-			Assert.Equal(cc1.X, r2.X, PRECISION_DOUBLE);
-			Assert.Equal(cc1.Y, r2.Y, PRECISION_DOUBLE);
-			Assert.Equal(cc1.Z, r2.Z, PRECISION_DOUBLE);
+			GeometryAssert.SamePoint(cc2, r1);
+			GeometryAssert.SamePoint(cc1, r2);
 		}
 
 		[Theory]
@@ -351,9 +326,7 @@ namespace Twisty.Engine.Tests.Geometry
 			Cartesian3dCoordinate r = cc.Normalize();
 
 			// 3. Verify
-			Assert.Equal(expectedCoordinates.X, r.X, PRECISION_DOUBLE);
-			Assert.Equal(expectedCoordinates.Y, r.Y, PRECISION_DOUBLE);
-			Assert.Equal(expectedCoordinates.Z, r.Z, PRECISION_DOUBLE);
+			GeometryAssert.SamePoint(expectedCoordinates, r);
 		}
 
 		[Theory]

@@ -11,8 +11,6 @@ namespace Twisty.Engine.Tests.Structure.Skewb
 	[Trait("Category", "Structure")]
 	public class SkewbTest
 	{
-		private const int PRECISION_DOUBLE = 10;
-
 		#region Test Methods
 
 		[Theory]
@@ -36,9 +34,9 @@ namespace Twisty.Engine.Tests.Structure.Skewb
 			c.RotateAround(axis, true);
 
 			// 3. Verify
-			Assert.Equal(initialPosition.X, center.Position.X, PRECISION_DOUBLE);
-			Assert.Equal(initialPosition.Y, center.Position.Y, PRECISION_DOUBLE);
-			Assert.Equal(initialPosition.Z, center.Position.Z, PRECISION_DOUBLE);
+			Assert.Equal(initialPosition.X, center.Position.X, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(initialPosition.Y, center.Position.Y, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(initialPosition.Z, center.Position.Z, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		[Theory]

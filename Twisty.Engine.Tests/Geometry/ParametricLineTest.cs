@@ -1,13 +1,12 @@
 ﻿using System;
 using Twisty.Engine.Geometry;
+using Twisty.Engine.Tests.Assertions;
 using Xunit;
 
 namespace Twisty.Engine.Tests.Geometry
 {
 	public class ParametricLineTest
 	{
-		private const int PRECISION_DOUBLE = 10;
-
 		#region Test Data
 
 		//(Cartesian3dCoordinate p1, Cartesian3dCoordinate p2, double x, double xt, double y, double yt, double z, double zt)
@@ -55,12 +54,12 @@ namespace Twisty.Engine.Tests.Geometry
 			ParametricLine o = new ParametricLine(coordinates);
 
 			// 3. Verify
-			Assert.Equal(x, o.X, PRECISION_DOUBLE);
-			Assert.Equal(xt, o.A, PRECISION_DOUBLE);
-			Assert.Equal(y, o.Y, PRECISION_DOUBLE);
-			Assert.Equal(yt, o.B, PRECISION_DOUBLE);
-			Assert.Equal(z, o.Z, PRECISION_DOUBLE);
-			Assert.Equal(zt, o.C, PRECISION_DOUBLE);
+			Assert.Equal(x, o.X, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(xt, o.A, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(y, o.Y, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(yt, o.B, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(z, o.Z, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(zt, o.C, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		[Theory]
@@ -74,12 +73,12 @@ namespace Twisty.Engine.Tests.Geometry
 			ParametricLine o = ParametricLine.FromTwoPoints(p1, p2);
 
 			// 3. Verify
-			Assert.Equal(x, o.X, PRECISION_DOUBLE);
-			Assert.Equal(xt, o.A, PRECISION_DOUBLE);
-			Assert.Equal(y, o.Y, PRECISION_DOUBLE);
-			Assert.Equal(yt, o.B, PRECISION_DOUBLE);
-			Assert.Equal(z, o.Z, PRECISION_DOUBLE);
-			Assert.Equal(zt, o.C, PRECISION_DOUBLE);
+			Assert.Equal(x, o.X, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(xt, o.A, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(y, o.Y, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(yt, o.B, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(z, o.Z, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(zt, o.C, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		[Theory]
@@ -142,7 +141,7 @@ namespace Twisty.Engine.Tests.Geometry
 			double r = line.GetDistanceTo(p);
 
 			// 3. Verify
-			Assert.Equal(expected, r, PRECISION_DOUBLE);
+			Assert.Equal(expected, r, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		#endregion Test Methods

@@ -1,5 +1,6 @@
 ﻿using System;
 using Twisty.Engine.Geometry;
+using Twisty.Engine.Tests.Assertions;
 using Xunit;
 
 namespace Twisty.Engine.Tests.Geometry
@@ -7,8 +8,6 @@ namespace Twisty.Engine.Tests.Geometry
 	[Trait("Category", "Geometry")]
 	public class PlaneTest
 	{
-		private const int PRECISION_DOUBLE = 10;
-
 		#region Test Data
 
 		public static readonly TheoryData<Cartesian3dCoordinate, Cartesian3dCoordinate, double, double, double, double> CreationFromNormal
@@ -52,10 +51,10 @@ namespace Twisty.Engine.Tests.Geometry
 			Plane p = new Plane(planCoordinates);
 
 			// 3. Verify
-			Assert.Equal(expectedA, p.A, PRECISION_DOUBLE);
-			Assert.Equal(expectedB, p.B, PRECISION_DOUBLE);
-			Assert.Equal(expectedC, p.C, PRECISION_DOUBLE);
-			Assert.Equal(expectedD, p.D, PRECISION_DOUBLE);
+			Assert.Equal(expectedA, p.A, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expectedB, p.B, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expectedC, p.C, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expectedD, p.D, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		[Theory]
@@ -70,7 +69,7 @@ namespace Twisty.Engine.Tests.Geometry
 			// Nothing to prepare
 
 			// 2. Execute
-			Action a = () => new Plane(planeCoordinates);
+			void a() => new Plane(planeCoordinates);
 
 			// 3. Verify
 			Assert.Throws<ArgumentException>(a);
@@ -87,10 +86,10 @@ namespace Twisty.Engine.Tests.Geometry
 			Plane p = new Plane(expectedA, expectedB, expectedC, expectedD);
 
 			// 3. Verify
-			Assert.Equal(expectedA, p.A, PRECISION_DOUBLE);
-			Assert.Equal(expectedB, p.B, PRECISION_DOUBLE);
-			Assert.Equal(expectedC, p.C, PRECISION_DOUBLE);
-			Assert.Equal(expectedD, p.D, PRECISION_DOUBLE);
+			Assert.Equal(expectedA, p.A, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expectedB, p.B, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expectedC, p.C, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expectedD, p.D, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		[Theory]
@@ -104,10 +103,10 @@ namespace Twisty.Engine.Tests.Geometry
 			Plane p = new Plane(normal, point);
 
 			// 3. Verify
-			Assert.Equal(expectedA, p.A, PRECISION_DOUBLE);
-			Assert.Equal(expectedB, p.B, PRECISION_DOUBLE);
-			Assert.Equal(expectedC, p.C, PRECISION_DOUBLE);
-			Assert.Equal(expectedD, p.D, PRECISION_DOUBLE);
+			Assert.Equal(expectedA, p.A, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expectedB, p.B, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expectedC, p.C, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expectedD, p.D, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		[Theory]
@@ -152,9 +151,9 @@ namespace Twisty.Engine.Tests.Geometry
 			Cartesian3dCoordinate r = p.GetIntersection(line);
 
 			// 3. Verify
-			Assert.Equal(expected.X, r.X, PRECISION_DOUBLE);
-			Assert.Equal(expected.Y, r.Y, PRECISION_DOUBLE);
-			Assert.Equal(expected.Z, r.Z, PRECISION_DOUBLE);
+			Assert.Equal(expected.X, r.X, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expected.Y, r.Y, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expected.Z, r.Z, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		[Theory]
@@ -194,7 +193,7 @@ namespace Twisty.Engine.Tests.Geometry
 			double r = p.GetDistanceTo(cc);
 
 			// 3. Verify
-			Assert.Equal(distance, r, PRECISION_DOUBLE);
+			Assert.Equal(distance, r, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		[Theory]
@@ -213,9 +212,9 @@ namespace Twisty.Engine.Tests.Geometry
 			Cartesian3dCoordinate r = p.GetIntersection(cc);
 
 			// 3. Verify
-			Assert.Equal(expected.X, r.X, PRECISION_DOUBLE);
-			Assert.Equal(expected.Y, r.Y, PRECISION_DOUBLE);
-			Assert.Equal(expected.Z, r.Z, PRECISION_DOUBLE);
+			Assert.Equal(expected.X, r.X, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expected.Y, r.Y, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expected.Z, r.Z, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		[Theory]
@@ -234,12 +233,12 @@ namespace Twisty.Engine.Tests.Geometry
 			ParametricLine l = p.GetPerpendicular(cc);
 
 			// 3. Verify
-			Assert.Equal(expected.X, l.X, PRECISION_DOUBLE);
-			Assert.Equal(expected.Y, l.Y, PRECISION_DOUBLE);
-			Assert.Equal(expected.Z, l.Z, PRECISION_DOUBLE);
-			Assert.Equal(expected.A, l.A, PRECISION_DOUBLE);
-			Assert.Equal(expected.B, l.B, PRECISION_DOUBLE);
-			Assert.Equal(expected.C, l.C, PRECISION_DOUBLE);
+			Assert.Equal(expected.X, l.X, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expected.Y, l.Y, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expected.Z, l.Z, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expected.A, l.A, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expected.B, l.B, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expected.C, l.C, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		[Theory]
@@ -277,12 +276,12 @@ namespace Twisty.Engine.Tests.Geometry
 			Assert.True(isFurtherOnP2);
 			Assert.True(isParrallelToP1);
 			Assert.True(isParrallelToP2);
-			Assert.Equal(expected.X, l.X, PRECISION_DOUBLE);
-			Assert.Equal(expected.Y, l.Y, PRECISION_DOUBLE);
-			Assert.Equal(expected.Z, l.Z, PRECISION_DOUBLE);
-			Assert.Equal(expectedVector.X, vector.X, PRECISION_DOUBLE);
-			Assert.Equal(expectedVector.Y, vector.Y, PRECISION_DOUBLE);
-			Assert.Equal(expectedVector.Z, vector.Z, PRECISION_DOUBLE);
+			Assert.Equal(expected.X, l.X, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expected.Y, l.Y, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expected.Z, l.Z, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expectedVector.X, vector.X, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expectedVector.Y, vector.Y, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expectedVector.Z, vector.Z, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		#endregion Test Methods
