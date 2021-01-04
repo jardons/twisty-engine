@@ -17,11 +17,11 @@
 		<Border Grid.Row="2" Background="LightGray" />
 		<StackPanel x:Name="viewPanel" Grid.Column="1" Grid.Row="1">
 			<ComboBox x:Name="viewSelector">
-				<ComboBoxItem Tag="6,3,-3" Content="Front Left" IsSelected="true" />
-				<ComboBoxItem Tag="6,-3,-3" Content="Front Right" />
-				<ComboBoxItem Tag="6,3,3" Content="Bottom Left" />
-				<ComboBoxItem Tag="6,-3,3" Content="Bottom Right" />
-				<ComboBoxItem Tag="-6,3,-3" Content="Back Left" />
+				<ComboBoxItem Tag="6,-3,3" Content="Front Left" IsSelected="true" />
+				<ComboBoxItem Tag="6,3,3" Content="Front Right" />
+				<ComboBoxItem Tag="6,3,-3" Content="Bottom Left" />
+				<ComboBoxItem Tag="6,-3,-3" Content="Bottom Right" />
+				<ComboBoxItem Tag="-6,-3,3" Content="Back Left" />
 			</ComboBox>
 		</StackPanel>
 		<Canvas Name="canvasBox" Grid.Column="1" Grid.Row="2" Width="600" Height="200">
@@ -31,7 +31,7 @@
 
 				<!-- Defines the camera used to view the 3D object. -->
 				<Viewport3D.Camera>
-					<PerspectiveCamera x:Name="camera" Position="6,3,-3" UpDirection="0,0,-1" FieldOfView="70" />
+					<PerspectiveCamera x:Name="camera" Position="6,-3,3" UpDirection="0,0,1" FieldOfView="70" />
 				</Viewport3D.Camera>
 
 				<!-- The ModelVisual3D children contain the 3D models -->
