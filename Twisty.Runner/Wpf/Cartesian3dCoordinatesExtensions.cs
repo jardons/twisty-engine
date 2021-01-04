@@ -15,7 +15,14 @@ namespace Twisty.Runner.Wpf
 		/// Convert the Cartesian3dCoordinate to a Point3D object. 
 		/// </summary>
 		/// <param name="c">Cartesian3dCoordinate to convert to a Point3D object.</param>
-		/// <returns>Point3D object witht he same coordiantes as the provided Cartesian3dCoordinate object.</returns>
-		public static Point3D ToPoint3D(this Cartesian3dCoordinate c) => new Point3D(c.X, c.Y, c.Z);
+		/// <returns>Point3D object with the same coordiantes as the provided Cartesian3dCoordinate object.</returns>
+		public static Point3D ToWpfPoint3D(this Cartesian3dCoordinate c) => new Point3D(c.X, c.Y, c.Z);
+
+		/// <summary>
+		/// Convert the Cartesian3dCoordinate to a Vector3D object. 
+		/// </summary>
+		/// <param name="c">Cartesian3dCoordinate to convert to a Vector3D object.</param>
+		/// <returns>Vector3D object with the same coordiantes as the provided Cartesian3dCoordinate object.</returns>
+		public static Vector3D ToWpfVector3D(this Cartesian3dCoordinate c) => new Vector3D(c.X, c.Y, c.Z);
 	}
 }

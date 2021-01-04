@@ -16,7 +16,6 @@ using System.Windows.Shapes;
 using Twisty.Engine.Geometry;
 using Twisty.Engine.Materialization;
 using Twisty.Engine.Structure;
-using Twisty.Engine.Structure.Rubiks;
 using Twisty.Runner.Wpf;
 
 namespace Twisty.Runner.Views
@@ -120,9 +119,10 @@ namespace Twisty.Runner.Views
 		private void RotationCoreStandardView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
 			int i = 0;
-			foreach (var o in m_3dObjects.Where(kv => kv.Key.Contains("R")).Select(kv => kv.Value))
+			foreach (var kvp in m_3dObjects)
 			{
-				o.Transform = GetTransform();
+				var o = kvp.Value;
+				o.Transform = GetTransform(m_Core.GetBlock(kvp.Key));
 
 				// TODO : analyse how to animate.
 				/*
@@ -185,14 +185,14 @@ namespace Twisty.Runner.Views
 
 				Cartesian3dCoordinate center = materializer.GetCenter(b.Id, face.Id);
 
-				geo.Positions.Add(center.ToPoint3D()); // Center will always be position 0
+				geo.Positions.Add(center.ToWpfPoint3D()); // Center will always be position 0
 
 				var bondaries = materializer.GetFaceBondaries(cubeFace, center);
 
 				// As it's a loop, previous border of first row is the last one.
 				var previousLine = bondaries[bondaries.Count - 1].Plane.GetIntersection(cubeFace.Plane);
 				var previousPoint = bondaries[0].Plane.GetIntersection(previousLine);
-				geo.Positions.Add(previousPoint.ToPoint3D());
+				geo.Positions.Add(previousPoint.ToWpfPoint3D());
 
 				for (int i = 0; i < bondaries.Count - 1; ++i)
 				{
@@ -201,7 +201,7 @@ namespace Twisty.Runner.Views
 					var currentPoint = bondaries[i + 1].Plane.GetIntersection(currentLine);
 
 					// Update positions.
-					geo.Positions.Add(currentPoint.ToPoint3D());
+					geo.Positions.Add(currentPoint.ToWpfPoint3D());
 
 					geo.TriangleIndices.Add(0);     // Center
 					geo.TriangleIndices.Add(i + 1); // Previous
@@ -250,34 +250,22 @@ namespace Twisty.Runner.Views
 			return new DiffuseMaterial { Brush = brush };
 		}
 
-		private Transform3D GetTransform()
+		private Transform3D GetTransform(Engine.Structure.Block b)
 		{
 			Transform3DGroup group = new Transform3DGroup();
 
-			// Create and apply a transformation that rotates the object.
-			RotateTransform3D myRotateTransform3D = new RotateTransform3D();
-			AxisAngleRotation3D myAxisAngleRotation3d = new AxisAngleRotation3D();
-			myAxisAngleRotation3d.Axis = new Vector3D(0, 1, 0);
-			myAxisAngleRotation3d.Angle = 180;
-			myRotateTransform3D.Rotation = myAxisAngleRotation3d;
-
-			group.Children.Add(myRotateTransform3D);
-			/*
-			myRotateTransform3D = new RotateTransform3D();
-			myAxisAngleRotation3d = new AxisAngleRotation3D();
-			myAxisAngleRotation3d.Axis = new Vector3D(0, 1, 0);
-			myAxisAngleRotation3d.Angle = 180;
-			myRotateTransform3D.Rotation = myAxisAngleRotation3d;
-
-			group.Children.Add(myRotateTransform3D);
-
-			myRotateTransform3D = new RotateTransform3D();
-			myAxisAngleRotation3d = new AxisAngleRotation3D();
-			myAxisAngleRotation3d.Axis = new Vector3D(1, 0, 0);
-			myAxisAngleRotation3d.Angle = 180;
-			myRotateTransform3D.Rotation = myAxisAngleRotation3d;
-
-			group.Children.Add(myRotateTransform3D);*/
+			// Use Euler angles to provide correct orientation on every blocks.
+			foreach (var rotation in b.Orientation.GetEulerAngles())
+			{
+				group.Children.Add(new RotateTransform3D
+				{
+					Rotation = new AxisAngleRotation3D
+					{
+						Axis = rotation.Axis.ToWpfVector3D(),
+						Angle = -CoordinateConverter.ConvertRadianToDegree(rotation.Angle)
+					}
+				});
+			}
 
 			return group;
 		}

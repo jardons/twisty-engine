@@ -109,12 +109,15 @@ namespace Twisty.Engine.Tests.Geometry.Rotations
 		}
 
 		[Theory]
+		// General cases.
 		[InlineData("(1 0 0)", Math.PI)]
 		[InlineData("(0 1 0)", Math.PI / 2.0)]
 		[InlineData("(0 0 1)", Math.PI / 3.0)]
 		[InlineData("(-1 0 0)", Math.PI / 13.0)]
 		[InlineData("(0 -1 0)", Math.PI * 1.5)]
 		[InlineData("(0 0 -1)", Math.PI / 3.0 * 2.0)]
+		// Gimbal lock cases.
+		[InlineData("(0 -1 0)", Math.PI / 2.0)]
 		public void RotationMatrix3d_GetEulerAnglesFromGeneralAxisRotation_Expected(string axisCoordinates, double theta)
 		{
 			// Prepare

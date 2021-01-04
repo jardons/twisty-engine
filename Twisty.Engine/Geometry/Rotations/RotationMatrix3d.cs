@@ -8,6 +8,9 @@ namespace Twisty.Engine.Geometry.Rotations
 	/// </summary>
 	public class RotationMatrix3d
 	{
+		/// <summary>
+		/// Rotation matrix on the form of [Columns Index, Rows Index]
+		/// </summary>
 		private readonly double[,] m_Matrix;
 
 		#region ctor(s)
@@ -186,10 +189,14 @@ namespace Twisty.Engine.Geometry.Rotations
 				// R = [    0.0      sinψ sinθ sinφ + cosψ cosφ     cosψ sinθ sinφ − sinψ cosφ ]
 				//     [   -sinθ                0.0                              0.0           ]
 
-				// As this situation lead to an infinite of ψ and φ combination, we will concentrate on the one with φ set to 0.0.
 				// By combination of R12 and R13 equations, we got :
-				// ψ = −φ + atan2(−R12,−R13)
-				var psi = Math.Atan2(-this.m_Matrix[1, 0], this.m_Matrix[2, 0]);
+				// When R31 = 1 : ψ = −φ + atan2(−R12,−R13)
+				// When R31 = -1 : ψ = φ + atan2(R12,R13)
+				//
+				// As this situation lead to an infinite of ψ and φ combination, we will concentrate on the one with φ set to 0.0.
+				var psi = this.m_Matrix[0, 2] > 0.0
+					? Math.Atan2(-this.m_Matrix[1, 0], -this.m_Matrix[2, 0])
+					: Math.Atan2(this.m_Matrix[1, 0], this.m_Matrix[2, 0]);
 
 				// Add operation to result
 				if (!theta.IsZero())
