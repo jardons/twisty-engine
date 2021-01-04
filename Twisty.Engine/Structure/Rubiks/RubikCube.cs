@@ -107,9 +107,10 @@ namespace Twisty.Engine.Structure.Rubiks
 			if (mod2 == 0)
 				layers.Add($"L0_{id}", 0.0);
 
+			double layerSize = 2.0 / n;
 			int n2 = (n / 2) + mod2;
 			for (int i = 1; i < n2; ++i)
-				layers.Add($"L{i}_{id}", Convert.ToDouble(i) / Convert.ToDouble(n2));
+				layers.Add($"L{i}_{id}", layerSize * (Convert.ToDouble(i) - 0.5));
 
 			return new RotationAxis(id, direction, layers);
 		}
