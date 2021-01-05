@@ -23,8 +23,8 @@ namespace Twisty.Engine.Geometry
 		IComparer<IPlanar>,
 		IComparer<IPositionnedByCartesian3dVector>
 	{
-		private CartesianCoordinatesConverter m_Converter;
-		private Cartesian2dCoordinate m_Center;
+		private readonly CartesianCoordinatesConverter m_Converter;
+		private readonly Cartesian2dCoordinate m_Center;
 
 		/// <summary>
 		/// Create a new CircularVectorComparer using a Plane on which we will projects the points to sort.
