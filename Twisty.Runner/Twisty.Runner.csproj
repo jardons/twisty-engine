@@ -11,4 +11,16 @@
     <ProjectReference Include="..\Twisty.Engine\Twisty.Engine.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Views\AlgorithmConsole.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\AlgorithmConsole.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
 </Project>

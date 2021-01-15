@@ -72,7 +72,7 @@ namespace Twisty.Engine.Materialization
 			List<IPlanar> result = FilterToClosestPlanar(planar, internalPoint);
 
 			// Exclude non parallel plane with parralel intersections.
-			//result = FilterToClosestIntersection(result, face, center);
+			//result = FilterToClosestIntersection(result, face, internalPoint);
 
 			// In order to keep only the closest intersection, we need to sort the planes.
 			var comparer = new CircularVectorComparer(face.Plane, internalPoint);
