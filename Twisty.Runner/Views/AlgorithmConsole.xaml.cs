@@ -27,14 +27,13 @@ namespace Twisty.Runner.Views
 	/// </summary>
 	public partial class AlgorithmConsole : UserControl
 	{
-		private RotationCore m_Core;
-
 		public AlgorithmConsole()
 		{
 			InitializeComponent();
 
 			this.Input.KeyUp += OnInputKeyUp;
 			this.ButtonExecute.Click += OnExecute;
+			this.History.MouseDoubleClick += OnDoubleClickHistory;
 		}
 
 		#region Events
@@ -44,9 +43,31 @@ namespace Twisty.Runner.Views
 		#endregion Events
 
 		private void ExecuteCommand()
+			=> ExecuteCommand(this.Input.Text);
+
+		private void ExecuteCommand(string command)
 		{
-			this.RunAlgorithm(this.Input.Text);
+			if (string.IsNullOrWhiteSpace(command))
+				return;
+
+			this.RunAlgorithm(command);
+			this.AddToHistory(command);
 			this.Input.Clear();
+		}
+
+		private void AddToHistory(string command)
+		{
+			if (string.IsNullOrWhiteSpace(command))
+				return;
+
+			var item = this.History.Items.OfType<ListBoxItem>().FirstOrDefault(i => i.Content.ToString() == command);
+
+			// If item is already in history, avoid duplicate.
+			if (item != null)
+				this.History.Items.Remove(item);
+
+			// Add at the bottom of history.
+			this.History.Items.Add(new ListBoxItem { Content = command });
 		}
 
 		private void OnInputKeyUp(object sender, KeyEventArgs e)
@@ -57,5 +78,13 @@ namespace Twisty.Runner.Views
 
 		private void OnExecute(object sender, RoutedEventArgs e)
 			=> ExecuteCommand();
+
+		private void OnDoubleClickHistory(object sender, MouseButtonEventArgs e)
+		{
+			if (e.ChangedButton == MouseButton.Left)
+			{
+				this.ExecuteCommand(((ListBoxItem)this.History.SelectedItem).Content.ToString());
+			}
+		}
 	}
 }
