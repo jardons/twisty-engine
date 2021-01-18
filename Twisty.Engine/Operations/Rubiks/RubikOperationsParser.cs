@@ -30,7 +30,7 @@ namespace Twisty.Engine.Operations.Rubiks
 				string axis = GetAxisId(command[i]);
 				if (string.IsNullOrEmpty(axis))
 					throw new OperationParsingException(command, i);
-				
+
 				// Counter clockwise operation are followed by a "'" char.
 				bool isClockWise = true;
 				if (i + 1 < command.Length && command[i + 1] == '\'')
@@ -46,29 +46,43 @@ namespace Twisty.Engine.Operations.Rubiks
 		}
 
 		/// <summary>
+		/// Try to clean a command to a generic format.
+		/// </summary>
+		/// <param name="command">String that will be parsed as a list of operations.</param>
+		/// <param name="cleanedCommand">String that will be contained a cleaned list of operations.</param>
+		/// <returns>A boolean indicating if whether the provided string is a valid command or not.</returns>
+		public bool TryClean(string command, out string cleanedCommand)
+		{
+			cleanedCommand = command;
+
+			try
+			{
+				this.Parse(command);
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+		/// <summary>
 		/// Gets the axis id used for the specific action.
 		/// </summary>
 		/// <param name="action">Action used for which the axis is needed.</param>
 		/// <returns>Id of the axis to use for the action.</returns>
 		private string GetAxisId(char action)
 		{
-			switch (action)
+			return action switch
 			{
-				case 'L':
-					return RubikCube.ID_FACE_LEFT;
-				case 'R':
-					return RubikCube.ID_FACE_RIGHT;
-				case 'F':
-					return RubikCube.ID_FACE_FRONT;
-				case 'B':
-					return RubikCube.ID_FACE_BACK;
-				case 'U':
-					return RubikCube.ID_FACE_UP;
-				case 'D':
-					return RubikCube.ID_FACE_DOWN;
-			}
-
-			return null;
+				'L' => RubikCube.ID_FACE_LEFT,
+				'R' => RubikCube.ID_FACE_RIGHT,
+				'F' => RubikCube.ID_FACE_FRONT,
+				'B' => RubikCube.ID_FACE_BACK,
+				'U' => RubikCube.ID_FACE_UP,
+				'D' => RubikCube.ID_FACE_DOWN,
+				_ => null,
+			};
 		}
 	}
 }

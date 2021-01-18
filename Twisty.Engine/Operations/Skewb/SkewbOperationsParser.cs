@@ -46,25 +46,43 @@ namespace Twisty.Engine.Operations.Skewb
 		}
 
 		/// <summary>
+		/// Try to clean a command to a generic format.
+		/// </summary>
+		/// <param name="command">String that will be parsed as a list of operations.</param>
+		/// <param name="cleanedCommand">String that will be contained a cleaned list of operations.</param>
+		/// <returns>A boolean indicating if whether the provided string is a valid command or not.</returns>
+		public bool TryClean(string command, out string cleanedCommand)
+		{
+			// Lower case chars are not used in skewb logic, so we can switch all chars to upper cases.
+			cleanedCommand = command.ToUpper();
+
+			try
+			{
+				this.Parse(cleanedCommand);
+				return true;
+			}
+			catch
+			{
+				cleanedCommand = command;
+				return false;
+			}
+		}
+
+		/// <summary>
 		/// Gets the axis id used for the specific action.
 		/// </summary>
 		/// <param name="action">Action used for which the axis is needed.</param>
 		/// <returns>Id of the axis to use for the action.</returns>
 		private string GetAxisId(char action)
 		{
-			switch (action)
+			return action switch
 			{
-				case 'L':
-					return "DFL";
-				case 'R':
-					return "DBR";
-				case 'B':
-					return "DBL";
-				case 'U':
-					return "UBL";
-			}
-
-			return null;
+				'L' => "DFL",
+				'R' => "DBR",
+				'B' => "DBL",
+				'U' => "UBL",
+				_ => null,
+			};
 		}
 	}
 }
