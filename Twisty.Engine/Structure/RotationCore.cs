@@ -102,6 +102,24 @@ namespace Twisty.Engine.Structure
 		/// <returns>Face for the corresponding or null if not found.</returns>
 		public CoreFace GetFace(string faceId) => m_Faces[faceId];
 
+		/// <summary>
+		/// Rotate a face around a specified rotation axis.
+		/// </summary>
+		/// <param name="axis">Rotation axis aroung which the rotation will be executed.</param>
+		/// <param name="isClockwise">Boolean indicating if whether the rotation is clockwise or not.</param>
+		public void RotateAround(RotationAxis axis, bool isClockwise)
+		{
+			// Gets Blocks ordered in rotation order.
+			var blocks = GetBlocks(axis);
+			if (blocks.Count == 0)
+				return;
+
+			// Convert the rotation direction to the correct angle.
+			double theta = isClockwise ? Math.PI * (2.0 / 3.0) : -Math.PI * (2.0 / 3.0);
+
+			this.Rotate(blocks.OfType<Block>().ToList(), axis.Vector, theta);
+		}
+
 		#endregion Public Methods
 
 		#region Protected Methods
@@ -113,29 +131,23 @@ namespace Twisty.Engine.Structure
 		/// <param name="blocks">Sorted collection for which position will be switched. Each block will take the position of the next one.</param>
 		/// <param name="rotationAxis">Axis used for the rotation of the blocks.</param>
 		/// <param name="theta">Angle in radians of the rotations to execute on each blocks.</param>
-		protected void SwitchAndRotate<T>(IList<T> blocks, Cartesian3dCoordinate rotationAxis, double theta)
+		protected void Rotate<T>(IList<T> blocks, Cartesian3dCoordinate rotationAxis, double theta)
 			where T : Block
 		{
-			// No switch to perform if their is not at least 2 blocks.
-			if (blocks.Count > 1)
-			{
-				// Store position of the first block that need to be set to the last one.
-				var firstPosition = blocks[0].Position;
-
-				// Update all intermediate blocks positions.
-				for (int i = 0; i < blocks.Count - 1; ++i)
-					blocks[i].Position = blocks[i + 1].Position;
-
-				// Finalize the switch by replacing the position of the last one with the one from the first one.
-				blocks[blocks.Count - 1].Position = firstPosition;
-			}
-
 			if (!theta.IsZero())
 			{
 				// Rotate the block aroung themselve.
 				foreach (var b in blocks)
 					b.RotateAround(rotationAxis, theta);
 			}
+		}
+
+		protected virtual IList<Block> GetBlocks(RotationAxis axis)
+		{
+			Plane p = new Plane(axis.Vector, 0.0);
+
+			// Select all blocks that will be included in the rotation.
+			return this.Blocks.Where(b => p.IsAbovePlane(b.Position)).ToList();
 		}
 
 		#endregion Protected Methods

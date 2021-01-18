@@ -49,9 +49,14 @@ namespace Twisty.Engine.Structure
 		#region Public Properties
 
 		/// <summary>
+		/// Initial Position is stored using the direction relative to the Form center.
+		/// </summary>
+		public Cartesian3dCoordinate InitialPosition { get; set; }
+
+		/// <summary>
 		/// Position is stored using the direction relative to the Form center.
 		/// </summary>
-		public Cartesian3dCoordinate Position { get; set; }
+		public Cartesian3dCoordinate Position => this.Orientation.Rotate(this.InitialPosition);
 
 		/// <summary>
 		/// Current Orientation of the block.

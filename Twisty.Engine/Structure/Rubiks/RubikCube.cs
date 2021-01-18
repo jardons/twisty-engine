@@ -27,31 +27,6 @@ namespace Twisty.Engine.Structure.Rubiks
 		/// </summary>
 		public int N { get; }
 
-		/// <summary>
-		/// Rotate a face around a specified rotation axis.
-		/// </summary>
-		/// <param name="axis">Rotation axis aroung which the rotation will be executed.</param>
-		/// <param name="isClockwise">Boolean indicating if whether the rotation is clockwise or not.</param>
-		public void RotateAround(RotationAxis axis, bool isClockwise)
-		{
-			// Gets Blocks ordered in rotation order.
-			var blocks = GetOrderedBlocks(axis, isClockwise);
-			if (blocks.Count == 0)
-				return;
-
-			// Convert the rotation direction to the correct angle.
-			double theta = isClockwise ? Math.PI / 2.0 : -Math.PI / 2.0;
-
-			// Perform the manipulation for the 4 corners.
-			base.SwitchAndRotate(blocks.OfType<CornerBlock>().ToList(), axis.Vector, theta);
-
-			// Perform the edges rotation.
-			base.SwitchAndRotate(blocks.OfType<EdgeBlock>().ToList(), axis.Vector, theta);
-
-			// Perform the center rotation.
-			base.SwitchAndRotate(blocks.OfType<CenterBlock>().ToList(), axis.Vector, theta);
-		}
-
 		#region Private Members
 
 		/// <summary>
@@ -60,19 +35,10 @@ namespace Twisty.Engine.Structure.Rubiks
 		/// <param name="axis">Axis around which the blocks will be ordered.</param>
 		/// <param name="isClockwise">Boolean indicating if whether the rotation direction is clockwise or not.</param>
 		/// <returns>The ordered collection of blocks.</returns>
-		private IList<IPositionnedByCartesian3dVector> GetOrderedBlocks(RotationAxis axis, bool isClockwise)
+		protected override IList<Block> GetBlocks(RotationAxis axis)
 		{
 			// Select all blocks that will be included in the rotation.
-			var blocks = base.GetBlocksForFace(axis.Vector).OfType<IPositionnedByCartesian3dVector>().ToList();
-			if (blocks.Count == 0)
-				return blocks;
-
-			Plane p = new Plane(axis.Vector, blocks[0].Position);
-			blocks.Sort(new CircularVectorComparer(p));
-			if (isClockwise)
-				blocks.Reverse();
-
-			return blocks;
+			return base.GetBlocksForFace(axis.Vector).ToList();
 		}
 
 		/// <summary>

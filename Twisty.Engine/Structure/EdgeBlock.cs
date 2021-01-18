@@ -20,7 +20,7 @@ namespace Twisty.Engine.Structure
 		public EdgeBlock(Cartesian3dCoordinate initialPosition, BlockFace face1, BlockFace face2)
 			: base(new BlockFace[] { face1, face2 })
 		{
-			base.Position = initialPosition;
+			base.InitialPosition = initialPosition;
 
 			// Each Edge block is unique in the cube and be identified by his face.
 			Id = $"E_{face1.Id}{face2.Id}";
