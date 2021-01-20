@@ -104,6 +104,42 @@ namespace Twisty.Engine.Tests.Geometry
 		}
 
 		[Theory]
+		// Exceptions for origin point
+		[InlineData("(0 0 0 1 0 0)", "(1 0 0)", true)]
+		[InlineData("(0 0 0 1 0 0)", "(2 0 0)", true)]
+		[InlineData("(0 0 0 1 0 0)", "(1 1 1)", false)]
+		// Exceptions for divide per 0.0 (2 value to 0)
+		[InlineData("(1 1 1 1 0 0)", "(1 1 1)", true)]
+		[InlineData("(1 1 1 1 0 0)", "(2 1 1)", true)]
+		[InlineData("(1 1 1 1 0 0)", "(2 1 0)", false)]
+		[InlineData("(1 1 1 0 1 0)", "(1 1 1)", true)]
+		[InlineData("(1 1 1 0 1 0)", "(1 2 1)", true)]
+		[InlineData("(1 1 1 0 1 0)", "(1 2 0)", false)]
+		[InlineData("(1 1 1 0 0 1)", "(1 1 1)", true)]
+		[InlineData("(1 1 1 0 0 1)", "(1 1 2.5)", true)]
+		[InlineData("(1 1 1 0 0 1)", "(1 1.1 2.5)", false)]
+		// Exceptions for divide per 0.0 (1 value to 0)
+		[InlineData("(4 4 4 1 1 0)", "(4 4 4)", true)]
+		[InlineData("(4 4 4 1 1 0)", "(4.5 4.5 4)", true)]
+		[InlineData("(4 4 4 1 1 0)", "(4 4.5 4)", false)]
+		// Case without division per 0.0
+		[InlineData("(1 1 1 1 1 1)", "(1 1 1)", true)]
+		[InlineData("(1 1 1 1 1 1)", "(2 2 2)", true)]
+		[InlineData("(1 1 1 1 1 1)", "(1 2 2)", false)]
+		public void ParametricLine_Contains_BeExpected(string lineCoordinates, string pointCoordinates, bool expected)
+		{
+			// 1. Prepare
+			Cartesian3dCoordinate p = new Cartesian3dCoordinate(pointCoordinates);
+			ParametricLine l =  new ParametricLine(lineCoordinates);
+
+			// 2. Execute
+			bool b = l.Contains(p);
+
+			// 3. Verify
+			Assert.Equal(expected, b);
+		}
+
+		[Theory]
 		// Same lines
 		[InlineData("(1 0 0 1 1 1)", "(-1 0 0 1 1 1)", true)]
 		[InlineData("(1 0 0 1 1 1)", "(-1 0 0 -1 -1 -1)", true)]
@@ -142,6 +178,23 @@ namespace Twisty.Engine.Tests.Geometry
 
 			// 3. Verify
 			Assert.Equal(expected, r, GeometryAssert.PRECISION_DOUBLE);
+		}
+
+		[Theory]
+		[InlineData("(0 0 0 1 0 0)", "(0 0 1)", "(0 0 0 0 0 1)")]
+		[InlineData("(1 1 1 1 0 0)", "(0 0 1)", "(1 1 1 0 0 1)")]
+		public void ParametricLine_GetPerpendicular_BeExpected(string lineCoordinates, string pointCoordinate, string expectedCoordinate)
+		{
+			// 1. Prepare
+			Cartesian3dCoordinate p = new Cartesian3dCoordinate(pointCoordinate);
+			ParametricLine line = new ParametricLine(lineCoordinates);
+			ParametricLine e = new ParametricLine(expectedCoordinate);
+
+			// 2. Execute
+			var r = line.GetPerpendicular(p);
+
+			// 3. Verify
+			GeometryAssert.SameLine(e, r);
 		}
 
 		#endregion Test Methods

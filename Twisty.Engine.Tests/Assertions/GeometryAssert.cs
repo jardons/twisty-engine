@@ -62,5 +62,16 @@ namespace Twisty.Engine.Tests.Assertions
 		/// <param name="angle">The value to be compared against.</param>
 		public static void SameVector(Cartesian3dCoordinate expected, Cartesian3dCoordinate value)
 			=> SamePoint(expected.Normalize(), value.Normalize());
+
+		/// <summary>
+		/// Verifies that two ParametricLine values are representing the same line.
+		/// </summary>
+		/// <param name="expectedAngle">The expected value.</param>
+		/// <param name="line">The line to be compared against.</param>
+		public static void SameLine(ParametricLine expected, ParametricLine line)
+		{
+			SameVector(expected.Vector, line.Vector);
+			Assert.True(expected.Contains(line.Point));
+		}
 	}
 }

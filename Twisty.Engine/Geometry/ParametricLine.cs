@@ -137,6 +137,68 @@ namespace Twisty.Engine.Geometry
 			=> this.Vector.IsSameVector(l.Vector) || this.Vector.IsSameVector(l.Vector.Reverse);
 
 		/// <summary>
+		/// Gets a boolean indicating if whether the provided point belong to the line or note.
+		/// </summary>
+		/// <param name="point">Coordiantes of the point for which we will test if he belong to the line or not.</param>
+		/// <returns>A boolean indicating if whether the provided point belong to the line or note.</returns>
+		public bool Contains(Cartesian3dCoordinate point)
+		{
+			// A point belong to the line when t has the same value for both of the 3 formula :
+			// { x = x0 + at
+			// { y = y0 + bt
+			// { z = z0 + ct
+
+			// This can lead to divide per zero, we will start per filtering those cases.
+			// A value of 0.0 for A, B or C would indicate that X, Y or Z is a constant for the line.
+			// We can then exclude all points with variation on thoses axes.
+			double tRef = double.NaN;
+			if (this.A.IsZero())
+			{
+				if (!this.Point.X.IsEqualTo(point.X))
+					return false;
+			}
+			else
+			{
+				// X axis is kept as a comparison reference.
+				tRef = (point.X - this.X) / this.A;
+			}
+
+			if (this.B.IsZero())
+			{
+				if (!this.Point.Y.IsEqualTo(point.Y))
+					return false;
+			}
+			else
+			{
+				double tY = (point.Y - this.Y) / this.B;
+
+				// Compare value of t for Z to previous calculated one.
+				// If no comparison base is available yet, we keep the t value of Y to compare it to the Z one.
+				if (double.IsNaN(tRef))
+					tRef = tY;
+				else if (!tRef.IsEqualTo(tY))
+					return false;
+			}
+
+			if (this.C.IsZero())
+			{
+				if (!this.Point.Z.IsEqualTo(point.Z))
+					return false;
+			}
+			else if (!double.IsNaN(tRef))
+			{
+				// Compare value of t for Z to previous calculated one.
+				// If no comparison base is available yet, we are parallel to Z axis and all Z value are correct.
+				double tZ = (point.Z - this.Z) / this.C;
+				if (!tZ.IsEqualTo(tZ))
+					return false;
+			}
+
+			// All exclusion have been checked, the point is contained.
+			return true;
+		}
+
+		/// <summary>
 		/// Gets the shortest distance between a point and the line.
 		/// </summary>
 		/// <param name="point">Coordinates of the point that will be compared to the Line.</param>
@@ -160,6 +222,22 @@ namespace Twisty.Engine.Geometry
 		/// </remarks>
 		public double GetDistanceTo(Cartesian3dCoordinate point)
 			=> (this.Point - point).CrossProduct(this.Vector).Magnitude / this.Vector.Magnitude;
+
+		/// <summary>
+		/// Gets a ParametricLine perpendicular to the ParametricLine and passing through a provided point.
+		/// </summary>
+		/// <param name="point">Point through which the perpendicular line to the ParametricLine should go.</param>
+		/// <returns>A new line going through the provided point and the current ParametricLine.</returns>
+		public ParametricLine GetPerpendicular(Cartesian3dCoordinate point)
+		{
+			// Calculate vector between Line reference point and provided point.
+			Cartesian3dCoordinate v = point - this.Point;
+
+			// By substracting the projection on the original Vector, we got the perpendicular direction.
+			Cartesian3dCoordinate direction = v - v.ProjectOn(this.Vector);
+
+			return new ParametricLine(point, direction);
+		}
 
 		/// <summary>
 		/// Create a ParametricLine between 2 lines.
