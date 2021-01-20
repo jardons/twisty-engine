@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Twisty.Engine.Geometry
@@ -44,6 +45,8 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		public static readonly Cartesian3dCoordinate ZAxis = new Cartesian3dCoordinate(0.0, 0.0, 1.0);
 
+		#region ctor(s)
+
 		/// <summary>
 		/// Create a new Cartesian3dCoordinate from a coordinates string on the format "(X Y Z)".
 		/// </summary>
@@ -78,6 +81,8 @@ namespace Twisty.Engine.Geometry
 			this.Y = y;
 			this.Z = z;
 		}
+
+		#endregion ctor(s)
 
 		#region Public Properties
 
@@ -324,6 +329,14 @@ namespace Twisty.Engine.Geometry
 				(this.X * matrix[1, 0]) + (this.Y * matrix[1, 1]) + (this.Z * matrix[1, 2]),
 				(this.X * matrix[2, 0]) + (this.Y * matrix[2, 1]) + (this.Z * matrix[2, 2]));
 		}
+
+		/// <summary>
+		/// Gets the projection of the current verctor on another provided vector.
+		/// </summary>
+		/// <param name="vector">Vector providing the direction on which the original vector will be projected.</param>
+		/// <returnsThe point coordinate resulting of the projection of this vector on the provided vector.</returns>
+		public Cartesian3dCoordinate ProjectOn(Cartesian3dCoordinate vector)
+			=> this.DotProduct(vector) / vector.DotProduct(vector) * vector;
 
 		/// <summary>
 		/// Gets the normalized coordinate of this vector.

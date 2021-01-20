@@ -417,6 +417,25 @@ namespace Twisty.Engine.Tests.Geometry
 			Assert.False(r2);
 		}
 
+		[Theory]
+		[InlineData("(1 0 0)", "(1 0 0)", "(1 0 0)")]
+		[InlineData("(1 0 0)", "(-1 0 0)", "(1 0 0)")]
+		[InlineData("(1 0 0)", "(0 1 0)", "(0 0 0)")]
+		[InlineData("(1 1 1)", "(0 1 0)", "(0 1 0)")]
+		public void Cartesian3dCoordinate_ProjectOn_Expected(string projectedCc, string targetCc, string expected)
+		{
+			// 1. Prepare
+			Cartesian3dCoordinate projected = new Cartesian3dCoordinate(projectedCc);
+			Cartesian3dCoordinate target = new Cartesian3dCoordinate(targetCc);
+			Cartesian3dCoordinate e = new Cartesian3dCoordinate(expected);
+
+			// 2. Execute
+			var r = projected.ProjectOn(target);
+
+			// 3. Verify
+			GeometryAssert.SamePoint(e, r);
+		}
+
 		#endregion Test Methods
 	}
 }
