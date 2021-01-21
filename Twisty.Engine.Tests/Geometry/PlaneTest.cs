@@ -138,6 +138,23 @@ namespace Twisty.Engine.Tests.Geometry
 		}
 
 		[Theory]
+		[InlineData("(1 0 0 0)", "(-1 0 0)", true)]
+		[InlineData("(1 0 0 0)", "(0 0 0)", false)]
+		[InlineData("(1 0 0 0)", "(1 0 0)", false)]
+		public void Plane_CheckPointIsBellowPlane_Expected(string planeCoordinate, string pointCoordinate, bool expected)
+		{
+			// 1. Prepare
+			Plane p = new Plane(planeCoordinate);
+			Cartesian3dCoordinate point = new Cartesian3dCoordinate(pointCoordinate);
+
+			// 2. Execute
+			bool r = p.IsBellowPlane(point);
+
+			// 3. Verify
+			Assert.Equal(expected, r);
+		}
+
+		[Theory]
 		[InlineData("(2 3 4 -20)", "(-2 0 0 6 5 6)", "(0.823529411764706 2.35294117647059 2.82352941176471)")]
 		[InlineData("(0 0 1 -1)", "(-0.5 -0.5 0.71 0 0 1)", "(-0.5 -0.5 1)")]
 		public void Plane_GetIntersectionFromLine_Expected(string planeCoordinate, string lineCoordinate, string expectedCoordinate)
