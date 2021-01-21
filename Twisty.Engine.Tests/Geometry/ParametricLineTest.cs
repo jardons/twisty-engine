@@ -182,7 +182,11 @@ namespace Twisty.Engine.Tests.Geometry
 
 		[Theory]
 		[InlineData("(0 0 0 1 0 0)", "(0 0 1)", "(0 0 0 0 0 1)")]
-		[InlineData("(1 1 1 1 0 0)", "(0 0 1)", "(1 1 1 0 0 1)")]
+		[InlineData("(1 0 0 1 0 0)", "(0 0 1)", "(0 0 0 0 0 1)")]
+		[InlineData("(1 0 0 1 0 0)", "(0 0 -1)", "(0 0 0 0 0 -1)")]
+		[InlineData("(0 0 0 1 1 0)", "(0 2 0)", "(0 2 0 -1 1 0)")]
+		[InlineData("(0 0 0 1 1 1)", "(0 2 0)", "(0 2 0 -0.66666666666 1.33333333333 -0.66666666666)")]
+		[InlineData("(1 1 1 1 0 0)", "(0 0 1)", "(0 0 1 0 -1 0)")]
 		public void ParametricLine_GetPerpendicular_BeExpected(string lineCoordinates, string pointCoordinate, string expectedCoordinate)
 		{
 			// 1. Prepare
