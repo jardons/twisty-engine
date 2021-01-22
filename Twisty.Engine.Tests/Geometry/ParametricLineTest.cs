@@ -126,6 +126,7 @@ namespace Twisty.Engine.Tests.Geometry
 		[InlineData("(1 1 1 1 1 1)", "(1 1 1)", true)]
 		[InlineData("(1 1 1 1 1 1)", "(2 2 2)", true)]
 		[InlineData("(1 1 1 1 1 1)", "(1 2 2)", false)]
+		[InlineData("(17 21 39 1.2 8 0.5)", "(13.85 0 1)", false)]
 		public void ParametricLine_Contains_BeExpected(string lineCoordinates, string pointCoordinates, bool expected)
 		{
 			// 1. Prepare
@@ -199,6 +200,55 @@ namespace Twisty.Engine.Tests.Geometry
 
 			// 3. Verify
 			GeometryAssert.SameLine(e, r);
+		}
+
+		[Theory]
+		[InlineData("(0 0 0 1 0 0)", "(0 0 0 0 1 0)", "(0 0 0)")]
+		[InlineData("(1 1 1 1 0 0)", "(1 1 1 0 1 0)", "(1 1 1)")]
+		[InlineData("(0 1 1 1 0 0)", "(1 0 1 0 1 0)", "(1 1 1)")]
+		[InlineData("(1 1 0 0 0 1)", "(1 0 1 0 1 0)", "(1 1 1)")]
+		[InlineData("(0 1 1 1 0 0)", "(1 1 0 0 0 1)", "(1 1 1)")]
+		[InlineData("(0 0 0 1 0 0)", "(0 0 0 0 -1 0)", "(0 0 0)")]
+		[InlineData("(1 1 1 1 0 0)", "(1 1 1 0 -1 0)", "(1 1 1)")]
+		[InlineData("(0 1 1 1 0 0)", "(1 0 1 0 -1 0)", "(1 1 1)")]
+		[InlineData("(1 1 0 0 0 1)", "(1 0 1 0 -1 0)", "(1 1 1)")]
+		[InlineData("(0 1 1 1 0 0)", "(1 1 0 0 0 -1)", "(1 1 1)")]
+		[InlineData("(0 0 0 1 4 5)", "(0 0 0 3 1 8)", "(0 0 0)")]
+		[InlineData("(3 4 5 1 4 5)", "(3 4 5 3 1 8)", "(3 4 5)")]
+		public void ParametricLine_GetIntersection_BeExpected(string line1Coordinates, string line2Coordinates, string expectedCoordinate)
+		{
+			// 1. Prepare
+			ParametricLine l1 = new ParametricLine(line1Coordinates);
+			ParametricLine l2 = new ParametricLine(line2Coordinates);
+			Cartesian3dCoordinate e = new Cartesian3dCoordinate(expectedCoordinate);
+
+			// 2. Execute
+			var r1 = l1.GetIntersection(l2);
+			var r2 = l2.GetIntersection(l1);
+
+			// 3. Verify
+			GeometryAssert.SamePoint(e, r1);
+			GeometryAssert.SamePoint(e, r2);
+		}
+
+		[Theory]
+		[InlineData("(0 0 0 1 0 0)", "(0 1 0 1 0 0)")]
+		[InlineData("(0 0 0 1 0 0)", "(0 0 1 1 0 0)")]
+		[InlineData("(17 21 39 1.2 8 0.5)", "(5 7 8 1.2 8 0.5)")]
+		[InlineData("(17 21 39 1.2 8 0.5)", "(0 0 1 1 0 0)")]
+		public void ParametricLine_GetIntersectionWhenImpossible_ThrowGeometricException(string line1Coordinates, string line2Coordinates)
+		{
+			// 1. Prepare
+			ParametricLine l1 = new ParametricLine(line1Coordinates);
+			ParametricLine l2 = new ParametricLine(line2Coordinates);
+
+			// 2. Execute
+			void a1() => l1.GetIntersection(l2);
+			void a2() => l2.GetIntersection(l1);
+
+			// 3. Verify
+			Assert.Throws<GeometricException>(a1);
+			Assert.Throws<GeometricException>(a2);
 		}
 
 		#endregion Test Methods

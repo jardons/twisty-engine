@@ -190,7 +190,7 @@ namespace Twisty.Engine.Geometry
 				// Compare value of t for Z to previous calculated one.
 				// If no comparison base is available yet, we are parallel to Z axis and all Z value are correct.
 				double tZ = (point.Z - this.Z) / this.C;
-				if (!tZ.IsEqualTo(tZ))
+				if (!tRef.IsEqualTo(tZ))
 					return false;
 			}
 
@@ -224,6 +224,65 @@ namespace Twisty.Engine.Geometry
 			=> (this.Point - point).CrossProduct(this.Vector).Magnitude / this.Vector.Magnitude;
 
 		/// <summary>
+		/// Gets the intersection point between this line and the provided one.
+		/// </summary>
+		/// <param name="line">Parametric line taht should intersect with the current one.</param>
+		/// <returns>Coordinate of the intersection point between both lines.</returns>
+		public Cartesian3dCoordinate GetIntersection(ParametricLine line)
+		{
+			// We are calculating the R vector resulting from both line equations :
+			// R = P1 + V1t1 and R = P2 + V2t2
+			// P1 + V1t1 = P2 + V2t2
+			// t1 = (P2 + V2t2 - P1) / V1
+
+			// By isolating 2 coordinate, we can evaluate the following formula :
+			// t1 = (X2 + A2t2 - X1) / A1 = (Y2 + B2t2 - Y1) / B1
+			// t1 = (X2 + A2t2 - X1) * B1 = (Y2 + B2t2 - Y1) * A1
+			// t1 = X2B1 + A2t2B1 - X1B1  = Y2A1 + B2t2A1 - Y1A1
+
+			// Giving us the formula for t2 :
+			// A2t2B1 - B2t2A1 = Y2A1 - Y1A1 - X2B1 + X1B1
+			// t2(A2B1 - B2A1) = (Y2-Y1)A1 + (X1-X2)B1
+			// t2 = ((Y2-Y1)A1 + (X1-X2)B1) / (A2B1 - B2A1)
+			double divisor = line.A * this.B - line.B * this.A;
+			if (!divisor.IsZero())
+			{
+				double t = ((line.Y - this.Y) * this.A + (this.X - line.X) * this.B) / divisor;
+				var p = line.GetValueForT(t);
+
+				// If we find a point not included in current line, both line don't intersect.
+				if (this.Contains(p))
+					return p;
+			}
+
+			// If previous formula cause a division by zero, replicate the same logic on another pair of coordinate of the vector.
+			divisor = line.A * this.C - line.C * this.A;
+			if (!divisor.IsZero())
+			{
+				double t = ((line.Z - this.Z) * this.A + (this.X - line.X) * this.C) / divisor;
+				var p = line.GetValueForT(t);
+
+				// If we find a point not included in current line, both line don't intersect.
+				if (this.Contains(p))
+					return p;
+			}
+
+			// Last possible combination
+			divisor = line.B * this.C - line.C * this.B;
+			if (!divisor.IsZero())
+			{
+				double t = ((line.Z - this.Z) * this.B + (this.Y - line.Y) * this.C) / divisor;
+				var p = line.GetValueForT(t);
+
+				// If we find a point not included in current line, both line don't intersect.
+				if (this.Contains(p))
+					return p;
+			}
+
+			throw new GeometricException("Their is not intersection between the provided ParametricLine.");
+		}
+
+		/// <summary>
 		/// Gets a ParametricLine perpendicular to the ParametricLine and passing through a provided point.
 		/// </summary>
 		/// <param name="point">Point through which the perpendicular line to the ParametricLine should go.</param>
@@ -251,5 +310,16 @@ namespace Twisty.Engine.Geometry
 		}
 
 		#endregion Public methods
+
+		#region Private Methods
+
+		private Cartesian3dCoordinate GetValueForT(double t)
+			=> new Cartesian3dCoordinate(
+				this.X + this.A * t,
+				this.Y + this.B * t,
+				this.Z + this.C * t
+			);
+
+		#endregion Private Methods
 	}
 }
