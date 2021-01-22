@@ -58,5 +58,16 @@ namespace Twisty.Engine.Structure
 		public IEnumerable<LayerSeparator> Layers { get; }
 
 		#endregion Public Properties
+
+		#region Public Methods
+
+		/// <summary>
+		/// Gets the Upper Layer of the axis, providing the limitation to the closest layer from the face.
+		/// </summary>
+		/// <returns>The Upper Layer of the axis, providing the limitation to the closest layer from the face.</returns>
+		public LayerSeparator GetUpperLayer()
+			=> Layers.OrderByDescending(l => Math.Abs(l.Plane.D)).First();
+
+		#endregion Public Methods
 	}
 }
