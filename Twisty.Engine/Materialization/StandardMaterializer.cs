@@ -49,7 +49,9 @@ namespace Twisty.Engine.Materialization
 				var currentLine = planes[i].Plane.GetIntersection(face.Plane);
 				var currentPoint = planes[i + 1].Plane.GetIntersection(currentLine);
 
-				points.Add(currentPoint);
+				// Ignore when multiple cut provide the same point.
+				if (!points.Last().IsSamePoint(currentPoint))
+					points.Add(currentPoint);
 			}
 
 			// We will sort the points to ensure we are always providing them in the same rotation direction.
@@ -70,9 +72,7 @@ namespace Twisty.Engine.Materialization
 
 			// Filter Planes to only keep the closest when using the same normal.
 			List<IPlanar> result = FilterToClosestPlanar(planar, internalPoint);
-
-			// Exclude non parallel plane with parralel intersections.
-			//result = FilterToClosestIntersection(result, face, internalPoint);
+			//List<IPlanar> result = FilterToClosestIntersection(planar, internalPoint, face.Plane);
 
 			// In order to keep only the closest intersection, we need to sort the planes.
 			var comparer = new CircularVectorComparer(face.Plane, internalPoint);
@@ -81,43 +81,58 @@ namespace Twisty.Engine.Materialization
 			return result;
 		}
 
-		private List<IPlanar> FilterToClosestPlanar(IEnumerable<IPlanar> planars, Cartesian3dCoordinate center)
+		private List<IPlanar> FilterToClosestPlanar(IEnumerable<IPlanar> planars, Cartesian3dCoordinate internalPoint)
 		{
 			// Keep cuts from the closest to the fartest.
 			var tuples = planars.Select(o => new Tuple<double, IPlanar>(
-				o.Plane.GetDistanceTo(center),
+				o.Plane.GetDistanceTo(internalPoint),
 				o));
 
 			List<IPlanar> result = new List<IPlanar>();
 			foreach (IPlanar p in tuples.OrderBy(t => t.Item1).Select(t => t.Item2))
 			{
-				if (!result.Any(o => o.Plane.Normal.IsSameVector(p.Plane.Normal)))
-					result.Add(p);
+				bool isAbovePlane = p.Plane.IsAbovePlane(internalPoint);
+
+				// Skip planes when a closer parrallel plane has beend selected.
+				if (result.Any(o =>
+						(o.Plane.Normal.IsSameVector(p.Plane.Normal)
+							&& o.Plane.IsAbovePlane(internalPoint) == isAbovePlane)
+						|| (o.Plane.Normal.Reverse.IsSameVector(p.Plane.Normal)
+							&& o.Plane.IsBelowPlane(internalPoint) == isAbovePlane)))
+					continue;
+
+				result.Add(p);
 			}
 
 			return result;
 		}
-
-		private List<IPlanar> FilterToClosestIntersection(IEnumerable<IPlanar> planars, CoreFace face, Cartesian3dCoordinate center)
+		/*
+		private List<IPlanar> FilterToClosestIntersection(IEnumerable<IPlanar> planars, Cartesian3dCoordinate internalPoint, Plane referencePlane)
 		{
 			// Keep cuts from the closest to the fartest.
-			var tuples = planars
-				.Select(o => new Tuple<ParametricLine, IPlanar>(
-					o.Plane.GetIntersection(face.Plane),
-					o))
-				.Select(t => new Tuple<double, ParametricLine, IPlanar>(
-					t.Item1.GetDistanceTo(center),
-					t.Item1,
-					t.Item2));
+			var tuples = planars.Select(o => new Tuple<double, IPlanar, ParametricLine>(
+				o.Plane.GetDistanceTo(internalPoint),
+				o,
+				o.Plane.GetIntersection(referencePlane)));
 
-			List<Tuple<double, ParametricLine, IPlanar>> result = new List<Tuple<double, ParametricLine, IPlanar>>();
+			var result = new List<Tuple<double, IPlanar, ParametricLine>>();
 			foreach (var t in tuples.OrderBy(t => t.Item1))
 			{
-				if (!result.Any(o => o.Item2.IsParallelTo(t.Item2)))
-					result.Add(t);
+				var p = t.Item2;
+				bool isAbovePlane = p.Plane.IsAbovePlane(internalPoint);
+
+				// Skip planes when a closer parrallel plane has beend selected.
+				if (result.Any(o =>
+						(t.Item3.IsParallelTo(o.Item3)
+							&& o.Item2.Plane.IsAbovePlane(internalPoint) == isAbovePlane)
+						|| (t.Item3.IsParallelTo(o.Item3)
+							&& o.Item2.Plane.IsBelowPlane(internalPoint) == isAbovePlane)))
+					continue;
+
+				result.Add(t);
 			}
 
-			return result.Select(t => t.Item3).ToList();
-		}
+			return result.Select(t => t.Item2).ToList();
+		}*/
 	}
 }

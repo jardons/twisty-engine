@@ -28,7 +28,7 @@ namespace Twisty.Bash.Controllers
 		private void GetFace(string faceId)
 		{
 			CoreFace f = Core.GetFace(faceId);
-			CartesianCoordinatesConverter c = new CartesianCoordinatesConverter(f.Plane);
+			CartesianCoordinatesFlattener c = new CartesianCoordinatesFlattener(f.Plane);
 
 			var blocks = Core.GetBlocksForFace(f.Id)
 				.OfType<IPositionnedByCartesian3dVector>()

@@ -7,7 +7,7 @@ namespace Twisty.Engine.Operations.Skewb
 	/// <summary>
 	/// Class designed to parse a list of operations to perform on a skewb cube.
 	/// </summary>
-	public class SkewbOperationsParser : IOperationsParser<SkewbCube>
+	public class SkewbOperationsParser : IOperationsParser
 	{
 		/// <summary>
 		/// Parse command and generate an Operation list based on its content.
@@ -15,12 +15,12 @@ namespace Twisty.Engine.Operations.Skewb
 		/// <param name="command">Command string containing a list of operations to execute on the cube.</param>
 		/// <returns>The collection containing the operations to execute based on the command content.</returns>
 		/// <exception cref="Twisty.Engine.Operations.OperationParsingException">The provided command contains invalid characters that cannot be parsed.</exception>
-		public IEnumerable<IOperation<SkewbCube>> Parse(string command)
+		public IEnumerable<IOperation> Parse(string command)
 		{
 			if (string.IsNullOrEmpty(command))
-				return Array.Empty<IOperation<SkewbCube>>();
+				return Array.Empty<IOperation>();
 
-			List<IOperation<SkewbCube>> operations = new List<IOperation<SkewbCube>>();
+			List<IOperation> operations = new List<IOperation>();
 			for (int i = 0; i < command.Length; ++i)
 			{
 				var c = command[i];
@@ -32,14 +32,14 @@ namespace Twisty.Engine.Operations.Skewb
 					throw new OperationParsingException(command, i);
 				
 				// Counter clockwise operation are followed by a "'" char.
-				bool isClockWise = true;
+				bool isClockwise = true;
 				if (i + 1 < command.Length && command[i + 1] == '\'')
 				{
 					++i;
-					isClockWise = false;
+					isClockwise = false;
 				}
 
-				operations.Add(new SkewbOperation(axis, isClockWise));
+				operations.Add(new AxisOperation(axis, isClockwise ? Math.PI * (2.0 / 3.0) : -Math.PI * (2.0 / 3.0)));
 			}
 
 			return operations;

@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Twisty.Engine.Geometry;
 using Twisty.Engine.Materialization;
+using Twisty.Engine.Operations.Rubiks;
 using Twisty.Engine.Structure;
 using Twisty.Runner.Wpf;
 
@@ -72,8 +73,17 @@ namespace Twisty.Runner.Views
 
 		private void OnInputKeyUp(object sender, KeyEventArgs e)
 		{
+			// Enter key trigger execution
 			if (e.Key == Key.Enter)
+			{
 				ExecuteCommand();
+				return;
+			}
+
+			var parser = new RubikOperationsParser();
+
+			if (parser.TryClean(this.Input.Text, out string command))
+				this.Input.Text = command;
 		}
 
 		private void OnExecute(object sender, RoutedEventArgs e)

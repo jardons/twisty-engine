@@ -30,18 +30,6 @@ namespace Twisty.Engine.Structure.Rubiks
 		#region Private Members
 
 		/// <summary>
-		/// Gets the block ordered in a rotational order arround the provided axis.
-		/// </summary>
-		/// <param name="axis">Axis around which the blocks will be ordered.</param>
-		/// <param name="isClockwise">Boolean indicating if whether the rotation direction is clockwise or not.</param>
-		/// <returns>The ordered collection of blocks.</returns>
-		protected override IList<Block> GetBlocks(RotationAxis axis)
-		{
-			// Select all blocks that will be included in the rotation.
-			return base.GetBlocksForFace(axis.Vector).ToList();
-		}
-
-		/// <summary>
 		/// Generate the axes that will be available for the rotation of the cube.
 		/// </summary>
 		/// <param name="n">Number of layers to use in the Cube.</param>
@@ -76,7 +64,7 @@ namespace Twisty.Engine.Structure.Rubiks
 			double layerSize = 2.0 / n;
 			int n2 = (n / 2) + mod2;
 			for (int i = 1; i < n2; ++i)
-				layers.Add($"L{i}_{id}", layerSize * (Convert.ToDouble(i) - 0.5));
+				layers.Add($"L{i}_{id}", -layerSize * (Convert.ToDouble(i) - 0.5));
 
 			return new RotationAxis(id, direction, layers);
 		}

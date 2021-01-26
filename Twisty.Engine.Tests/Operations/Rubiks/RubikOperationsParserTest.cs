@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Twisty.Engine.Operations;
 using Twisty.Engine.Operations.Rubiks;
+using Twisty.Engine.Tests.Assertions;
 using Xunit;
 
 namespace Twisty.Engine.Tests.Operations.Rubiks
@@ -79,12 +80,12 @@ namespace Twisty.Engine.Tests.Operations.Rubiks
 			RubikOperationsParser p = new RubikOperationsParser();
 
 			// 2. Execute
-			var r1 = p.Parse(command).Cast<RubikOperation>().FirstOrDefault();
-			var r2 = p.Parse(command + "'").Cast<RubikOperation>().FirstOrDefault();
+			var r1 = p.Parse(command).Cast<LayerOperation>().First();
+			var r2 = p.Parse(command + "'").Cast<LayerOperation>().First();
 
 			// 3. Verify
-			Assert.True(r1.IsClockwise);
-			Assert.False(r2.IsClockwise);
+			Assert.Equal(Math.PI / 2.0, r1.Theta, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(-Math.PI / 2.0, r2.Theta, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		[Theory]

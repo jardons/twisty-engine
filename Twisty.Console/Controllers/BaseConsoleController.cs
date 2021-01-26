@@ -18,9 +18,9 @@ namespace Twisty.Bash.Controllers
 		where T : RotationCore
 	{
 		private Dictionary<string, MethodInfo> m_Routes;
-		private IOperationsParser<T> m_Parser;
+		private IOperationsParser m_Parser;
 
-		protected BaseConsoleController(T rotationCore, IOperationsParser<T> parser)
+		protected BaseConsoleController(T rotationCore, IOperationsParser parser)
 		{
 			m_Parser = parser;
 			m_Routes = new Dictionary<string, MethodInfo>();
@@ -85,7 +85,7 @@ namespace Twisty.Bash.Controllers
 				{
 					var operations = m_Parser.Parse(line);
 
-					foreach (IOperation<T> operation in operations)
+					foreach (IOperation operation in operations)
 						operation.ExecuteOn(Core);
 
 					Render();

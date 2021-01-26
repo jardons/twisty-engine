@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Twisty.Engine.Geometry;
 using Twisty.Engine.Operations.Rubiks;
+using Twisty.Engine.Operations.Skewb;
 using Twisty.Engine.Structure;
 using Twisty.Engine.Structure.Rubiks;
 using Twisty.Engine.Structure.Skewb;
@@ -27,7 +28,10 @@ namespace Twisty.Runner
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		//private SkewbCube m_Core;
+		//private SkewbOperationsParser m_Parser;
 		private RubikCube m_Core;
+		private RubikOperationsParser m_Parser;
 		private List<RotationCoreStandardView> m_Views;
 
 		public MainWindow()
@@ -35,7 +39,9 @@ namespace Twisty.Runner
 			InitializeComponent();
 
 			m_Core = new RubikCube(3);
-			//SkewbCube c = new SkewbCube();
+			m_Parser = new RubikOperationsParser();
+			//m_Parser = new SkewbOperationsParser();
+			//m_Core = new SkewbCube();
 
 			m_Views = new List<RotationCoreStandardView>();
 			m_Views.Add(this.CubeView1);
@@ -51,8 +57,7 @@ namespace Twisty.Runner
 
 		private void ConsoleInput_RunAlgorythm(string command)
 		{
-			var p = new RubikOperationsParser();
-			var operations = p.Parse(command);
+			var operations = m_Parser.Parse(command);
 
 			foreach (var o in operations)
 				o.ExecuteOn(m_Core);

@@ -5,6 +5,7 @@ using System.Text;
 using Twisty.Engine.Operations;
 using Twisty.Engine.Operations.Rubiks;
 using Twisty.Engine.Operations.Skewb;
+using Twisty.Engine.Tests.Assertions;
 using Xunit;
 
 namespace Twisty.Engine.Tests.Operations.Rubiks
@@ -58,8 +59,8 @@ namespace Twisty.Engine.Tests.Operations.Rubiks
 			Assert.NotNull(parsedReverse);
 			Assert.Single(parsed);
 			Assert.Single(parsedReverse);
-			Assert.True(parsed.Cast<SkewbOperation>().FirstOrDefault().IsClockwise);
-			Assert.False(parsedReverse.Cast<SkewbOperation>().FirstOrDefault().IsClockwise);
+			GeometryAssert.AngleEqual(Math.PI * 2.0 / 3.0, parsed.Cast<AxisOperation>().First().Theta);
+			GeometryAssert.AngleEqual(-Math.PI * 2.0 / 3.0, parsedReverse.Cast<AxisOperation>().First().Theta);
 		}
 
 		[Theory]

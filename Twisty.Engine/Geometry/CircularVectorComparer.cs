@@ -23,28 +23,31 @@ namespace Twisty.Engine.Geometry
 		IComparer<IPlanar>,
 		IComparer<IPositionnedByCartesian3dVector>
 	{
-		private readonly CartesianCoordinatesConverter m_Converter;
-		private readonly Cartesian2dCoordinate m_Center;
+		private readonly CartesianCoordinatesFlattener m_Converter;
+		private readonly Cartesian2dCoordinate m_Center2d;
+		private readonly Cartesian3dCoordinate m_Center3d;
 
 		/// <summary>
 		/// Create a new CircularVectorComparer using a Plane on which we will projects the points to sort.
 		/// </summary>
-		/// <param name="p">PLane used to project the points prior to sort them.</param>
+		/// <param name="p">Plane used to project the points prior to sort them.</param>
 		public CircularVectorComparer(Plane p)
 		{
-			m_Converter = new CartesianCoordinatesConverter(p);
-			m_Center = Cartesian2dCoordinate.Zero;
+			m_Converter = new CartesianCoordinatesFlattener(p);
+			m_Center2d = Cartesian2dCoordinate.Zero;
+			m_Center3d = Cartesian3dCoordinate.Zero;
 		}
 
 		/// <summary>
 		/// Create a new CircularVectorComparer using a Plane on which we will projects the points to sort around a specific plane point.
 		/// </summary>
-		/// <param name="p">PLane used to project the points prior to sort them.</param>
+		/// <param name="p">Plane used to project the points prior to sort them.</param>
 		/// <param name="center">Rotation center used by the comparer.</param>
 		public CircularVectorComparer(Plane p, Cartesian3dCoordinate center)
 		{
-			m_Converter = new CartesianCoordinatesConverter(p);
-			m_Center = m_Converter.ConvertTo2d(center);
+			m_Converter = new CartesianCoordinatesFlattener(p);
+			m_Center2d = m_Converter.ConvertTo2d(center);
+			m_Center3d = center;
 		}
 
 		#region IComparer<SphericalVector> Members
@@ -87,8 +90,8 @@ namespace Twisty.Engine.Geometry
 				return 0;
 
 			// Realign based on expected rotation center.
-			x = x - m_Center;
-			y = y - m_Center;
+			x -= m_Center2d;
+			y -= m_Center2d;
 
 			// Get Theta value related to the X vector, if one is the starting one we don't need to compare further.
 			double thetaX = x.ThetaToX;
@@ -169,7 +172,9 @@ namespace Twisty.Engine.Geometry
 		/// </returns>
 		public int Compare(IPlanar x, IPlanar y)
 		{
-			return this.Compare(x.Plane.Normal, y.Plane.Normal);
+			return this.Compare(
+				this.m_Converter.GetClosestPoint(x.Plane, this.m_Center3d),
+				this.m_Converter.GetClosestPoint(y.Plane, this.m_Center3d));
 		}
 
 		#endregion IComparer<IPlanar> Members
