@@ -148,12 +148,12 @@ namespace Twisty.Engine.Geometry
 		}
 
 		/// <summary>
-		/// Indicate if a specific point is bellow the plane or not.
+		/// Indicate if a specific point is below the plane or not.
 		/// </summary>
 		/// <param name="point">Point for which position relative to the plane will be checked.</param>
-		/// <returns>A boolean indicating whether the point is bellow the plane or not.</returns>
+		/// <returns>A boolean indicating whether the point is below the plane or not.</returns>
 		/// <remarks>Formula : ax + by + cz + d = 0</remarks>
-		public bool IsBellowPlane(Cartesian3dCoordinate point)
+		public bool IsBelowPlane(Cartesian3dCoordinate point)
 		{
 			double v = GetSumOfAbcProduct(point) + this.D;
 			return !v.IsZero() && v < 0.0;

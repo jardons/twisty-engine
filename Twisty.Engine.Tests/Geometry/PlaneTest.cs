@@ -141,14 +141,14 @@ namespace Twisty.Engine.Tests.Geometry
 		[InlineData("(1 0 0 0)", "(-1 0 0)", true)]
 		[InlineData("(1 0 0 0)", "(0 0 0)", false)]
 		[InlineData("(1 0 0 0)", "(1 0 0)", false)]
-		public void Plane_CheckPointIsBellowPlane_Expected(string planeCoordinate, string pointCoordinate, bool expected)
+		public void Plane_CheckPointIsBelowPlane_Expected(string planeCoordinate, string pointCoordinate, bool expected)
 		{
 			// 1. Prepare
 			Plane p = new Plane(planeCoordinate);
 			Cartesian3dCoordinate point = new Cartesian3dCoordinate(pointCoordinate);
 
 			// 2. Execute
-			bool r = p.IsBellowPlane(point);
+			bool r = p.IsBelowPlane(point);
 
 			// 3. Verify
 			Assert.Equal(expected, r);
