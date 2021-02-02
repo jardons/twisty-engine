@@ -301,6 +301,25 @@ namespace Twisty.Engine.Tests.Geometry
 			Assert.Equal(expectedVector.Z, vector.Z, GeometryAssert.PRECISION_DOUBLE);
 		}
 
+		[Theory]
+		[InlineData("(1 0 0 0)", "(1 1 0)", "(0 1 0)")]
+		[InlineData("(1 0 0 0)", "(1 1 1)", "(0 1 1)")]
+		[InlineData("(1 0 0 -10)", "(1 1 0)", "(0 1 0)")]
+		public void Plane_GetVectorProjection_Expected(string planeCoordinate, string vectorCoordinates, string expectedCoordinate)
+		{
+			// 1. Prepare
+			Plane p = new Plane(planeCoordinate);
+			Cartesian3dCoordinate v = new Cartesian3dCoordinate(vectorCoordinates);
+			Cartesian3dCoordinate expected = new Cartesian3dCoordinate(expectedCoordinate);
+
+			// 2. Execute
+			var r = p.GetVectorProjection(v);
+
+			// 3. Verify
+			GeometryAssert.SameVector(expected, r);
+		}
+
+		
 		#endregion Test Methods
 	}
 }
