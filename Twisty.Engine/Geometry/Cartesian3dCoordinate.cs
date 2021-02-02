@@ -372,6 +372,14 @@ namespace Twisty.Engine.Geometry
 		}
 
 		/// <summary>
+		/// Gets the distance between this point and another provided one.
+		/// </summary>
+		/// <param name="p">Other point to which the distance will be calculated.</param>
+		/// <returns>Distance between this point and another provided one.</returns>
+		public double GetDistanceTo(Cartesian3dCoordinate p)
+			=> Math.Pow(Math.Pow(this.X - p.X, 2.0) + Math.Pow(this.Y - p.Y, 2.0) + Math.Pow(this.Z - p.Z, 2.0), 0.5);
+
+		/// <summary>
 		/// Gets the dot product between this vector in a 1 X 3 format and a second one in a 3 X 1 format.
 		/// </summary>
 		/// <param name="c">Vector that will be used as a 3 X 1 matrix.</param>

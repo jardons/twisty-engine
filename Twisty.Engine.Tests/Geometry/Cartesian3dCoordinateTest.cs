@@ -436,6 +436,30 @@ namespace Twisty.Engine.Tests.Geometry
 			GeometryAssert.SamePoint(e, r);
 		}
 
+		[Theory]
+		[InlineData("(0 0 0)", "(1 0 0)", 1.0)]
+		[InlineData("(0 0 0)", "(2 0 0)", 2.0)]
+		[InlineData("(0 0 0)", "(1 1 0)", 1.4142135623730951)]
+		[InlineData("(1 0 0)", "(1 0 0)", 0.0)]
+		[InlineData("(1 0 0)", "(-1 0 0)", 2.0)]
+		[InlineData("(1 0 0)", "(0 1 0)", 1.4142135623730951)]
+		[InlineData("(1 1 1)", "(0 1 0)", 1.4142135623730951)]
+		[InlineData("(7 4 3)", "(17 6 2)", 10.246950765959598)]
+		public void Cartesian3dCoordinate_GetDistanceTo_Expected(string p1Cc, string p2Cc, double expected)
+		{
+			// 1. Prepare
+			Cartesian3dCoordinate p1 = new Cartesian3dCoordinate(p1Cc);
+			Cartesian3dCoordinate p2 = new Cartesian3dCoordinate(p2Cc);
+
+			// 2. Execute
+			var r1 = p1.GetDistanceTo(p2);
+			var r2 = p2.GetDistanceTo(p1);
+
+			// 3. Verify
+			Assert.Equal(expected, r1, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expected, r2, GeometryAssert.PRECISION_DOUBLE);
+		}
+
 		#endregion Test Methods
 	}
 }
