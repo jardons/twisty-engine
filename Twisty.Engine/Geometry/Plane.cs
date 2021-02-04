@@ -128,12 +128,21 @@ namespace Twisty.Engine.Geometry
 		}
 
 		/// <summary>
-		/// Indicate if a specific point is on the plane or not.
+		/// Indicate if a specific point belong to the plane or not.
 		/// </summary>
 		/// <param name="point">Point for which appartenance to the plane will be checked.</param>
-		/// <returns>A boolean indicating whether the point is ont the plane or not.</returns>
+		/// <returns>A boolean indicating whether the point belong to the plane or not.</returns>
 		/// <remarks>Formula : ax + by + cz + d = 0</remarks>
-		public bool IsOnPlane(Cartesian3dCoordinate point) => (GetSumOfAbcProduct(point) + this.D).IsZero();
+		public bool IsOnPlane(Cartesian3dCoordinate point)
+			=> (GetSumOfAbcProduct(point) + this.D).IsZero();
+
+		/// <summary>
+		/// Indicate if a specific line belong to the plane or not.
+		/// </summary>
+		/// <param name="line">Line for which appartenance to the plane will be checked.</param>
+		/// <returns>A boolean indicating whether the line belong to the plane or not.</returns>
+		public bool IsOnPlane(ParametricLine line)
+			=> IsOnPlane(line.Point) && IsOnPlane(line.Point + line.Vector);
 
 		/// <summary>
 		/// Indicate if a specific point is above the plane or not.
