@@ -1,4 +1,5 @@
-﻿using Twisty.Engine.Geometry;
+﻿using Moq;
+using Twisty.Engine.Geometry;
 using Xunit;
 
 namespace Twisty.Engine.Tests.Geometry
@@ -121,9 +122,70 @@ namespace Twisty.Engine.Tests.Geometry
 			Assert.Equal(-expected, reverse);
 		}
 
+		[Theory]
+		// Compare equality
+		[InlineData("(0 0 -1 -1)", "(0 1 0 -1)", "(0 1 0 -1)", 0)]
+		// Compare front to 3 other sides of square.
+		[InlineData("(0 0 -1 -1)", "(0 1 0 -1)", "(1 0 0 -1)", -1)]
+		[InlineData("(0 0 -1 -1)", "(0 1 0 -1)", "(0 -1 0 -1)", -1)]
+		[InlineData("(0 0 -1 -1)", "(0 1 0 -1)", "(-1 0 0 -1)", -1)]
+		// Compare front to 4 diagonals.
+		[InlineData("(0 0 -1 -1)", "(0 1 0 -1)", "(1 -1 1 0)", -1)]
+		[InlineData("(0 0 -1 -1)", "(0 1 0 -1)", "(-1 -1 1 0)", -1)]
+		[InlineData("(0 0 -1 -1)", "(0 1 0 -1)", "(1 1 1 0)", -1)]
+		[InlineData("(0 0 -1 -1)", "(0 1 0 -1)", "(-1 1 1 0)", -1)]
+		public void CircularVectorComparer_CompareIPlanar_BeExpected(string planeCoord, string xCoord, string yCoord, int expected)
+		{
+			// 1. Prepare
+			IPlanar p1 = GetPlanar(xCoord);
+			IPlanar p2 = GetPlanar(yCoord);
+
+			Plane rotationPlane = new Plane(planeCoord);
+			var comparer = new CircularVectorComparer(rotationPlane);
+
+			// 2. Execute
+			int result = comparer.Compare(p1, p2);
+			int reverse = comparer.Compare(p2, p1);
+
+			// 3. Verify
+			Assert.Equal(expected, result);
+			Assert.Equal(-expected, reverse);
+		}
+
+		[Theory]
+		// Sample coming from Skewb implementation
+		[InlineData("(0 0 -1 -1)", "(0 1 0 -1)", "(1 0 0 -1)", "(0.95 0.95 -1)", -1)]
+		[InlineData("(0 0 -1 -1)", "(1 0 0 -1)", "(1 1 1 0)", "(0.95 0.95 -1)", -1)]
+		public void CircularVectorComparer_CompareIPlanarWithCenter_BeExpected(string planeCoord, string xCoord, string yCoord, string centerCoord, int expected)
+		{
+			// 1. Prepare
+			IPlanar p1 = GetPlanar(xCoord);
+			IPlanar p2 = GetPlanar(yCoord);
+
+			Plane rotationPlane = new Plane(planeCoord);
+			Cartesian3dCoordinate center = new Cartesian3dCoordinate(centerCoord);
+			var comparer = new CircularVectorComparer(rotationPlane, center);
+
+			// 2. Execute
+			int result = comparer.Compare(p1, p2);
+			int reverse = comparer.Compare(p2, p1);
+
+			// 3. Verify
+			Assert.Equal(expected, result);
+			Assert.Equal(-expected, reverse);
+		}
+
 		#endregion Test Methods
 
 		#region Private Methods
+
+		private IPlanar GetPlanar(string coord)
+		{
+			Mock<IPlanar> mock = new Mock<IPlanar>();
+			Plane p = new Plane(coord);
+			mock.SetupGet(o => o.Plane).Returns(p);
+			return mock.Object;
+		}
 
 		private void CircularVectorComparer_Compare3dVector_BeExpected(string xCoord, string yCoord, string plane, int expected)
 		{
