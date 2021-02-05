@@ -50,9 +50,19 @@ namespace Twisty.Engine.Materialization
 				var currentPoint = planes[i + 1].Plane.GetIntersection(currentLine);
 
 				// Ignore when multiple cut provide the same point.
-				if (!points.Last().IsSamePoint(currentPoint))
-					points.Add(currentPoint);
+				if (points.Last().IsSamePoint(currentPoint))
+					continue;
+
+				if (!IsPointInCore(currentPoint))
+					continue;
+
+				if (points.Count > 2 && IsBehindClosestCut(currentPoint, points, internalPoint, planes.Select(p => p.Plane)))
+					continue;
+
+				points.Add(currentPoint);
 			}
+
+			points = CleanClosestCut(points, internalPoint, planes.Select(p => p.Plane));
 
 			// We will sort the points to ensure we are always providing them in the same rotation direction.
 			var comparer = new CircularVectorComparer(face.Plane, internalPoint);
@@ -71,8 +81,7 @@ namespace Twisty.Engine.Materialization
 				.Where(o => !o.Plane.IsParallelTo(face.Plane));
 
 			// Filter Planes to only keep the closest when using the same normal.
-			List<IPlanar> result = FilterToClosestPlanar(planar, internalPoint);
-			//List<IPlanar> result = FilterToClosestIntersection(planar, internalPoint, face.Plane);
+			List<IPlanar> result = FilterToClosestPlanar(planar, internalPoint, face.Plane);
 
 			// In order to keep only the closest intersection, we need to sort the planes.
 			var comparer = new CircularVectorComparer(face.Plane, internalPoint);
@@ -81,58 +90,106 @@ namespace Twisty.Engine.Materialization
 			return result;
 		}
 
-		private List<IPlanar> FilterToClosestPlanar(IEnumerable<IPlanar> planars, Cartesian3dCoordinate internalPoint)
+		private List<IPlanar> FilterToClosestPlanar(IEnumerable<IPlanar> planars, Cartesian3dCoordinate internalPoint, Plane referencePlane)
 		{
 			// Keep cuts from the closest to the fartest.
-			var tuples = planars.Select(o => new Tuple<double, IPlanar>(
-				o.Plane.GetDistanceTo(internalPoint),
-				o));
-
-			List<IPlanar> result = new List<IPlanar>();
-			foreach (IPlanar p in tuples.OrderBy(t => t.Item1).Select(t => t.Item2))
-			{
-				bool isAbovePlane = p.Plane.IsAbovePlane(internalPoint);
-
-				// Skip planes when a closer parrallel plane has beend selected.
-				if (result.Any(o =>
-						(o.Plane.Normal.IsSameVector(p.Plane.Normal)
-							&& o.Plane.IsAbovePlane(internalPoint) == isAbovePlane)
-						|| (o.Plane.Normal.Reverse.IsSameVector(p.Plane.Normal)
-							&& o.Plane.IsBelowPlane(internalPoint) == isAbovePlane)))
-					continue;
-
-				result.Add(p);
-			}
-
-			return result;
-		}
-		/*
-		private List<IPlanar> FilterToClosestIntersection(IEnumerable<IPlanar> planars, Cartesian3dCoordinate internalPoint, Plane referencePlane)
-		{
-			// Keep cuts from the closest to the fartest.
-			var tuples = planars.Select(o => new Tuple<double, IPlanar, ParametricLine>(
-				o.Plane.GetDistanceTo(internalPoint),
+			var tuples = planars.Select(o => new Tuple<IPlanar, double, Cartesian3dCoordinate>(
 				o,
-				o.Plane.GetIntersection(referencePlane)));
+				o.Plane.GetDistanceTo(internalPoint),
+				referencePlane.GetVectorProjection(o.Plane.Normal)));
 
-			var result = new List<Tuple<double, IPlanar, ParametricLine>>();
-			foreach (var t in tuples.OrderBy(t => t.Item1))
+			var result = new List<Tuple<IPlanar, double, Cartesian3dCoordinate>>();
+			foreach (var t in tuples.OrderBy(t => t.Item2))
 			{
-				var p = t.Item2;
+				IPlanar p = t.Item1;
 				bool isAbovePlane = p.Plane.IsAbovePlane(internalPoint);
 
 				// Skip planes when a closer parrallel plane has beend selected.
 				if (result.Any(o =>
-						(t.Item3.IsParallelTo(o.Item3)
-							&& o.Item2.Plane.IsAbovePlane(internalPoint) == isAbovePlane)
-						|| (t.Item3.IsParallelTo(o.Item3)
-							&& o.Item2.Plane.IsBelowPlane(internalPoint) == isAbovePlane)))
+						(o.Item3.IsSameVector(t.Item3)
+							&& o.Item1.Plane.IsAbovePlane(internalPoint) == isAbovePlane)
+						|| (o.Item3.Reverse.IsSameVector(t.Item3)
+							&& o.Item1.Plane.IsBelowPlane(internalPoint) == isAbovePlane)))
 					continue;
 
 				result.Add(t);
 			}
 
-			return result.Select(t => t.Item2).ToList();
-		}*/
+			return result.Select(t => t.Item1).ToList();
+		}
+
+		private bool IsBehindClosestCut(Cartesian3dCoordinate testedPoint, IList<Cartesian3dCoordinate> points, Cartesian3dCoordinate internalPoint,
+			IEnumerable<Plane> planes)
+		{
+			ParametricLine testedLine = ParametricLine.FromTwoPoints(internalPoint, testedPoint);
+			double testedDistance = internalPoint.GetDistanceTo(testedPoint);
+			for (int i = 0; i < points.Count - 1; ++i)
+			{
+				var p1 = points[i];
+				if (p1.IsSamePoint(testedPoint))
+					continue;
+
+				for (int j = i + 1; j < points.Count; ++j)
+				{
+					var p2 = points[j];
+					if (p2.IsSamePoint(testedPoint))
+						continue;
+
+					try
+					{
+						ParametricLine line = ParametricLine.FromTwoPoints(p1, p2);
+						// Skip diagonal going through internal point (could be central point).
+						if (line.Contains(internalPoint))
+							continue;
+
+						// If line don't match a cut, ignore the line.
+						if (!planes.Any(p => p.IsOnPlane(line)))
+							continue;
+
+						Cartesian3dCoordinate intersection = testedLine.GetIntersection(line);
+						double d = internalPoint.GetDistanceTo(intersection);
+						if (d < testedDistance && !IsPointBetween(internalPoint, testedPoint, intersection))
+							return true;
+					}
+					catch (GeometricException)
+					{
+						// No intersection, we can ignore the line.
+					}
+				}
+			}
+
+			return false;
+		}
+
+		private bool IsPointBetween(Cartesian3dCoordinate testedPoint, Cartesian3dCoordinate p1, Cartesian3dCoordinate p2)
+		{
+			double dt1 = testedPoint.GetDistanceTo(p1);
+			double dt2 = testedPoint.GetDistanceTo(p2);
+			double d12 = p1.GetDistanceTo(p2);
+
+			return d12.IsEqualTo(dt1 + dt2);
+		}
+
+		private List<Cartesian3dCoordinate> CleanClosestCut(IList<Cartesian3dCoordinate> points, Cartesian3dCoordinate internalPoint, IEnumerable<Plane> planes)
+		{
+			List<Cartesian3dCoordinate> result = new List<Cartesian3dCoordinate>();
+			foreach (Cartesian3dCoordinate p in points)
+			{
+				if (!IsBehindClosestCut(p, points, internalPoint, planes))
+					result.Add(p);
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Validate if a point is inside the RotationCore scope or not.
+		/// </summary>
+		/// <param name="p">Coordinate of the point to validate.</param>
+		/// <returns>A boolean indicating if whether the point is inside the RotationCore scope or not</returns>
+		private bool IsPointInCore(Cartesian3dCoordinate p) =>
+		p.X >= -1.0 && p.X <= 1.0
+			&& p.Y >= -1.0 && p.Y <= 1.0
+			&& p.Z >= -1.0 && p.Z <= 1.0;
 	}
 }
