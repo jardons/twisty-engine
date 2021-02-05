@@ -419,6 +419,35 @@ namespace Twisty.Engine.Geometry
 
 		#endregion Public Methods
 
+		#region Public Static Methods
+
+		/// <summary>
+		/// Get the center of mass point for the provided collection of points.
+		/// </summary>
+		/// <param name="points">Points for which the center of mass will be calculated.</param>
+		/// <returns>COordinate of the point in the center of mass of the provided points list.</returns>
+		public static Cartesian3dCoordinate GetCenterOfMass(IEnumerable<Cartesian3dCoordinate> points)
+		{
+			int count = 0;
+			double x = 0.0;
+			double y = 0.0;
+			double z = 0.0;
+			foreach (Cartesian3dCoordinate p in points)
+			{
+				++count;
+				x += p.X;
+				y += p.Y;
+				z += p.Z;
+			}
+
+			if (count == 0)
+				return Zero;
+
+			return new Cartesian3dCoordinate(x / count, y / count, z / count);
+		}
+
+		#endregion Public Static Methods
+
 		#region Operators
 
 		/// <summary>

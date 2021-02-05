@@ -9,17 +9,42 @@ namespace Twisty.Engine.Materialization
 {
 	public class StandardMaterializer
 	{
-		private readonly RotationCore m_Core;
-
-		public StandardMaterializer(RotationCore core)
+		public StandardMaterializer()
 		{
-			m_Core = core;
 		}
 
-		public Cartesian3dCoordinate GetCenter(string blockId, string faceId)
+		public MaterializedCore Materialize(RotationCore core)
 		{
-			CoreFace cubeFace = m_Core.GetFace(faceId);
-			Block b = m_Core.GetBlock(blockId);
+			// Create new instance.
+			List<MaterializedObject> objects = new List<MaterializedObject>();
+			foreach (var b in core.Blocks)
+			{
+				objects.Add(MaterializeObject(core, b));
+			}
+
+			return new MaterializedCore(objects);
+		}
+
+		private MaterializedObject MaterializeObject(RotationCore core, Block b)
+		{
+			List<MaterializedObjectPart> parts = new List<MaterializedObjectPart>();
+			foreach (BlockFace face in b.Faces)
+			{
+				// Get the face from the cube as the block face don't contain face Plane coordinates.
+				CoreFace cubeFace = core.GetFace(face.Id);
+
+				Cartesian3dCoordinate center = this.GetCenter(core, b.Id, face.Id);
+				var points = this.GetFaceVertices(core, cubeFace, center);
+				parts.Add(new MaterializedObjectPart(face.Id, points));
+			}
+
+			return new MaterializedObject(b.Id, parts);
+		}
+
+		public Cartesian3dCoordinate GetCenter(RotationCore core, string blockId, string faceId)
+		{
+			CoreFace cubeFace = core.GetFace(faceId);
+			Block b = core.GetBlock(blockId);
 
 			var c = cubeFace.Plane.GetIntersection(new ParametricLine(b.Position, b.GetBlockFace(faceId).Position)) * 0.95;
 			var l = cubeFace.Plane.GetPerpendicular(c);
@@ -33,9 +58,9 @@ namespace Twisty.Engine.Materialization
 		/// <param name="face">Face of the original RotationCore from which the block face will be defined.</param>
 		/// <param name="internalPoint">Can be any point inside the block face to evaluate.</param>
 		/// <returns>The sorted list of vertices surrounding the block face containing the provided point on the provided CoreFace.</returns>
-		public IList<Cartesian3dCoordinate> GetFaceVertices(CoreFace face, Cartesian3dCoordinate internalPoint)
+		public IList<Cartesian3dCoordinate> GetFaceVertices(RotationCore core, CoreFace face, Cartesian3dCoordinate internalPoint)
 		{
-			var planes = this.GetFaceBondaries(face, internalPoint);
+			var planes = this.GetFaceBondaries(core, face, internalPoint);
 			List<Cartesian3dCoordinate> points = new List<Cartesian3dCoordinate>(planes.Count);
 
 			// As it's a loop, previous border of first row is the last one.
@@ -71,10 +96,10 @@ namespace Twisty.Engine.Materialization
 			return points;
 		}
 
-		public IList<IPlanar> GetFaceBondaries(CoreFace face, Cartesian3dCoordinate internalPoint)
+		public IList<IPlanar> GetFaceBondaries(RotationCore core, CoreFace face, Cartesian3dCoordinate internalPoint)
 		{
-			var facesPlanes = m_Core.Faces.Where(f => f.Id != face.Id);
-			var axisPlanes = m_Core.Axes.SelectMany(a => a.Layers);
+			var facesPlanes = core.Faces.Where(f => f.Id != face.Id);
+			var axisPlanes = core.Axes.SelectMany(a => a.Layers);
 
 			var planar = facesPlanes.OfType<IPlanar>().Concat(axisPlanes)
 				// Parallels planes will never have intersection with current face for corners.

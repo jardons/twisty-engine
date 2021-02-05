@@ -109,10 +109,13 @@ namespace Twisty.Runner.Views
 
 			m_3dObjects.Clear();
 
+			StandardMaterializer materializer = new StandardMaterializer();
+			var materializedCore = materializer.Materialize(m_Core);
+
 			// Create new instance.
-			foreach (var b in m_Core.Blocks)
+			foreach (var block in materializedCore.Objects)
 			{
-				m_3dObjects.Add(b.Id, CreateVisuals(b));
+				m_3dObjects.Add(block.Id, CreateVisuals(block));
 			}
 
 			foreach (var o in m_3dObjects.Values)
@@ -173,25 +176,18 @@ namespace Twisty.Runner.Views
 			}
 		}
 
-		private ModelVisual3D CreateVisuals(Engine.Structure.Block b)
+		private ModelVisual3D CreateVisuals(MaterializedObject o)
 		{
 			Model3DGroup group = new Model3DGroup();
-			StandardMaterializer materializer = new StandardMaterializer(m_Core);
 
-			foreach (BlockFace face in b.Faces)
+			foreach (var part in o.Parts)
 			{
 				// Create visual object.
 				GeometryModel3D model = new GeometryModel3D();
 				group.Children.Add(model);
 
-				// Get the face from the cube as the block face don't contain face Plane coordinates.
-				CoreFace cubeFace = m_Core.GetFace(face.Id);
-
-				Cartesian3dCoordinate center = materializer.GetCenter(b.Id, face.Id);
-				var points = materializer.GetFaceVertices(cubeFace, center);
-
-				model.Geometry = GetMesh(points, center);
-				model.Material = GetBrush(face.Id);
+				model.Geometry = GetMesh(part.Points.ToList());
+				model.Material = GetBrush(part.ColorId);
 				model.BackMaterial = GetBrush(null);
 			}
 
@@ -202,13 +198,12 @@ namespace Twisty.Runner.Views
 		/// Create the Mesh for a single block face.
 		/// </summary>
 		/// <param name="points"></param>
-		/// <param name="center"></param>
 		/// <returns></returns>
-		private MeshGeometry3D GetMesh(IList<Cartesian3dCoordinate> points, Cartesian3dCoordinate center)
+		private MeshGeometry3D GetMesh(IList<Cartesian3dCoordinate> points)
 		{
 			// Mesh will be created by suming triangle sharing a common vertice in the center of the surface.
 			MeshGeometry3D geo = new MeshGeometry3D();
-			geo.Positions.Add(center.ToWpfPoint3D()); // Center will always be position 0
+			geo.Positions.Add(Cartesian3dCoordinate.GetCenterOfMass(points).ToWpfPoint3D()); // Center will always be position 0
 			geo.Positions.Add(points[0].ToWpfPoint3D());
 
 			for (int i = 1; i < points.Count; ++i)
