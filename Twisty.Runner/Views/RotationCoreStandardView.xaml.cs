@@ -201,6 +201,42 @@ namespace Twisty.Runner.Views
 		/// <returns></returns>
 		private MeshGeometry3D GetMesh(IList<Cartesian3dCoordinate> points)
 		{
+			if (points.Count == 3)
+				return GetMeshForTriangle(points);
+
+			return GetMeshFromCenter(points);
+		}
+
+		/// <summary>
+		/// Create the Mesh for a single block face delimited with only 3 points.
+		/// </summary>
+		/// <param name="points"></param>
+		/// <returns></returns>
+		private MeshGeometry3D GetMeshForTriangle(IList<Cartesian3dCoordinate> points)
+		{
+			if (points.Count != 3)
+				throw new InvalidOperationException("GetMeshFromTriangle can only be used for Mesh of 3 points");
+
+			// Mesh will be created by suming triangle sharing a common vertice in the center of the surface.
+			MeshGeometry3D geo = new MeshGeometry3D();
+			geo.Positions.Add(points[0].ToWpfPoint3D());
+			geo.Positions.Add(points[1].ToWpfPoint3D());
+			geo.Positions.Add(points[2].ToWpfPoint3D());
+
+			geo.TriangleIndices.Add(0);
+			geo.TriangleIndices.Add(1);
+			geo.TriangleIndices.Add(2);
+
+			return geo;
+		}
+
+		/// <summary>
+		/// Create the Mesh for a single block face.
+		/// </summary>
+		/// <param name="points"></param>
+		/// <returns></returns>
+		private MeshGeometry3D GetMeshFromCenter(IList<Cartesian3dCoordinate> points)
+		{
 			// Mesh will be created by suming triangle sharing a common vertice in the center of the surface.
 			MeshGeometry3D geo = new MeshGeometry3D();
 			geo.Positions.Add(Cartesian3dCoordinate.GetCenterOfMass(points).ToWpfPoint3D()); // Center will always be position 0
