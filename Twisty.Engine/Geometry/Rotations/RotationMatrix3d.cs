@@ -137,7 +137,7 @@ namespace Twisty.Engine.Geometry.Rotations
 		/// <remarks>
 		/// Multiple euler angles can be returned for a same rotation matrix, only one solution will be generated here.
 		/// </remarks>
-		public IList<SimpleRotation3d> GetEulerAngles()
+		public IReadOnlyList<SimpleRotation3d> GetEulerAngles()
 		{
 			List<SimpleRotation3d> result = new List<SimpleRotation3d>();
 
