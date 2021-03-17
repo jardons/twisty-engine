@@ -8,7 +8,7 @@ namespace Twisty.Engine.Structure
 	/// <summary>
 	/// Class describing the object that will represent the central rotation point around which blocks will rotate.
 	/// </summary>
-	public abstract class RotationCore
+	public abstract class RotationCore : IRotable
 	{
 		#region Private Members
 
@@ -19,6 +19,8 @@ namespace Twisty.Engine.Structure
 		private Dictionary<string, CoreFace> m_Faces;
 
 		#endregion Private Members
+
+		#region ctor(s)
 
 		/// <summary>
 		/// Create a new RotationCore object
@@ -37,6 +39,8 @@ namespace Twisty.Engine.Structure
 			foreach (var f in faces)
 				m_Faces.Add(f.Id, f);
 		}
+
+		#endregion ctor(s)
 
 		#region Public Properties
 
@@ -107,7 +111,10 @@ namespace Twisty.Engine.Structure
 		/// </summary>
 		/// <param name="axis">Rotation axis aroung which the rotation will be executed.</param>
 		/// <param name="theta">Angle of the rotation to execute.</param>
-		/// <param name="distance">Distance of the center above which blocks will be rotated. All blocks around the axis are rotated if null.</param>
+		/// <param name="distance">
+		/// Distance of the center above which blocks will be rotated.
+		/// If null, All blocks around the axis are rotated.
+		/// </param>
 		public void RotateAround(RotationAxis axis, double theta, LayerSeparator aboveLayer = null)
 		{
 			if (axis == null)
