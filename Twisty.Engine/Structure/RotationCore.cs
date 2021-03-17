@@ -8,7 +8,7 @@ namespace Twisty.Engine.Structure
 	/// <summary>
 	/// Class describing the object that will represent the central rotation point around which blocks will rotate.
 	/// </summary>
-	public abstract class RotationCore : IRotable
+	public abstract class RotationCore : IRotatable
 	{
 		#region Private Members
 

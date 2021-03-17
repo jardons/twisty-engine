@@ -5,7 +5,7 @@ namespace Twisty.Engine.Structure
 	/// <summary>
 	/// Interface providing operation on object providing rotations.
 	/// </summary>
-	public interface IRotable
+	public interface IRotatable
 	{
 		/// <summary>
 		/// Gets the list of axes available for rotation around this core.
