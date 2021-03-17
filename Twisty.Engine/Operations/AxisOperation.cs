@@ -31,10 +31,10 @@ namespace Twisty.Engine.Operations
 		#region IOperation
 
 		/// <summary>
-		/// Execute the current operation on the provided Core.
+		/// Execute the current operation on the provided IRotable core.
 		/// </summary>
-		/// <param name="core">Rotation core on which the operation is executed.</param>
-		public void ExecuteOn(RotationCore core)
+		/// <param name="core">IRotable core on which the operation is executed.</param>
+		public void ExecuteOn(IRotable core)
 		{
 			core.RotateAround(core.GetAxis(AxisId), this.Theta);
 		}

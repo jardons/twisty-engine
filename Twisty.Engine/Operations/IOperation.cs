@@ -11,9 +11,9 @@ namespace Twisty.Engine.Operations
 	public interface IOperation
 	{
 		/// <summary>
-		/// Execute the current operation on the provided Core.
+		/// Execute the current operation on the provided IRotable core.
 		/// </summary>
-		/// <param name="core">Rotation core on which the operation is executed.</param>
-		void ExecuteOn(RotationCore core);
+		/// <param name="core">IRotable core on which the operation is executed.</param>
+		void ExecuteOn(IRotable core);
 	}
 }
