@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:Twisty.Runner"
 		xmlns:views="clr-namespace:Twisty.Runner.Views"
 		mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+		DataContext="{Binding MainWindowViewModel, Source={StaticResource ViewModelLocator}}">
     <Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="1*" />
@@ -17,10 +18,38 @@
 			<RowDefinition Height="1*" />
 			<RowDefinition Height="1*" />
 		</Grid.RowDefinitions>
-		<views:RotationCoreStandardView x:Name="CubeView1" Grid.Column="0" Grid.Row="0" />
-		<views:RotationCoreStandardView x:Name="CubeView2" CurrentCamera="6,3,3" Grid.Column="1" Grid.Row="0" />
-		<views:RotationCoreStandardView x:Name="CubeView3" CurrentCamera="6,3,-3" Grid.Column="0" Grid.Row="1" />
-		<views:RotationCoreStandardView x:Name="CubeView4" CurrentCamera="-6,-3,3" Grid.Column="1" Grid.Row="1" />
-		<views:AlgorithmConsole x:Name="ConsoleInput" Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" />
+		<views:RotationCoreStandardView
+				x:Name="CubeView1"
+				ObjectStructures="{Binding Path=DataContext.VisualObjects, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+				ObjectRotations="{Binding Path=DataContext.VisualPositions, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+				Grid.Column="0"
+				Grid.Row="0" />
+		<views:RotationCoreStandardView
+				x:Name="CubeView2"
+				ObjectStructures="{Binding Path=DataContext.VisualObjects, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+				ObjectRotations="{Binding Path=DataContext.VisualPositions, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+				CurrentCamera="6,3,3"
+				Grid.Column="1"
+				Grid.Row="0" />
+		<views:RotationCoreStandardView
+				x:Name="CubeView3"
+				ObjectStructures="{Binding Path=DataContext.VisualObjects, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+				ObjectRotations="{Binding Path=DataContext.VisualPositions, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+				CurrentCamera="6,3,-3"
+				Grid.Column="0"
+				Grid.Row="1" />
+		<views:RotationCoreStandardView
+				x:Name="CubeView4"
+				ObjectStructures="{Binding Path=DataContext.VisualObjects, NotifyOnSourceUpdated=true, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+				ObjectRotations="{Binding Path=DataContext.VisualPositions, NotifyOnSourceUpdated=true, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+				CurrentCamera="-6,-3,3"
+				Grid.Column="1"
+				Grid.Row="1" />
+		<views:AlgorithmConsole
+				x:Name="ConsoleInput"
+				Grid.Column="2"
+				Grid.Row="0"
+				Grid.RowSpan="2"
+				Core="{Binding Path=DataContext.Core, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
 	</Grid>
 </Window>

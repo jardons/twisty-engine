@@ -13,10 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Twisty.Engine.Geometry;
-using Twisty.Engine.Materialization;
-using Twisty.Engine.Structure;
-using Twisty.Runner.Wpf;
+using Twisty.Runner.Models.Model3d;
+using Twisty.Runner.ViewModels;
 
 namespace Twisty.Runner.Views
 {
@@ -25,7 +23,32 @@ namespace Twisty.Runner.Views
 	/// </summary>
 	public partial class RotationCoreStandardView : UserControl
 	{
-		private RotationCore m_Core;
+		#region Binding Properties
+
+		private static readonly DependencyProperty ObjectStructuresProperty =
+			DependencyProperty.Register("ObjectStructures",
+				typeof(IEnumerable<Core3dObject>),
+				typeof(RotationCoreStandardView),
+				new FrameworkPropertyMetadata(
+					Array.Empty<Core3dObject>(),
+					FrameworkPropertyMetadataOptions.AffectsRender,
+					(DependencyObject defectImageControl, DependencyPropertyChangedEventArgs eventArgs) =>
+						((RotationCoreStandardView)defectImageControl).ObjectStructures = eventArgs.NewValue as IEnumerable<Core3dObject>
+				));
+
+		private static readonly DependencyProperty ObjectRotationsProperty =
+			DependencyProperty.Register("ObjectRotations",
+				typeof(CoreRotations),
+				typeof(RotationCoreStandardView),
+				new FrameworkPropertyMetadata(
+					null,
+					FrameworkPropertyMetadataOptions.AffectsRender,
+					(DependencyObject defectImageControl, DependencyPropertyChangedEventArgs eventArgs) =>
+						((RotationCoreStandardView)defectImageControl).ObjectRotations = eventArgs.NewValue as CoreRotations
+				));
+
+		#endregion Binding Properties
+
 		private Dictionary<string, ModelVisual3D> m_3dObjects;
 
 		public RotationCoreStandardView()
@@ -34,161 +57,80 @@ namespace Twisty.Runner.Views
 
 			InitializeComponent();
 
-			this.MouseDoubleClick += RotationCoreStandardView_MouseDoubleClick;
-			this.viewSelector.SelectionChanged += OnCameraSelectionChanged;
-			this.SetCameraDirection();
+			this.DataContext.CameraPosition = new Point3D(6.0, -3.0, 3.0);
+
+			CreateCanvasContent();
 		}
 
-		private void OnCameraSelectionChanged(object sender, SelectionChangedEventArgs e)
+		#region Public Properties
+
+		public new RotationCoreStandardViewModel DataContext
+			=> (RotationCoreStandardViewModel)base.DataContext;
+
+		public IEnumerable<Core3dObject> ObjectStructures
 		{
-			var val = e.AddedItems.OfType<ComboBoxItem>().FirstOrDefault()?.Tag as string;
-			if (string.IsNullOrWhiteSpace(val))
-				return;
-
-			var coordinates = val.Split(",").Select(s => Convert.ToDouble(s)).ToList();
-
-			this.camera.Position = new Point3D(coordinates[0], coordinates[1], coordinates[2]);
-			this.SetCameraDirection();
-		}
-
-		/// <summary>
-		/// Gets/Sets the RotationCore object visualised in this control.
-		/// </summary>
-		public RotationCore Core
-		{
-			get => m_Core;
+			get => this.GetValue(ObjectStructuresProperty) as IEnumerable<Core3dObject>
+				?? Array.Empty<Core3dObject>();
 			set
 			{
-				m_Core = value;
+				this.SetValue(ObjectStructuresProperty, value);
 				this.CreateCanvasContent();
 			}
 		}
 
-		/// <summary>
-		/// Gets the list of ids for the various available cameras.
-		/// </summary>
-		public IList<string> CameraIds
-			=> this.viewSelector.Items.OfType<ComboBoxItem>().Select(i => (string)i.Tag).ToList();
+		public CoreRotations ObjectRotations
+		{
+			get => this.GetValue(ObjectRotationsProperty) as CoreRotations;
+			set
+			{
+				this.SetValue(ObjectRotationsProperty, value);
+				this.RefreshRotations();
+			}
+		}
 
 		public string CurrentCamera
 		{
-			get => (string)((ComboBoxItem)this.viewSelector.Items.CurrentItem).Tag;
-			set
-			{
-				var ids = this.CameraIds;
-				if (!ids.Contains(value))
-					throw new ArgumentOutOfRangeException(nameof(value));
-
-				var current = this.viewSelector.Items.OfType<ComboBoxItem>().FirstOrDefault(o => o.IsSelected);
-
-				if (((string)current.Tag) == value)
-					return; // No change.
-
-				current.IsSelected = false;
-				this.viewSelector.Items.OfType<ComboBoxItem>().FirstOrDefault(o => (string)o.Tag == value).IsSelected = true;
-			}
+			get => this.DataContext.ActiveCameraId;
+			set { this.DataContext.ActiveCameraId = value; }
 		}
 
-		/// <summary>
-		/// Refresh the display state of the Core object.
-		/// </summary>
-		public void Refresh()
-		{
-			foreach (var kvp in m_3dObjects)
-			{
-				var o = kvp.Value;
-				o.Transform = GetTransform(m_Core.GetBlock(kvp.Key));
-			}
-		}
+		#endregion Public Properties
+
+		#region Private Methods
 
 		private void CreateCanvasContent()
 		{
 			// Remove Previous instance of the core.
 			foreach (var o in m_3dObjects.Values)
-				MyAnimatedObject.Children.Remove(o);
+				AnimatedCore.Children.Remove(o);
 
 			m_3dObjects.Clear();
 
-			StandardMaterializer materializer = new StandardMaterializer();
-			var materializedCore = materializer.Materialize(m_Core);
-
 			// Create new instance.
-			foreach (var block in materializedCore.Objects)
+			foreach (Core3dObject o in this.ObjectStructures)
 			{
-				m_3dObjects.Add(block.Id, CreateVisuals(block));
-			}
+				var v = CreateVisuals(o);
 
-			foreach (var o in m_3dObjects.Values)
-				MyAnimatedObject.Children.Add(o);
-		}
-
-		/// <summary>
-		/// Set camera direction to ensure it's oriented in the center direction.
-		/// </summary>
-		private void SetCameraDirection()
-			=> this.camera.LookDirection = new Vector3D(
-				-this.camera.Position.X,
-				-this.camera.Position.Y,
-				-this.camera.Position.Z);
-
-		private void RotationCoreStandardView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-		{
-			int i = 0;
-			foreach (var kvp in m_3dObjects)
-			{
-				var o = kvp.Value;
-				o.Transform = GetTransform(m_Core.GetBlock(kvp.Key));
-
-				// TODO : analyse how to animate.
-				/*
-					string name = "temp" + (i++).ToString();
-					canvasBox.RegisterName(name, o);
-
-					AxisAngleRotation3D r = new AxisAngleRotation3D();
-					r.Angle = 90;
-					r.Axis = new Vector3D(1.0, 0.0, 0.0);
-
-					SplineRotation3DKeyFrame kf = new SplineRotation3DKeyFrame();
-					kf.Value = r;
-
-					Rotation3DAnimationUsingKeyFrames animation = new Rotation3DAnimationUsingKeyFrames();
-					animation.KeyFrames.Add(kf);
-					myRotateTransform.Rotation.BeginAnimation(AxisAngleRotation3D.AxisProperty, myVectorAnimation);
-
-					// Demonstrates the From and To properties used together.
-					// Animates the rectangle's Width property from 50 to 300 over 10 seconds.
-					DoubleAnimation myDoubleAnimation = new DoubleAnimation();
-					myDoubleAnimation.From = 50;
-					myDoubleAnimation.To = 300;
-					myDoubleAnimation.Duration =
-						new Duration(TimeSpan.FromSeconds(10));
-
-					//Storyboard.SetTargetName(myDoubleAnimation, name);
-					Storyboard.SetTargetName(animation, name);
-
-					Storyboard myStoryboard = new Storyboard();
-					//myStoryboard.Children.Add(myDoubleAnimation);
-					myStoryboard.Children.Add(animation);
-
-					myStoryboard.Begin();
-
-					canvasBox.UnregisterName(name);*/
+				m_3dObjects.Add(o.Id, v);
+				AnimatedCore.Children.Add(v);
 			}
 		}
 
-		private ModelVisual3D CreateVisuals(MaterializedObject o)
+		private ModelVisual3D CreateVisuals(Core3dObject o)
 		{
 			Model3DGroup group = new Model3DGroup();
 
 			foreach (var part in o.Parts)
 			{
 				// Create visual object.
-				GeometryModel3D model = new GeometryModel3D();
-				group.Children.Add(model);
+				GeometryModel3D model = new GeometryModel3D
+				{
+					Geometry = GetMesh(part.Points),
+					Material = GetBrush(part.FrontColor),
+					BackMaterial = GetBrush(part.BackColor)
+				};
 
-				model.Geometry = GetMesh(part.Points.ToList());
-				model.Material = GetBrush(part.ColorId);
-				model.BackMaterial = GetBrush(null);
+				group.Children.Add(model);
 			}
 
 			return new ModelVisual3D { Content = group };
@@ -199,13 +141,13 @@ namespace Twisty.Runner.Views
 		/// </summary>
 		/// <param name="points"></param>
 		/// <returns></returns>
-		private MeshGeometry3D GetMesh(IList<Cartesian3dCoordinate> points)
+		private MeshGeometry3D GetMesh(IReadOnlyList<Point3D> points)
 		{
 			// Mesh will be created by suming triangle sharing a common vertice in the center of the surface.
 			MeshGeometry3D geo = new MeshGeometry3D();
-			geo.Positions.Add(points[0].ToWpfPoint3D());
-			geo.Positions.Add(points[1].ToWpfPoint3D());
-			geo.Positions.Add(points[2].ToWpfPoint3D());
+			geo.Positions.Add(points[0]);
+			geo.Positions.Add(points[1]);
+			geo.Positions.Add(points[2]);
 
 			geo.TriangleIndices.Add(0);
 			geo.TriangleIndices.Add(1);
@@ -214,51 +156,50 @@ namespace Twisty.Runner.Views
 			for (int i = 3; i < points.Count; ++i)
 			{
 				// Update positions.
-				geo.Positions.Add(points[i].ToWpfPoint3D());
+				geo.Positions.Add(points[i]);
 
-				geo.TriangleIndices.Add(0);			// First Point
-				geo.TriangleIndices.Add(i - 1);		// Previous
-				geo.TriangleIndices.Add(i);			// Current
+				geo.TriangleIndices.Add(0);         // First Point
+				geo.TriangleIndices.Add(i - 1);     // Previous
+				geo.TriangleIndices.Add(i);         // Current
 			}
 
 			return geo;
 		}
 
-		private DiffuseMaterial GetBrush(string faceId = null)
-		{
-			Color c = faceId switch
-			{
-				"F" => Color.FromRgb(0, 0, 255),
-				"L" => Color.FromRgb(255, 105, 0),
-				"R" => Color.FromRgb(255, 0, 0),
-				"D" => Color.FromRgb(255, 255, 255),
-				"B" => Color.FromRgb(0, 250, 0),
-				"U" => Color.FromRgb(255, 255, 0),
-				// Return black when not able to match a color.
-				_ => Color.FromRgb(0, 0, 0),
-			};
+		private DiffuseMaterial GetBrush(Color c)
+			=> new DiffuseMaterial { Brush = new SolidColorBrush(c) };
 
-			return new DiffuseMaterial { Brush = new SolidColorBrush(c) };
+		/// <summary>
+		/// Refresh the display state of the Core object.
+		/// </summary>
+		private void RefreshRotations()
+		{
+			foreach (var key in this.m_3dObjects.Keys)
+			{
+				m_3dObjects[key].Transform = GetTransform(this.ObjectRotations.GetRotations(key));
+			}
 		}
 
-		private Transform3D GetTransform(Engine.Structure.Block b)
+		private Transform3D GetTransform(IEnumerable<Models.Model3d.Rotation> rotations)
 		{
 			Transform3DGroup group = new Transform3DGroup();
 
 			// Use Euler angles to provide correct orientation on every blocks.
-			foreach (var rotation in b.Orientation.GetEulerAngles())
+			foreach (var rotation in rotations)
 			{
 				group.Children.Add(new RotateTransform3D
 				{
 					Rotation = new AxisAngleRotation3D
 					{
-						Axis = rotation.Axis.ToWpfVector3D(),
-						Angle = -CoordinateConverter.ConvertRadianToDegree(rotation.Angle)
+						Axis = rotation.Axis,
+						Angle = rotation.Angle
 					}
 				});
 			}
 
 			return group;
 		}
+
+		#endregion Private Methods
 	}
 }

@@ -13,57 +13,21 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Twisty.Engine.Geometry;
-using Twisty.Engine.Operations.Rubiks;
-using Twisty.Engine.Operations.Skewb;
-using Twisty.Engine.Structure;
-using Twisty.Engine.Structure.Rubiks;
-using Twisty.Engine.Structure.Skewb;
-using Twisty.Runner.Views;
+using Twisty.Runner.ViewModels;
 
 namespace Twisty.Runner
 {
 	/// <summary>
-	/// Interaction logic for MainWindow.xaml
+	/// Main window displayed at startup.
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		//private SkewbCube m_Core;
-		//private SkewbOperationsParser m_Parser;
-		private RubikCube m_Core;
-		private RubikOperationsParser m_Parser;
-		private List<RotationCoreStandardView> m_Views;
-
+		/// <summary>
+		/// Create a new MainWindow.
+		/// </summary>
 		public MainWindow()
 		{
 			InitializeComponent();
-
-			m_Core = new RubikCube(3);
-			m_Parser = new RubikOperationsParser();
-			//m_Parser = new SkewbOperationsParser();
-			//m_Core = new SkewbCube();
-
-			m_Views = new List<RotationCoreStandardView>();
-			m_Views.Add(this.CubeView1);
-			m_Views.Add(this.CubeView2);
-			m_Views.Add(this.CubeView3);
-			m_Views.Add(this.CubeView4);
-
-			foreach (var v in m_Views)
-				v.Core = m_Core;
-
-			this.ConsoleInput.RunAlgorithm += ConsoleInput_RunAlgorythm;
-		}
-
-		private void ConsoleInput_RunAlgorythm(string command)
-		{
-			var operations = m_Parser.Parse(command);
-
-			foreach (var o in operations)
-				o.ExecuteOn(m_Core);
-
-			foreach (var v in m_Views)
-				v.Refresh();
 		}
 	}
 }

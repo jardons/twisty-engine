@@ -13,11 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Twisty.Engine.Geometry;
-using Twisty.Engine.Materialization;
-using Twisty.Engine.Operations.Rubiks;
-using Twisty.Engine.Structure;
-using Twisty.Runner.Wpf;
+using Twisty.Runner.Models;
+using Twisty.Runner.ViewModels;
 
 namespace Twisty.Runner.Views
 {
@@ -28,73 +25,37 @@ namespace Twisty.Runner.Views
 	/// </summary>
 	public partial class AlgorithmConsole : UserControl
 	{
+		#region Binding Properties
+
+		private static readonly DependencyProperty CoreProperty =
+			DependencyProperty.Register("Core",
+				typeof(RotationCoreObject),
+				typeof(AlgorithmConsole),
+				new FrameworkPropertyMetadata(
+					null,
+					FrameworkPropertyMetadataOptions.AffectsRender,
+					(DependencyObject defectImageControl, DependencyPropertyChangedEventArgs eventArgs) =>
+						// Update binded data to ViewModel.
+						((AlgorithmConsole)defectImageControl).DataContext.Core = eventArgs.NewValue as RotationCoreObject
+				));
+
+		#endregion Binding Properties
+
 		public AlgorithmConsole()
 		{
 			InitializeComponent();
-
-			this.Input.KeyUp += OnInputKeyUp;
-			this.ButtonExecute.Click += OnExecute;
-			this.History.MouseDoubleClick += OnDoubleClickHistory;
 		}
 
-		#region Events
-
-		public event TriggerCommand RunAlgorithm;
-
-		#endregion Events
-
-		private void ExecuteCommand()
-			=> ExecuteCommand(this.Input.Text);
-
-		private void ExecuteCommand(string command)
+		public new AlgorithmConsoleViewModel DataContext
 		{
-			if (string.IsNullOrWhiteSpace(command))
-				return;
-
-			this.RunAlgorithm(command);
-			this.AddToHistory(command);
-			this.Input.Clear();
+			get => (AlgorithmConsoleViewModel)base.DataContext;
+			set => base.DataContext = value;
 		}
 
-		private void AddToHistory(string command)
+		public RotationCoreObject Core
 		{
-			if (string.IsNullOrWhiteSpace(command))
-				return;
-
-			var item = this.History.Items.OfType<ListBoxItem>().FirstOrDefault(i => i.Content.ToString() == command);
-
-			// If item is already in history, avoid duplicate.
-			if (item != null)
-				this.History.Items.Remove(item);
-
-			// Add at the bottom of history.
-			this.History.Items.Add(new ListBoxItem { Content = command });
-		}
-
-		private void OnInputKeyUp(object sender, KeyEventArgs e)
-		{
-			// Enter key trigger execution
-			if (e.Key == Key.Enter)
-			{
-				ExecuteCommand();
-				return;
-			}
-
-			var parser = new RubikOperationsParser();
-
-			if (parser.TryClean(this.Input.Text, out string command))
-				this.Input.Text = command;
-		}
-
-		private void OnExecute(object sender, RoutedEventArgs e)
-			=> ExecuteCommand();
-
-		private void OnDoubleClickHistory(object sender, MouseButtonEventArgs e)
-		{
-			if (e.ChangedButton == MouseButton.Left)
-			{
-				this.ExecuteCommand(((ListBoxItem)this.History.SelectedItem).Content.ToString());
-			}
+			get => DataContext.Core;
+			set => DataContext.Core = value;
 		}
 	}
 }
