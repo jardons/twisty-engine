@@ -26,13 +26,14 @@ namespace Twisty.Runner.ViewModels
 
 			this.ExecuteCommand = new RelayCommand(
 				(p) => this.ExecuteInput(),
-				(p) => this.HasInputAlgoritm
+				(p) => this.HasInputAlgorithm && this.IsValidAlgorithm
 			);
 
 			// Link Action to fields.
 			this.PropertyChanged += (s, e) =>
 			{
-				if (e.PropertyName == nameof(HasInputAlgoritm))
+				if (e.PropertyName == nameof(HasInputAlgorithm)
+						|| e.PropertyName == nameof(IsValidAlgorithm))
 					ExecuteCommand.RaiseCanExecuteChanged();
 			};
 		}
@@ -59,22 +60,28 @@ namespace Twisty.Runner.ViewModels
 			get => m_InputAlgoritm;
 			set
 			{
-				bool oldHasInput = this.HasInputAlgoritm;
+				bool oldHasInput = this.HasInputAlgorithm;
+				bool oldValid = this.IsValidAlgorithm;
 
 				m_InputAlgoritm = value;
 
-				if (m_RotationCoreService.TryCleanCommand(this.Core.Id, m_InputAlgoritm, out string command))
+				this.IsValidAlgorithm = m_RotationCoreService.TryCleanCommand(this.Core.Id, m_InputAlgoritm, out string command);
+				if (this.IsValidAlgorithm)
 					m_InputAlgoritm = command;
 
 				// Trigger View Update.
 				this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(InputAlgoritm)));
-				if (oldHasInput != this.HasInputAlgoritm)
-					this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(HasInputAlgoritm)));
+				if (oldHasInput != this.HasInputAlgorithm)
+					this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(HasInputAlgorithm)));
+				if (oldValid != this.IsValidAlgorithm)
+					this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsValidAlgorithm)));
 			}
 		}
 
-		public bool HasInputAlgoritm
+		public bool HasInputAlgorithm
 			=> !string.IsNullOrWhiteSpace(m_InputAlgoritm);
+
+		public bool IsValidAlgorithm { get; private set; }
 
 		public ObservableCollection<string> History { get; }
 
