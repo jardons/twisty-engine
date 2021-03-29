@@ -47,6 +47,9 @@ namespace Twisty.Runner.ViewModels
 				{
 					m_Core = value;
 					this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(Core)));
+
+					this.History.Clear();
+					this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(History)));
 				}
 			}
 		}
