@@ -64,7 +64,7 @@ namespace Twisty.Engine.Operations.Rubiks
 
 			try
 			{
-				this.Parse(command);
+				this.Parse(cleanedCommand);
 				return true;
 			}
 			catch

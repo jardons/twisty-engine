@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
 using System.Windows.Input;
-using Twisty.Engine.Operations.Rubiks;
 using Twisty.Runner.Models;
 using Twisty.Runner.Services;
 using Twisty.Runner.Wpf;
@@ -60,8 +59,8 @@ namespace Twisty.Runner.ViewModels
 				bool oldHasInput = this.HasInputAlgoritm;
 
 				m_InputAlgoritm = value;
-				var parser = new RubikOperationsParser();
-				if (parser.TryClean(m_InputAlgoritm, out string command))
+
+				if (m_RotationCoreService.TryCleanCommand(this.Core.Id, m_InputAlgoritm, out string command))
 					m_InputAlgoritm = command;
 
 				// Trigger View Update.

@@ -22,6 +22,8 @@ namespace Twisty.Runner.Services
 		CoreRotations CalculatePositions(RotationCoreObject core);
 
 		void RunCommand(RotationCoreObject core, string command);
+
+		bool TryCleanCommand(string coreId, string command, out string cleanedCommand);
 	}
 
 	internal class RotationCoreService : IRotationCoreService
@@ -99,6 +101,17 @@ namespace Twisty.Runner.Services
 
 			var operations = GetParser(core.Id).Parse(command);
 			core.Runner.Execute(operations);
+		}
+
+		public bool TryCleanCommand(string coreId, string command, out string cleanedCommand)
+		{
+			if (string.IsNullOrWhiteSpace(command))
+			{
+				cleanedCommand = string.Empty;
+				return true;
+			}
+
+			return GetParser(coreId).TryClean(command, out cleanedCommand);
 		}
 
 		#region Private Members
