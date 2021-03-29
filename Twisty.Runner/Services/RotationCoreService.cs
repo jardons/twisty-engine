@@ -6,6 +6,7 @@ using Twisty.Engine.Geometry.Rotations;
 using Twisty.Engine.Materialization;
 using Twisty.Engine.Operations;
 using Twisty.Engine.Operations.Rubiks;
+using Twisty.Engine.Operations.Skewb;
 using Twisty.Engine.Structure;
 using Twisty.Engine.Structure.Rubiks;
 using Twisty.Engine.Structure.Skewb;
@@ -57,12 +58,12 @@ namespace Twisty.Runner.Services
 		private readonly StandardMaterializer m_Materializer;
 
 		// State fields
-		private IOperationsParser m_CommandParser;
+		private readonly IDictionary<string, IOperationsParser> m_Parsers;
 
 		public RotationCoreService()
 		{
 			m_Materializer = new StandardMaterializer();
-			m_CommandParser = new RubikOperationsParser();
+			m_Parsers = new Dictionary<string, IOperationsParser>();
 		}
 
 		public RotationCoreObject CreateNewCore(string coreTypeId, Action onRotationChange)
@@ -96,8 +97,29 @@ namespace Twisty.Runner.Services
 			if (string.IsNullOrWhiteSpace(command))
 				return;
 
-			var operations = m_CommandParser.Parse(command);
+			var operations = GetParser(core.Id).Parse(command);
 			core.Runner.Execute(operations);
 		}
+
+		#region Private Members
+
+		private IOperationsParser GetParser(string id)
+		{
+			if (m_Parsers.ContainsKey(id))
+				return m_Parsers[id];
+
+			IOperationsParser p = id switch
+			{
+				"Rubik[2]" => new RubikOperationsParser(),
+				"Rubik[3]" => new RubikOperationsParser(),
+				"Skewb" => new SkewbOperationsParser(),
+				_ => throw new ArgumentException("Unknow parser id.", nameof(id)),
+			};
+
+			m_Parsers.Add(id, p);
+			return p;
+		}
+
+		#endregion Private Members
 	}
 }
