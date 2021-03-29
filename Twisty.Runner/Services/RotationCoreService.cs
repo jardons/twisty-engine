@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Twisty.Engine.Geometry.Rotations;
 using Twisty.Engine.Materialization;
@@ -7,6 +8,7 @@ using Twisty.Engine.Operations;
 using Twisty.Engine.Operations.Rubiks;
 using Twisty.Engine.Structure;
 using Twisty.Engine.Structure.Rubiks;
+using Twisty.Engine.Structure.Skewb;
 using Twisty.Runner.Models;
 using Twisty.Runner.Models.Model3d;
 
@@ -15,8 +17,6 @@ namespace Twisty.Runner.Services
 	public interface IRotationCoreService
 	{
 		public RotationCoreObject CreateNewCore(string coreTypeId, Action onRotationChange);
-
-		MaterializedCore Materialize(RotationCoreObject core);
 
 		CoreRotations CalculatePositions(RotationCoreObject core);
 
@@ -67,14 +67,19 @@ namespace Twisty.Runner.Services
 
 		public RotationCoreObject CreateNewCore(string coreTypeId, Action onRotationChange)
 		{
-			RotationCore core = new RubikCube(3);
+			RotationCore core = coreTypeId switch
+			{
+				"Rubik[2]" => new RubikCube(2),
+				"Rubik[3]" => new RubikCube(3),
+				"Skewb" => new SkewbCube(),
+				_ => null,
+			};
+
 			var runner = new OperationRunnerSpy(new OperationRunner(core), onRotationChange);
+			var core3d = new Core3d(coreTypeId, m_Materializer.Materialize(core).Objects.Select(o => new Core3dObject(o)));
 
-			return new RotationCoreObject(core, runner);
+			return new RotationCoreObject(coreTypeId, core, runner, core3d);
 		}
-
-		public MaterializedCore Materialize(RotationCoreObject core)
-			=> m_Materializer.Materialize(core.Core);
 
 		public CoreRotations CalculatePositions(RotationCoreObject core)
 		{

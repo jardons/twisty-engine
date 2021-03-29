@@ -15,9 +15,12 @@ namespace Twisty.Runner.Models.Model3d
 
 		public CoreRotations(IReadOnlyDictionary<string, IReadOnlyList<SimpleRotation3d>> rotations)
 		{
-			m_Rotations = rotations
-				.Select(kvp => new Tuple<string, IEnumerable<Rotation>>(kvp.Key, kvp.Value.Select(r => new Rotation(r))))
-				.ToDictionary((t) => t.Item1, (t) => t.Item2);
+			if (rotations == null)
+				m_Rotations = new Dictionary<string, IEnumerable<Rotation>>();
+			else
+				m_Rotations = rotations
+					.Select(kvp => new Tuple<string, IEnumerable<Rotation>>(kvp.Key, kvp.Value.Select(r => new Rotation(r))))
+					.ToDictionary((t) => t.Item1, (t) => t.Item2);
 		}
 
 		/// <summary>
@@ -26,6 +29,6 @@ namespace Twisty.Runner.Models.Model3d
 		/// <param name="blockId">Id of the rotated block.</param>
 		/// <returns>Ordered collection of rotation to apply to the rotated block.</returns>
 		public IEnumerable<Rotation> GetRotations(string blockId)
-			=> m_Rotations[blockId];
+			=> m_Rotations.ContainsKey(blockId) ? m_Rotations[blockId] : Array.Empty<Rotation>();
 	}
 }

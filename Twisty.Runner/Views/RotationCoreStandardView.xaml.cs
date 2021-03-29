@@ -27,13 +27,13 @@ namespace Twisty.Runner.Views
 
 		private static readonly DependencyProperty ObjectStructuresProperty =
 			DependencyProperty.Register("ObjectStructures",
-				typeof(IEnumerable<Core3dObject>),
+				typeof(Core3d),
 				typeof(RotationCoreStandardView),
 				new FrameworkPropertyMetadata(
-					Array.Empty<Core3dObject>(),
+					null,
 					FrameworkPropertyMetadataOptions.AffectsRender,
 					(DependencyObject defectImageControl, DependencyPropertyChangedEventArgs eventArgs) =>
-						((RotationCoreStandardView)defectImageControl).ObjectStructures = eventArgs.NewValue as IEnumerable<Core3dObject>
+						((RotationCoreStandardView)defectImageControl).ObjectStructures = eventArgs.NewValue as Core3d
 				));
 
 		private static readonly DependencyProperty ObjectRotationsProperty =
@@ -44,7 +44,7 @@ namespace Twisty.Runner.Views
 					null,
 					FrameworkPropertyMetadataOptions.AffectsRender,
 					(DependencyObject defectImageControl, DependencyPropertyChangedEventArgs eventArgs) =>
-						((RotationCoreStandardView)defectImageControl).ObjectRotations = eventArgs.NewValue as CoreRotations
+						((RotationCoreStandardView)defectImageControl).ObjectRotations = (CoreRotations)eventArgs.NewValue
 				));
 
 		#endregion Binding Properties
@@ -58,8 +58,6 @@ namespace Twisty.Runner.Views
 			InitializeComponent();
 
 			this.DataContext.CameraPosition = new Point3D(6.0, -3.0, 3.0);
-
-			CreateCanvasContent();
 		}
 
 		#region Public Properties
@@ -67,10 +65,9 @@ namespace Twisty.Runner.Views
 		public new RotationCoreStandardViewModel DataContext
 			=> (RotationCoreStandardViewModel)base.DataContext;
 
-		public IEnumerable<Core3dObject> ObjectStructures
+		public Core3d ObjectStructures
 		{
-			get => this.GetValue(ObjectStructuresProperty) as IEnumerable<Core3dObject>
-				?? Array.Empty<Core3dObject>();
+			get => this.GetValue(ObjectStructuresProperty) as Core3d;
 			set
 			{
 				this.SetValue(ObjectStructuresProperty, value);
@@ -80,7 +77,7 @@ namespace Twisty.Runner.Views
 
 		public CoreRotations ObjectRotations
 		{
-			get => this.GetValue(ObjectRotationsProperty) as CoreRotations;
+			get => (CoreRotations)this.GetValue(ObjectRotationsProperty);
 			set
 			{
 				this.SetValue(ObjectRotationsProperty, value);
@@ -106,8 +103,11 @@ namespace Twisty.Runner.Views
 
 			m_3dObjects.Clear();
 
+			if (this.ObjectStructures == null)
+				return;
+
 			// Create new instance.
-			foreach (Core3dObject o in this.ObjectStructures)
+			foreach (Core3dObject o in this.ObjectStructures.Objects)
 			{
 				var v = CreateVisuals(o);
 

@@ -27,6 +27,7 @@ namespace Twisty.Runner
 			m_Provider = m_Services.BuildServiceProvider();
 
 			this.Resources["ViewModelLocator"] = new ViewModelLocator(m_Provider);
+			this.Resources["AppCommands"] = new AppCommands();
 		}
 
 		private void OnStartup(object sender, StartupEventArgs e)
