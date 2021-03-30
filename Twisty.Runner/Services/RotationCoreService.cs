@@ -58,6 +58,7 @@ namespace Twisty.Runner.Services
 
 		// Fixed Tools
 		private readonly StandardMaterializer m_Materializer;
+		private readonly CoreFactory m_Factory;
 
 		// State fields
 		private readonly IDictionary<string, IOperationsParser> m_Parsers;
@@ -70,14 +71,7 @@ namespace Twisty.Runner.Services
 
 		public RotationCoreObject CreateNewCore(string coreTypeId, Action onRotationChange)
 		{
-			RotationCore core = coreTypeId switch
-			{
-				"Rubik[2]" => new RubikCube(2),
-				"Rubik[3]" => new RubikCube(3),
-				"Skewb" => new SkewbCube(),
-				_ => null,
-			};
-
+			RotationCore core = m_Factory.CreateCore(coreTypeId);
 			var runner = new OperationRunnerSpy(new OperationRunner(core), onRotationChange);
 			var core3d = new Core3d(coreTypeId, m_Materializer.Materialize(core).Objects.Select(o => new Core3dObject(o)));
 
