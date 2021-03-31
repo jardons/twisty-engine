@@ -318,7 +318,6 @@ namespace Twisty.Engine.Tests.Geometry
 			// 3. Verify
 			GeometryAssert.SameVector(expected, r);
 		}
-
 		
 		#endregion Test Methods
 	}

@@ -69,7 +69,6 @@ namespace Twisty.Engine.Tests.Geometry
 			GeometryAssert.SamePoint(expected, result);
 		}
 		
-
 		#endregion Test Methods
 	}
 }

@@ -244,10 +244,10 @@ namespace Twisty.Engine.Geometry
 			// A2t2B1 - B2t2A1 = Y2A1 - Y1A1 - X2B1 + X1B1
 			// t2(A2B1 - B2A1) = (Y2-Y1)A1 + (X1-X2)B1
 			// t2 = ((Y2-Y1)A1 + (X1-X2)B1) / (A2B1 - B2A1)
-			double divisor = line.A * this.B - line.B * this.A;
+			double divisor = (line.A * this.B) - (line.B * this.A);
 			if (!divisor.IsZero())
 			{
-				double t = ((line.Y - this.Y) * this.A + (this.X - line.X) * this.B) / divisor;
+				double t = (((line.Y - this.Y) * this.A) + ((this.X - line.X) * this.B)) / divisor;
 				var p = line.GetValueForT(t);
 
 				// If we find a point not included in current line, both line don't intersect.
@@ -256,10 +256,10 @@ namespace Twisty.Engine.Geometry
 			}
 
 			// If previous formula cause a division by zero, replicate the same logic on another pair of coordinate of the vector.
-			divisor = line.A * this.C - line.C * this.A;
+			divisor = (line.A * this.C) - (line.C * this.A);
 			if (!divisor.IsZero())
 			{
-				double t = ((line.Z - this.Z) * this.A + (this.X - line.X) * this.C) / divisor;
+				double t = (((line.Z - this.Z) * this.A) + ((this.X - line.X) * this.C)) / divisor;
 				var p = line.GetValueForT(t);
 
 				// If we find a point not included in current line, both line don't intersect.
@@ -268,10 +268,10 @@ namespace Twisty.Engine.Geometry
 			}
 
 			// Last possible combination
-			divisor = line.B * this.C - line.C * this.B;
+			divisor = (line.B * this.C) - (line.C * this.B);
 			if (!divisor.IsZero())
 			{
-				double t = ((line.Z - this.Z) * this.B + (this.Y - line.Y) * this.C) / divisor;
+				double t = (((line.Z - this.Z) * this.B) + ((this.Y - line.Y) * this.C)) / divisor;
 				var p = line.GetValueForT(t);
 
 				// If we find a point not included in current line, both line don't intersect.
@@ -315,9 +315,9 @@ namespace Twisty.Engine.Geometry
 
 		private Cartesian3dCoordinate GetValueForT(double t)
 			=> new Cartesian3dCoordinate(
-				this.X + this.A * t,
-				this.Y + this.B * t,
-				this.Z + this.C * t
+				this.X + (this.A * t),
+				this.Y + (this.B * t),
+				this.Z + (this.C * t)
 			);
 
 		#endregion Private Methods
