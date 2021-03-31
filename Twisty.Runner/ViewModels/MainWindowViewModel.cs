@@ -21,6 +21,7 @@ namespace Twisty.Runner.ViewModels
 		// Internal models
 		private RotationCoreObject m_Core;
 		private CoreRotations m_VisualPositions;
+		private string m_MaterializerId;
 
 		public MainWindowViewModel(IRotationCoreService rotationCoreService)
 		{
@@ -29,6 +30,14 @@ namespace Twisty.Runner.ViewModels
 
 			this.SelectCore = new RelayCommand(
 				(p) => this.LoadCore((string)p)
+			);
+
+			this.SelectMaterializer = new RelayCommand(
+				(p) =>
+				{
+					this.MaterializerId = (string)p;
+					this.LoadCore(this.Core.Id);
+				}
 			);
 		}
 
@@ -57,7 +66,20 @@ namespace Twisty.Runner.ViewModels
 			}
 		}
 
+		public string MaterializerId
+		{
+			get => m_MaterializerId ?? "stickerless";
+			set
+			{
+				m_MaterializerId = value;
+				if (PropertyChanged != null)
+					this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(MaterializerId)));
+			}
+		}
+
 		public ICommand SelectCore { get; }
+
+		public ICommand SelectMaterializer { get; }
 
 		#region INotifyPropertyChanged Members
 
@@ -67,7 +89,7 @@ namespace Twisty.Runner.ViewModels
 
 		private void LoadCore(string id)
 		{
-			this.Core = m_RotationCoreService.CreateNewCore(id, () => RefreshPositions());
+			this.Core = m_RotationCoreService.CreateNewCore(id, MaterializerId, () => RefreshPositions());
 			this.RefreshPositions();
 		}
 

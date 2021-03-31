@@ -17,7 +17,7 @@ namespace Twisty.Runner.Services
 {
 	public interface IRotationCoreService
 	{
-		public RotationCoreObject CreateNewCore(string coreTypeId, Action onRotationChange);
+		public RotationCoreObject CreateNewCore(string coreTypeId, string materializerId, Action onRotationChange);
 
 		CoreRotations CalculatePositions(RotationCoreObject core);
 
@@ -57,7 +57,6 @@ namespace Twisty.Runner.Services
 		#endregion Private Classes
 
 		// Fixed Tools
-		private readonly StandardMaterializer m_Materializer;
 		private readonly CoreFactory m_Factory;
 
 		// State fields
@@ -65,15 +64,17 @@ namespace Twisty.Runner.Services
 
 		public RotationCoreService()
 		{
-			m_Materializer = new StandardMaterializer();
+			m_Factory = new CoreFactory();
 			m_Parsers = new Dictionary<string, IOperationsParser>();
 		}
 
-		public RotationCoreObject CreateNewCore(string coreTypeId, Action onRotationChange)
+		public RotationCoreObject CreateNewCore(string coreTypeId, string materializerId, Action onRotationChange)
 		{
+			var materializer = GetMaterializer(materializerId);
+
 			RotationCore core = m_Factory.CreateCore(coreTypeId);
 			var runner = new OperationRunnerSpy(new OperationRunner(core), onRotationChange);
-			var core3d = new Core3d(coreTypeId, m_Materializer.Materialize(core).Objects.Select(o => new Core3dObject(o)));
+			var core3d = new Core3d(coreTypeId, materializer.Materialize(core).Objects.Select(o => new Core3dObject(o)));
 
 			return new RotationCoreObject(coreTypeId, core, runner, core3d);
 		}
@@ -126,6 +127,14 @@ namespace Twisty.Runner.Services
 			m_Parsers.Add(id, p);
 			return p;
 		}
+
+		private IMaterializer GetMaterializer(string materializerId)
+			=> materializerId switch
+			{
+				"fixed" => new ResizedMaterializer(new StandardMaterializer(), 0.25, ResizingMode.Fixed),
+				"ratio" => new ResizedMaterializer(new StandardMaterializer(), 0.6, ResizingMode.Ratio),
+				_ => new StandardMaterializer()
+			};
 
 		#endregion Private Members
 	}

@@ -15,7 +15,7 @@ namespace Twisty.Runner.Models.Model3d
 		public Core3dSurface(MaterializedObjectPart p)
 		{
 			this.FrontColor = GetColor(p.ColorId);
-			this.BackColor = GetColor(null);
+			this.BackColor = GetColor(p.ColorId);
 			this.Points = p.Points.Select(p => p.ToWpfPoint3D()).ToList();
 		}
 

@@ -7,7 +7,7 @@ using Twisty.Engine.Structure;
 
 namespace Twisty.Engine.Materialization
 {
-	public class StandardMaterializer
+	public class StandardMaterializer : IMaterializer
 	{
 		public StandardMaterializer()
 		{
@@ -33,7 +33,7 @@ namespace Twisty.Engine.Materialization
 				// Get the face from the cube as the block face don't contain face Plane coordinates.
 				CoreFace cubeFace = core.GetFace(face.Id);
 
-				Cartesian3dCoordinate center = this.GetCenter(core, b.Id, face.Id);
+				Cartesian3dCoordinate center = this.GetInternalPoint(core, b.Id, face.Id);
 				var points = this.GetFaceVertices(core, cubeFace, center);
 				parts.Add(new MaterializedObjectPart(face.Id, points));
 			}
@@ -41,7 +41,7 @@ namespace Twisty.Engine.Materialization
 			return new MaterializedObject(b.Id, parts);
 		}
 
-		public Cartesian3dCoordinate GetCenter(RotationCore core, string blockId, string faceId)
+		private Cartesian3dCoordinate GetInternalPoint(RotationCore core, string blockId, string faceId)
 		{
 			CoreFace cubeFace = core.GetFace(faceId);
 			Block b = core.GetBlock(blockId);
@@ -58,7 +58,7 @@ namespace Twisty.Engine.Materialization
 		/// <param name="face">Face of the original RotationCore from which the block face will be defined.</param>
 		/// <param name="internalPoint">Can be any point inside the block face to evaluate.</param>
 		/// <returns>The sorted list of vertices surrounding the block face containing the provided point on the provided CoreFace.</returns>
-		public IList<Cartesian3dCoordinate> GetFaceVertices(RotationCore core, CoreFace face, Cartesian3dCoordinate internalPoint)
+		private IList<Cartesian3dCoordinate> GetFaceVertices(RotationCore core, CoreFace face, Cartesian3dCoordinate internalPoint)
 		{
 			var planes = this.GetFaceBondaries(core, face, internalPoint);
 			List<Cartesian3dCoordinate> points = new List<Cartesian3dCoordinate>(planes.Count);
@@ -96,7 +96,7 @@ namespace Twisty.Engine.Materialization
 			return points;
 		}
 
-		public IList<IPlanar> GetFaceBondaries(RotationCore core, CoreFace face, Cartesian3dCoordinate internalPoint)
+		private IList<IPlanar> GetFaceBondaries(RotationCore core, CoreFace face, Cartesian3dCoordinate internalPoint)
 		{
 			var facesPlanes = core.Faces.Where(f => f.Id != face.Id);
 			var axisPlanes = core.Axes.SelectMany(a => a.Layers);
@@ -213,8 +213,8 @@ namespace Twisty.Engine.Materialization
 		/// <param name="p">Coordinate of the point to validate.</param>
 		/// <returns>A boolean indicating if whether the point is inside the RotationCore scope or not</returns>
 		private bool IsPointInCore(Cartesian3dCoordinate p) =>
-		p.X >= -1.0 && p.X <= 1.0
-			&& p.Y >= -1.0 && p.Y <= 1.0
-			&& p.Z >= -1.0 && p.Z <= 1.0;
+			p.X >= -1.0 && p.X <= 1.0
+				&& p.Y >= -1.0 && p.Y <= 1.0
+				&& p.Z >= -1.0 && p.Z <= 1.0;
 	}
 }

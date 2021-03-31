@@ -25,6 +25,14 @@
 				<MenuItem Header="_Exit"
 					Command="{Binding Exit, Source={StaticResource AppCommands}}"/>
 			</MenuItem>
+			<MenuItem Header="_View">
+				<MenuItem Header="_Stickerless"
+						CommandParameter="stickerless"
+						Command="{Binding DataContext.SelectMaterializer, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" />
+				<MenuItem Header="_Topologic"
+						CommandParameter="ratio"
+						Command="{Binding DataContext.SelectMaterializer, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" />
+			</MenuItem>
 		</Menu>
 		<Grid>
 			<Grid.ColumnDefinitions>
