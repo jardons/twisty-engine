@@ -5,15 +5,15 @@ namespace Twisty.Engine.Geometry
 	/// <summary>
 	/// Converter class allowing to project 3D coordinates on a 2D Plane.
 	/// </summary>
-	public class CartesianCoordinatesConverter
+	public class CartesianCoordinatesFlattener
 	{
 		private readonly Func<Cartesian3dCoordinate, Cartesian2dCoordinate> m_From3dTo2d;
 
 		/// <summary>
-		/// Create a new Cartesian3dCoordinatesConverter for a specific Plane.
+		/// Create a new CartesianCoordinatesFlattener for a specific Plane.
 		/// </summary>
 		/// <param name="p">Plane on which all converted coordinates will be projected.</param>
-		public CartesianCoordinatesConverter(Plane p)
+		public CartesianCoordinatesFlattener(Plane p)
 		{
 			this.Plane = p;
 			m_From3dTo2d = Get2dConvertion(p);
@@ -25,18 +25,31 @@ namespace Twisty.Engine.Geometry
 		public Plane Plane { get; }
 
 		/// <summary>
-		/// COnvert the provided 3D coordiantes to their projected 2D counterpart on the Plane used to create this Cartesian3dCoordinatesConverter.
+		/// Convert the provided 3D coordiantes to their projected 2D counterpart on the Plane used to create this CartesianCoordinatesFlattener.
 		/// </summary>
-		/// <param name="c3d">2D coordinates to project on the Pland and converts in 2D.</param>
-		/// <returns>2D coordinates projectes on the Plane.</returns>
+		/// <param name="c3d">2D coordinates to project on the Plane and converts in 2D.</param>
+		/// <returns>2D coordinates projected on the flattening reference Plane.</returns>
 		public Cartesian2dCoordinate ConvertTo2d(Cartesian3dCoordinate c3d) => m_From3dTo2d(c3d);
+
+		/// <summary>
+		/// Gets the 2D coordinates on this flattener plane of the closest intersection point with another provided Plane.
+		/// </summary>
+		/// <param name="p">Plane intersecting the current Plane.</param>
+		/// <param name="point">3D coordinates of the point of reference used to calculate the closest point.</param>
+		/// <returns>2D coordinates of the closest intersection point projected on the flattening reference Plane.</returns>
+		public Cartesian2dCoordinate GetClosestPoint(Plane p, Cartesian3dCoordinate point)
+		{
+			var l = this.Plane.GetIntersection(p);
+			var perpendicular = l.GetPerpendicular(point);
+			return ConvertTo2d(l.GetIntersection(perpendicular));
+		}
 
 		#region Private Members
 
 		/// <summary>
 		/// Gets the convertion function the most adapted to the provided Plane.
 		/// </summary>
-		/// <param name="p">PLane used to project the points in 2D.</param>
+		/// <param name="p">Plane used to project the points in 2D.</param>
 		/// <returns>A function that can be used to convert 3D coordinates to 2D.</returns>
 		private Func<Cartesian3dCoordinate, Cartesian2dCoordinate> Get2dConvertion(Plane p)
 		{

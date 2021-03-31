@@ -23,7 +23,7 @@ namespace Twisty.Engine.Structure
 		public CornerBlock(Cartesian3dCoordinate initialPosition, BlockFace face1, BlockFace face2, BlockFace face3)
 			: base(new BlockFace[] { face1, face2, face3 })
 		{
-			base.Position = initialPosition;
+			base.InitialPosition = initialPosition;
 
 			// Each corner block is unique in the cube and be identified by the combination of his 3 faces.
 			m_Id = $"C{face1.Id}{face2.Id}{face3.Id}";

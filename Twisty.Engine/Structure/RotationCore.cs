@@ -8,7 +8,7 @@ namespace Twisty.Engine.Structure
 	/// <summary>
 	/// Class describing the object that will represent the central rotation point around which blocks will rotate.
 	/// </summary>
-	public abstract class RotationCore
+	public abstract class RotationCore : IRotatable
 	{
 		#region Private Members
 
@@ -19,6 +19,8 @@ namespace Twisty.Engine.Structure
 		private Dictionary<string, CoreFace> m_Faces;
 
 		#endregion Private Members
+
+		#region ctor(s)
 
 		/// <summary>
 		/// Create a new RotationCore object
@@ -37,6 +39,8 @@ namespace Twisty.Engine.Structure
 			foreach (var f in faces)
 				m_Faces.Add(f.Id, f);
 		}
+
+		#endregion ctor(s)
 
 		#region Public Properties
 
@@ -70,7 +74,7 @@ namespace Twisty.Engine.Structure
 			if (!m_Faces.ContainsKey(faceId))
 				throw new ArgumentNullException("Face Id should exist.", nameof(faceId));
 
-			return m_Blocks.Where(b => b.GetBlockFace(m_Faces[faceId].Coordinates.Normal) != null);
+			return m_Blocks.Where(b => b.GetBlockFace(m_Faces[faceId].Plane.Normal) != null);
 		}
 
 		/// <summary>
@@ -89,48 +93,78 @@ namespace Twisty.Engine.Structure
 		public RotationAxis GetAxis(string axisId) => m_Axes[axisId];
 
 		/// <summary>
+		/// Gets a block using its id.
+		/// </summary>
+		/// <param name="blockId">Id of the block we are looking up.</param>
+		/// <returns>Block for the corresponding or null if not found.</returns>
+		public Block GetBlock(string blockId) => m_Blocks.FirstOrDefault(b => b.Id == blockId);
+
+		/// <summary>
 		/// Gets a face using its id.
 		/// </summary>
 		/// <param name="faceId">Id of the face we are looking up.</param>
 		/// <returns>Face for the corresponding or null if not found.</returns>
 		public CoreFace GetFace(string faceId) => m_Faces[faceId];
 
-		#endregion Public Methods
-
-		#region Protected Methods
-
 		/// <summary>
-		/// Perform the switch of positions of blocks and their rotation on themselve.
+		/// Rotate a face around a specified rotation axis.
 		/// </summary>
-		/// <typeparam name="T">Type of blocks available in the collection to switch and rotate.</typeparam>
-		/// <param name="blocks">Sorted collection for which position will be switched. Each block will take the position of the next one.</param>
-		/// <param name="rotationAxis">Axis used for the rotation of the blocks.</param>
-		/// <param name="theta">Angle in radians of the rotations to execute on each blocks.</param>
-		protected void SwitchAndRotate<T>(IList<T> blocks, Cartesian3dCoordinate rotationAxis, double theta)
-			where T : Block
+		/// <param name="axis">Rotation axis aroung which the rotation will be executed.</param>
+		/// <param name="theta">Angle of the rotation to execute.</param>
+		/// <param name="distance">
+		/// Distance of the center above which blocks will be rotated.
+		/// If null, All blocks around the axis are rotated.
+		/// </param>
+		public void RotateAround(RotationAxis axis, double theta, LayerSeparator aboveLayer = null)
 		{
-			// No switch to perform if their is not at least 2 blocks.
-			if (blocks.Count > 1)
-			{
-				// Store position of the first block that need to be set to the last one.
-				var firstPosition = blocks[0].Position;
+			if (axis == null)
+				throw new ArgumentNullException(nameof(axis));
 
-				// Update all intermediate blocks positions.
-				for (int i = 0; i < blocks.Count - 1; ++i)
-					blocks[i].Position = blocks[i + 1].Position;
+			if (aboveLayer == null)
+				aboveLayer = axis.GetUpperLayer();
 
-				// Finalize the switch by replacing the position of the last one with the one from the first one.
-				blocks[blocks.Count - 1].Position = firstPosition;
-			}
-
-			if (!theta.IsZero())
-			{
-				// Rotate the block aroung themselve.
-				foreach (var b in blocks)
-					b.RotateAround(rotationAxis, theta);
-			}
+			var blocks = GetBlocksAbove(aboveLayer.Plane);
+			this.Rotate(blocks, axis.Vector, theta);
 		}
 
-		#endregion Protected Methods
+		#endregion Public Methods
+
+		#region Private Members
+
+		/// <summary>
+		/// Gets all blocks of the core above a specific plane.
+		/// </summary>
+		/// <param name="p">Plane above which the selected blocks should be present.</param>
+		/// <returns>Collection of blocks above the provided Plane.</returns>
+		private IEnumerable<Block> GetBlocksAbove(Plane p)
+			=> this.Blocks.Where(b => p.IsAbovePlane(b.Position));
+
+		/// <summary>
+		/// Gets all blocks of the core between two specific plane.
+		/// </summary>
+		/// <param name="above">Plane above which the selected blocks should be present.</param>
+		/// <param name="below">Plane below which the selected blocks should be present.</param>
+		/// <returns>Collection of blocks between both the provided Planes.</returns>
+		private IEnumerable<Block> GetBlocksBetween(IPlanar above, IPlanar below)
+			=> this.Blocks.Where(b => below.Plane.IsAbovePlane(b.Position) && above.Plane.IsBelowPlane(b.Position));
+
+		/// <summary>
+		/// Perform the rotations of blocks around the axis.
+		/// </summary>
+		/// <typeparam name="T">Type of blocks available in the collection to rotate.</typeparam>
+		/// <param name="blocks">Collection for which position will be rotated.</param>
+		/// <param name="rotationAxis">Axis used for the rotation of the blocks.</param>
+		/// <param name="theta">Angle in radians of the rotations to execute on each blocks.</param>
+		private void Rotate(IEnumerable<Block> blocks, Cartesian3dCoordinate rotationAxis, double theta)
+		{
+			if (theta.IsZero())
+				return;
+
+			// Rotate the block aroung themselve.
+			foreach (var b in blocks)
+				b.RotateAround(rotationAxis, theta);
+		}
+
+		#endregion Private Members
 	}
 }

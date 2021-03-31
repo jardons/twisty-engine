@@ -1,13 +1,12 @@
 ﻿using System;
 using Twisty.Engine.Geometry;
+using Twisty.Engine.Tests.Assertions;
 using Xunit;
 
 namespace Twisty.Engine.Tests.Geometry
 {
 	public class ParametricLineTest
 	{
-		private const int PRECISION_DOUBLE = 10;
-
 		#region Test Data
 
 		//(Cartesian3dCoordinate p1, Cartesian3dCoordinate p2, double x, double xt, double y, double yt, double z, double zt)
@@ -36,7 +35,7 @@ namespace Twisty.Engine.Tests.Geometry
 			// Nothing to prepare
 
 			// 2. Execute
-			Action a = () => new ParametricLine(pointCoordinates);
+			void a() => new ParametricLine(pointCoordinates);
 
 			// 3. Verify
 			Assert.Throws<ArgumentException>(a);
@@ -55,12 +54,12 @@ namespace Twisty.Engine.Tests.Geometry
 			ParametricLine o = new ParametricLine(coordinates);
 
 			// 3. Verify
-			Assert.Equal(x, o.X, PRECISION_DOUBLE);
-			Assert.Equal(xt, o.A, PRECISION_DOUBLE);
-			Assert.Equal(y, o.Y, PRECISION_DOUBLE);
-			Assert.Equal(yt, o.B, PRECISION_DOUBLE);
-			Assert.Equal(z, o.Z, PRECISION_DOUBLE);
-			Assert.Equal(zt, o.C, PRECISION_DOUBLE);
+			Assert.Equal(x, o.X, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(xt, o.A, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(y, o.Y, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(yt, o.B, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(z, o.Z, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(zt, o.C, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		[Theory]
@@ -74,12 +73,12 @@ namespace Twisty.Engine.Tests.Geometry
 			ParametricLine o = ParametricLine.FromTwoPoints(p1, p2);
 
 			// 3. Verify
-			Assert.Equal(x, o.X, PRECISION_DOUBLE);
-			Assert.Equal(xt, o.A, PRECISION_DOUBLE);
-			Assert.Equal(y, o.Y, PRECISION_DOUBLE);
-			Assert.Equal(yt, o.B, PRECISION_DOUBLE);
-			Assert.Equal(z, o.Z, PRECISION_DOUBLE);
-			Assert.Equal(zt, o.C, PRECISION_DOUBLE);
+			Assert.Equal(x, o.X, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(xt, o.A, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(y, o.Y, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(yt, o.B, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(z, o.Z, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(zt, o.C, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		[Theory]
@@ -102,6 +101,154 @@ namespace Twisty.Engine.Tests.Geometry
 
 			// 3. Verify
 			Assert.Equal(result, b);
+		}
+
+		[Theory]
+		// Exceptions for origin point
+		[InlineData("(0 0 0 1 0 0)", "(1 0 0)", true)]
+		[InlineData("(0 0 0 1 0 0)", "(2 0 0)", true)]
+		[InlineData("(0 0 0 1 0 0)", "(1 1 1)", false)]
+		// Exceptions for divide per 0.0 (2 value to 0)
+		[InlineData("(1 1 1 1 0 0)", "(1 1 1)", true)]
+		[InlineData("(1 1 1 1 0 0)", "(2 1 1)", true)]
+		[InlineData("(1 1 1 1 0 0)", "(2 1 0)", false)]
+		[InlineData("(1 1 1 0 1 0)", "(1 1 1)", true)]
+		[InlineData("(1 1 1 0 1 0)", "(1 2 1)", true)]
+		[InlineData("(1 1 1 0 1 0)", "(1 2 0)", false)]
+		[InlineData("(1 1 1 0 0 1)", "(1 1 1)", true)]
+		[InlineData("(1 1 1 0 0 1)", "(1 1 2.5)", true)]
+		[InlineData("(1 1 1 0 0 1)", "(1 1.1 2.5)", false)]
+		// Exceptions for divide per 0.0 (1 value to 0)
+		[InlineData("(4 4 4 1 1 0)", "(4 4 4)", true)]
+		[InlineData("(4 4 4 1 1 0)", "(4.5 4.5 4)", true)]
+		[InlineData("(4 4 4 1 1 0)", "(4 4.5 4)", false)]
+		// Case without division per 0.0
+		[InlineData("(1 1 1 1 1 1)", "(1 1 1)", true)]
+		[InlineData("(1 1 1 1 1 1)", "(2 2 2)", true)]
+		[InlineData("(1 1 1 1 1 1)", "(1 2 2)", false)]
+		[InlineData("(17 21 39 1.2 8 0.5)", "(13.85 0 1)", false)]
+		public void ParametricLine_Contains_BeExpected(string lineCoordinates, string pointCoordinates, bool expected)
+		{
+			// 1. Prepare
+			Cartesian3dCoordinate p = new Cartesian3dCoordinate(pointCoordinates);
+			ParametricLine l =  new ParametricLine(lineCoordinates);
+
+			// 2. Execute
+			bool b = l.Contains(p);
+
+			// 3. Verify
+			Assert.Equal(expected, b);
+		}
+
+		[Theory]
+		// Same lines
+		[InlineData("(1 0 0 1 1 1)", "(-1 0 0 1 1 1)", true)]
+		[InlineData("(1 0 0 1 1 1)", "(-1 0 0 -1 -1 -1)", true)]
+		// Parallels lines
+		[InlineData("(1 0 0 17 2 3)", "(-1 27 33.5 17 2 3)", true)]
+		[InlineData("(1 0 0 10 2 4)", "(9 0 22 20 4 8)", true)]
+		// Non-Parallels lines
+		[InlineData("(1 0 0 17 2 3)", "(-1 27 33.5 17 2 3.1)", false)]
+		[InlineData("(1 0 0 17 2 3)", "(-1 27 33.5 -17 2 3)", false)]
+		public void ParametricLine_IsParallelToLine_BeExpected(string line1Coordinates, string line2Coordinates, bool expected)
+		{
+			// 1. Prepare
+			ParametricLine line1 = new ParametricLine(line1Coordinates);
+			ParametricLine line2 = new ParametricLine(line2Coordinates);
+
+			// 2. Execute
+			bool b1 = line1.IsParallelTo(line2);
+			bool b2 = line2.IsParallelTo(line1);
+
+			// 3. Verify
+			Assert.Equal(expected, b1);
+			Assert.Equal(expected, b2);
+		}
+
+		[Theory]
+		[InlineData("(1 1 1 2 0 0)", "(1 2 1)", 1)]
+		[InlineData("(1.32 2.7 3.4 5.6 7.8 11.4)", "(0.2 0.5 2.3)", 1.2164857559899611)]
+		public void ParametricLine_GetDistanceTo_BeExpected(string lineCoordiantes, string ccCoordinate, double expected)
+		{
+			// 1. Prepare
+			Cartesian3dCoordinate p = new Cartesian3dCoordinate(ccCoordinate);
+			ParametricLine line = new ParametricLine(lineCoordiantes);
+
+			// 2. Execute
+			double r = line.GetDistanceTo(p);
+
+			// 3. Verify
+			Assert.Equal(expected, r, GeometryAssert.PRECISION_DOUBLE);
+		}
+
+		[Theory]
+		[InlineData("(0 0 0 1 0 0)", "(0 0 1)", "(0 0 0 0 0 1)")]
+		[InlineData("(1 0 0 1 0 0)", "(0 0 1)", "(0 0 0 0 0 1)")]
+		[InlineData("(1 0 0 1 0 0)", "(0 0 -1)", "(0 0 0 0 0 -1)")]
+		[InlineData("(0 0 0 1 1 0)", "(0 2 0)", "(0 2 0 -1 1 0)")]
+		[InlineData("(0 0 0 1 1 1)", "(0 2 0)", "(0 2 0 -0.66666666666 1.33333333333 -0.66666666666)")]
+		[InlineData("(1 1 1 1 0 0)", "(0 0 1)", "(0 0 1 0 -1 0)")]
+		public void ParametricLine_GetPerpendicular_BeExpected(string lineCoordinates, string pointCoordinate, string expectedCoordinate)
+		{
+			// 1. Prepare
+			Cartesian3dCoordinate p = new Cartesian3dCoordinate(pointCoordinate);
+			ParametricLine line = new ParametricLine(lineCoordinates);
+			ParametricLine e = new ParametricLine(expectedCoordinate);
+
+			// 2. Execute
+			var r = line.GetPerpendicular(p);
+
+			// 3. Verify
+			GeometryAssert.SameLine(e, r);
+		}
+
+		[Theory]
+		[InlineData("(0 0 0 1 0 0)", "(0 0 0 0 1 0)", "(0 0 0)")]
+		[InlineData("(1 1 1 1 0 0)", "(1 1 1 0 1 0)", "(1 1 1)")]
+		[InlineData("(0 1 1 1 0 0)", "(1 0 1 0 1 0)", "(1 1 1)")]
+		[InlineData("(1 1 0 0 0 1)", "(1 0 1 0 1 0)", "(1 1 1)")]
+		[InlineData("(0 1 1 1 0 0)", "(1 1 0 0 0 1)", "(1 1 1)")]
+		[InlineData("(0 0 0 1 0 0)", "(0 0 0 0 -1 0)", "(0 0 0)")]
+		[InlineData("(1 1 1 1 0 0)", "(1 1 1 0 -1 0)", "(1 1 1)")]
+		[InlineData("(0 1 1 1 0 0)", "(1 0 1 0 -1 0)", "(1 1 1)")]
+		[InlineData("(1 1 0 0 0 1)", "(1 0 1 0 -1 0)", "(1 1 1)")]
+		[InlineData("(0 1 1 1 0 0)", "(1 1 0 0 0 -1)", "(1 1 1)")]
+		[InlineData("(0 0 0 1 4 5)", "(0 0 0 3 1 8)", "(0 0 0)")]
+		[InlineData("(3 4 5 1 4 5)", "(3 4 5 3 1 8)", "(3 4 5)")]
+		public void ParametricLine_GetIntersection_BeExpected(string line1Coordinates, string line2Coordinates, string expectedCoordinate)
+		{
+			// 1. Prepare
+			ParametricLine l1 = new ParametricLine(line1Coordinates);
+			ParametricLine l2 = new ParametricLine(line2Coordinates);
+			Cartesian3dCoordinate e = new Cartesian3dCoordinate(expectedCoordinate);
+
+			// 2. Execute
+			var r1 = l1.GetIntersection(l2);
+			var r2 = l2.GetIntersection(l1);
+
+			// 3. Verify
+			GeometryAssert.SamePoint(e, r1);
+			GeometryAssert.SamePoint(e, r2);
+		}
+
+		[Theory]
+		[InlineData("(0 0 0 1 0 0)", "(0 1 0 1 0 0)")]
+		[InlineData("(0 0 0 1 0 0)", "(0 0 1 1 0 0)")]
+		[InlineData("(17 21 39 1.2 8 0.5)", "(5 7 8 1.2 8 0.5)")]
+		[InlineData("(17 21 39 1.2 8 0.5)", "(0 0 1 1 0 0)")]
+		public void ParametricLine_GetIntersectionWhenImpossible_ThrowGeometricException(string line1Coordinates, string line2Coordinates)
+		{
+			// 1. Prepare
+			ParametricLine l1 = new ParametricLine(line1Coordinates);
+			ParametricLine l2 = new ParametricLine(line2Coordinates);
+
+			// 2. Execute
+			void a1() => l1.GetIntersection(l2);
+			void a2() => l2.GetIntersection(l1);
+
+			// 3. Verify
+			Assert.Throws<GeometricException>(a1);
+			Assert.Throws<GeometricException>(a2);
 		}
 
 		#endregion Test Methods

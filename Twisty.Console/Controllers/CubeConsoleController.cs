@@ -13,7 +13,7 @@ namespace Twisty.Bash.Controllers
 	public abstract class CubeConsoleController<T> : BaseConsoleController<T>
 		where T : CubicRotationCore
 	{
-		protected CubeConsoleController(T rotationCore, IOperationsParser<T> parser)
+		protected CubeConsoleController(T rotationCore, IOperationsParser parser)
 			: base(rotationCore, parser)
 		{
 		}

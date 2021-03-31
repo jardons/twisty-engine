@@ -17,7 +17,7 @@ namespace Twisty.Engine.Structure.Rubiks
 		/// <param name="n">Indicate the number of rows per face of the cube that is currently generated.</param>
 		/// <exception cref="ArgumentException">Size of the Rubik's Cube should be bigger than 1.</exception>
 		public RubikCube(int n)
-			: base(GenerateBlocks(n), GenerateAxes())
+			: base(GenerateBlocks(n), GenerateAxes(n))
 		{
 			this.N = n;
 		}
@@ -27,69 +27,46 @@ namespace Twisty.Engine.Structure.Rubiks
 		/// </summary>
 		public int N { get; }
 
-		/// <summary>
-		/// Rotate a face around a specified rotation axis.
-		/// </summary>
-		/// <param name="axis">Rotation axis aroung which the rotation will be executed.</param>
-		/// <param name="isClockwise">Boolean indicating if whether the rotation is clockwise or not.</param>
-		public void RotateAround(RotationAxis axis, bool isClockwise)
-		{
-			// Gets Blocks ordered in rotation order.
-			var blocks = GetOrderedBlocks(axis, isClockwise);
-			if (blocks.Count == 0)
-				return;
-
-			// Convert the rotation direction to the correct angle.
-			double theta = isClockwise ? Math.PI / 2.0 : -Math.PI / 2.0;
-
-			// Perform the manipulation for the 4 corners.
-			base.SwitchAndRotate(blocks.OfType<CornerBlock>().ToList(), axis.Vector, theta);
-
-			// Perform the edges rotation.
-			base.SwitchAndRotate(blocks.OfType<EdgeBlock>().ToList(), axis.Vector, theta);
-
-			// Perform the center rotation.
-			base.SwitchAndRotate(blocks.OfType<CenterBlock>().ToList(), axis.Vector, theta);
-		}
-
 		#region Private Members
-
-		/// <summary>
-		/// Gets the block ordered in a rotational order arround the provided axis.
-		/// </summary>
-		/// <param name="axis">Axis around which the blocks will be ordered.</param>
-		/// <param name="isClockwise">Boolean indicating if whether the rotation direction is clockwise or not.</param>
-		/// <returns>The ordered collection of blocks.</returns>
-		private IList<IPositionnedByCartesian3dVector> GetOrderedBlocks(RotationAxis axis, bool isClockwise)
-		{
-			// Select all blocks that will be included in the rotation.
-			var blocks = base.GetBlocksForFace(axis.Vector).OfType<IPositionnedByCartesian3dVector>().ToList();
-			if (blocks.Count == 0)
-				return blocks;
-
-			Plane p = new Plane(axis.Vector, blocks[0].Position);
-			blocks.Sort(new CircularVectorComparer(p));
-			if (isClockwise)
-				blocks.Reverse();
-
-			return blocks;
-		}
 
 		/// <summary>
 		/// Generate the axes that will be available for the rotation of the cube.
 		/// </summary>
+		/// <param name="n">Number of layers to use in the Cube.</param>
 		/// <returns>The list of axis available on a Rubik's cube.</returns>
-		private static IEnumerable<RotationAxis> GenerateAxes()
+		private static IEnumerable<RotationAxis> GenerateAxes(int n)
 		{
 			return new List<RotationAxis>()
 			{
-				new RotationAxis(ID_FACE_UP, POSITION_FACE_UP),
-				new RotationAxis(ID_FACE_DOWN, POSITION_FACE_DOWN),
-				new RotationAxis(ID_FACE_FRONT, POSITION_FACE_FRONT),
-				new RotationAxis(ID_FACE_BACK, POSITION_FACE_BACK),
-				new RotationAxis(ID_FACE_RIGHT, POSITION_FACE_RIGHT),
-				new RotationAxis(ID_FACE_LEFT, POSITION_FACE_LEFT),
+				CreateAxis(ID_FACE_UP, POSITION_FACE_UP, n),
+				CreateAxis(ID_FACE_DOWN, POSITION_FACE_DOWN, n),
+				CreateAxis(ID_FACE_FRONT, POSITION_FACE_FRONT, n),
+				CreateAxis(ID_FACE_BACK, POSITION_FACE_BACK, n),
+				CreateAxis(ID_FACE_RIGHT, POSITION_FACE_RIGHT, n),
+				CreateAxis(ID_FACE_LEFT, POSITION_FACE_LEFT, n),
 			};
+		}
+
+		/// <summary>
+		/// Create an axis with the layer description for the current size of Rubik's Cube.
+		/// </summary>
+		/// <param name="id">Id of hte axis.</param>
+		/// <param name="direction">Direction of the axis vector.</param>
+		/// <param name="n">Number of layers to use in the Cube.</param>
+		/// <returns>A newly generated RotationAxis.</returns>
+		private static RotationAxis CreateAxis(string id, Cartesian3dCoordinate direction, int n)
+		{
+			Dictionary<string, double> layers = new Dictionary<string, double>();
+			int mod2 = n % 2;
+			if (mod2 == 0)
+				layers.Add($"L0_{id}", 0.0);
+
+			double layerSize = 2.0 / n;
+			int n2 = (n / 2) + mod2;
+			for (int i = 1; i < n2; ++i)
+				layers.Add($"L{i}_{id}", -layerSize * (Convert.ToDouble(i) - 0.5));
+
+			return new RotationAxis(id, direction, layers);
 		}
 
 		/// <summary>

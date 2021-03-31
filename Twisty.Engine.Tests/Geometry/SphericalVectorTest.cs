@@ -1,5 +1,6 @@
 ﻿using System;
 using Twisty.Engine.Geometry;
+using Twisty.Engine.Tests.Assertions;
 using Xunit;
 
 namespace Twisty.Engine.Tests.Geometry
@@ -7,8 +8,6 @@ namespace Twisty.Engine.Tests.Geometry
 	[Trait("Category", "Geometry")]
 	public class SphericalVectorTest
 	{
-		private const int PRECISION_DOUBLE = 10;
-
 		#region Test Methods
 
 		[Theory]
@@ -46,8 +45,8 @@ namespace Twisty.Engine.Tests.Geometry
 			SphericalVector o = new SphericalVector(phi, theta);
 
 			// 3. Verify
-			Assert.Equal(expectedPhi, o.Phi, PRECISION_DOUBLE);
-			Assert.Equal(expectedTheta, o.Theta, PRECISION_DOUBLE);
+			Assert.Equal(expectedPhi, o.Phi, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(expectedTheta, o.Theta, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		[Theory]

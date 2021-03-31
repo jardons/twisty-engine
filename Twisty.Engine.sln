@@ -9,26 +9,40 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Twisty.Engine.Tests", "Twisty.Engine.Tests\Twisty.Engine.Tests.csproj", "{890E967A-2C16-4F49-8648-4866E50F7AA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Twisty.Bash", "Twisty.Console\Twisty.Bash.csproj", "{A304AD50-F293-41FB-BBE7-C77D00B93598}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Twisty.Bash", "Twisty.Console\Twisty.Bash.csproj", "{A304AD50-F293-41FB-BBE7-C77D00B93598}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Twisty.Runner", "Twisty.Runner\Twisty.Runner.csproj", "{AC5B7928-47C3-4E0B-834D-F8FD8EF536D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		GitHub|Any CPU = GitHub|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D424880E-1D3F-4902-B36D-A7BDF613390C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D424880E-1D3F-4902-B36D-A7BDF613390C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D424880E-1D3F-4902-B36D-A7BDF613390C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D424880E-1D3F-4902-B36D-A7BDF613390C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D424880E-1D3F-4902-B36D-A7BDF613390C}.GitHub|Any CPU.ActiveCfg = Debug|Any CPU
+		{D424880E-1D3F-4902-B36D-A7BDF613390C}.GitHub|Any CPU.Build.0 = Debug|Any CPU
+		{D424880E-1D3F-4902-B36D-A7BDF613390C}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{D424880E-1D3F-4902-B36D-A7BDF613390C}.Release|Any CPU.Build.0 = Debug|Any CPU
 		{890E967A-2C16-4F49-8648-4866E50F7AA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{890E967A-2C16-4F49-8648-4866E50F7AA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{890E967A-2C16-4F49-8648-4866E50F7AA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{890E967A-2C16-4F49-8648-4866E50F7AA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{890E967A-2C16-4F49-8648-4866E50F7AA0}.GitHub|Any CPU.ActiveCfg = Debug|Any CPU
+		{890E967A-2C16-4F49-8648-4866E50F7AA0}.GitHub|Any CPU.Build.0 = Debug|Any CPU
+		{890E967A-2C16-4F49-8648-4866E50F7AA0}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{890E967A-2C16-4F49-8648-4866E50F7AA0}.Release|Any CPU.Build.0 = Debug|Any CPU
 		{A304AD50-F293-41FB-BBE7-C77D00B93598}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A304AD50-F293-41FB-BBE7-C77D00B93598}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A304AD50-F293-41FB-BBE7-C77D00B93598}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A304AD50-F293-41FB-BBE7-C77D00B93598}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A304AD50-F293-41FB-BBE7-C77D00B93598}.GitHub|Any CPU.ActiveCfg = Debug|Any CPU
+		{A304AD50-F293-41FB-BBE7-C77D00B93598}.GitHub|Any CPU.Build.0 = Debug|Any CPU
+		{A304AD50-F293-41FB-BBE7-C77D00B93598}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{A304AD50-F293-41FB-BBE7-C77D00B93598}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{AC5B7928-47C3-4E0B-834D-F8FD8EF536D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC5B7928-47C3-4E0B-834D-F8FD8EF536D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC5B7928-47C3-4E0B-834D-F8FD8EF536D6}.GitHub|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC5B7928-47C3-4E0B-834D-F8FD8EF536D6}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC5B7928-47C3-4E0B-834D-F8FD8EF536D6}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

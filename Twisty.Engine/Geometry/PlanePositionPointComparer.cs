@@ -21,11 +21,11 @@ namespace Twisty.Engine.Geometry
 	/// </remarks>
 	public class PlanePositionPointComparer : IComparer<Cartesian3dCoordinate>, IComparer<IPositionnedByCartesian3dVector>
 	{
-		private CartesianCoordinatesConverter m_Converter;
+		private CartesianCoordinatesFlattener m_Converter;
 
 		public PlanePositionPointComparer(Plane p)
 		{
-			m_Converter = new CartesianCoordinatesConverter(p);
+			m_Converter = new CartesianCoordinatesFlattener(p);
 		}
 
 		#region IComparer<Cartesian3dCoordinate> Members

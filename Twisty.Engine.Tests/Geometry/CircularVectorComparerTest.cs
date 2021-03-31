@@ -1,4 +1,5 @@
-﻿using Twisty.Engine.Geometry;
+﻿using Moq;
+using Twisty.Engine.Geometry;
 using Xunit;
 
 namespace Twisty.Engine.Tests.Geometry
@@ -18,7 +19,7 @@ namespace Twisty.Engine.Tests.Geometry
 		[InlineData("(1.0 0.0 7.0)", "(1.0 0.0 3.0)", "(0 1 0 1)", -1)]
 		[InlineData("(0.5 0.5 0.70710678118654757)", "(-0.5 0.5 0.70710678118654757)", "(0 -1 0 1)", -1)]
 		[InlineData("(0.5 0.5 0.70710678118654757)", "(-0.5 0.5 0.70710678118654757)", "(0 1 0 1)", 1)]
-		// Triangle of differents values should not loop.
+		// Line points of differents values should not loop.
 		[InlineData("(1.0 0.0 0.0)", "(1.0 1.0 0.0)", "(0 0 1 1)", -1)]
 		[InlineData("(1.0 0.0 0.0)", "(1.0 2.0 0.0)", "(0 0 1 1)", -1)]
 		[InlineData("(1.0 1.0 0.0)", "(1.0 2.0 0.0)", "(0 0 1 1)", -1)]
@@ -48,8 +49,43 @@ namespace Twisty.Engine.Tests.Geometry
 		[InlineData("(-2 2 0.71)", "(2 -2 0.71)", "(1 1 1 -10)", -1)]
 		[InlineData("(-2 2 0.71)", "(-2 -2 0.71)", "(1 1 1 -10)", -1)]
 		[InlineData("(2 -2 0.71)", "(-2 -2 0.71)", "(1 1 1 -10)", -1)]
-		public void CircularVectorComparer_Compare3dVectorWithCOmplexPlane_BeExpected(string xCoord, string yCoord, string plane, int expected)
+		public void CircularVectorComparer_Compare3dVectorWithComplexPlane_BeExpected(string xCoord, string yCoord, string plane, int expected)
 			=> CircularVectorComparer_Compare3dVector_BeExpected(xCoord, yCoord, plane, expected);
+
+		[Theory]
+		// Line Points should not loop when staying on same side of the center.
+		[InlineData("(1.0 0.0 0.0)", "(1.0 1.0 0.0)", "(0.5 0.5 0.5)", "(0 0 1 -1)", -1)]
+		[InlineData("(1.0 0.0 0.0)", "(1.0 2.0 0.0)", "(0.5 0.5 0.5)", "(0 0 1 -1)", -1)]
+		[InlineData("(1.0 1.0 0.0)", "(1.0 2.0 0.0)", "(0.5 0.5 0.5)", "(0 0 1 -1)", -1)]
+		// Line Points should not loop when switching side of the center.
+		[InlineData("(1.0 0.0 0.0)", "(1.0 1.0 0.0)", "(2 2 2)", "(0 0 1 -1)", 1)]
+		[InlineData("(1.0 0.0 0.0)", "(1.0 2.0 0.0)", "(2 2 2)", "(0 0 1 -1)", 1)]
+		[InlineData("(1.0 1.0 0.0)", "(1.0 2.0 0.0)", "(2 2 2)", "(0 0 1 -1)", 1)]
+		// Square of differents values should not loop on slightly changed axis.
+		// 1.5 1.5 > 1.5 0.5 > 0.5 0.5 > 0.5 1.5
+		[InlineData("(0.5 1.5 0.71)", "(1.5 1.5 0.71)", "(1 1 1)", "(0 0 1 -1)", -1)]
+		[InlineData("(1.5 0.5 0.71)", "(1.5 1.5 0.71)", "(1 1 1)", "(0 0 1 -1)", -1)]
+		[InlineData("(0.5 0.5 0.71)", "(1.5 1.5 0.71)", "(1 1 1)", "(0 0 1 -1)", -1)]
+		[InlineData("(0.5 1.5 0.71)", "(1.5 0.5 0.71)", "(1 1 1)", "(0 0 1 -1)", -1)]
+		[InlineData("(0.5 1.5 0.71)", "(0.5 0.5 0.71)", "(1 1 1)", "(0 0 1 -1)", -1)]
+		[InlineData("(0.5 0.5 0.71)", "(1.5 0.5 0.71)", "(1 1 1)", "(0 0 1 -1)", -1)]
+		public void CircularVectorComparer_Compare3dVectorWithCenter_BeExpected(string xCoord, string yCoord, string centerCoord, string plane, int expected)
+		{
+			// 1. Prepare
+			Cartesian3dCoordinate x = new Cartesian3dCoordinate(xCoord);
+			Cartesian3dCoordinate y = new Cartesian3dCoordinate(yCoord);
+			Cartesian3dCoordinate c = new Cartesian3dCoordinate(centerCoord);
+			Plane p = new Plane(plane);
+			var comparer = new CircularVectorComparer(p, c);
+
+			// 2. Execute
+			int result = comparer.Compare(x, y);
+			int reverse = comparer.Compare(y, x);
+
+			// 3. Verify
+			Assert.Equal(expected, result);
+			Assert.Equal(-expected, reverse);
+		}
 
 		[Theory]
 		// Perfect equality
@@ -86,9 +122,70 @@ namespace Twisty.Engine.Tests.Geometry
 			Assert.Equal(-expected, reverse);
 		}
 
+		[Theory]
+		// Compare equality
+		[InlineData("(0 0 -1 -1)", "(0 1 0 -1)", "(0 1 0 -1)", 0)]
+		// Compare front to 3 other sides of square.
+		[InlineData("(0 0 -1 -1)", "(0 1 0 -1)", "(1 0 0 -1)", -1)]
+		[InlineData("(0 0 -1 -1)", "(0 1 0 -1)", "(0 -1 0 -1)", -1)]
+		[InlineData("(0 0 -1 -1)", "(0 1 0 -1)", "(-1 0 0 -1)", -1)]
+		// Compare front to 4 diagonals.
+		[InlineData("(0 0 -1 -1)", "(0 1 0 -1)", "(1 -1 1 0)", -1)]
+		[InlineData("(0 0 -1 -1)", "(0 1 0 -1)", "(-1 -1 1 0)", -1)]
+		[InlineData("(0 0 -1 -1)", "(0 1 0 -1)", "(1 1 1 0)", -1)]
+		[InlineData("(0 0 -1 -1)", "(0 1 0 -1)", "(-1 1 1 0)", -1)]
+		public void CircularVectorComparer_CompareIPlanar_BeExpected(string planeCoord, string xCoord, string yCoord, int expected)
+		{
+			// 1. Prepare
+			IPlanar p1 = GetPlanar(xCoord);
+			IPlanar p2 = GetPlanar(yCoord);
+
+			Plane rotationPlane = new Plane(planeCoord);
+			var comparer = new CircularVectorComparer(rotationPlane);
+
+			// 2. Execute
+			int result = comparer.Compare(p1, p2);
+			int reverse = comparer.Compare(p2, p1);
+
+			// 3. Verify
+			Assert.Equal(expected, result);
+			Assert.Equal(-expected, reverse);
+		}
+
+		[Theory]
+		// Sample coming from Skewb implementation
+		[InlineData("(0 0 -1 -1)", "(0 1 0 -1)", "(1 0 0 -1)", "(0.95 0.95 -1)", -1)]
+		[InlineData("(0 0 -1 -1)", "(1 0 0 -1)", "(1 1 1 0)", "(0.95 0.95 -1)", -1)]
+		public void CircularVectorComparer_CompareIPlanarWithCenter_BeExpected(string planeCoord, string xCoord, string yCoord, string centerCoord, int expected)
+		{
+			// 1. Prepare
+			IPlanar p1 = GetPlanar(xCoord);
+			IPlanar p2 = GetPlanar(yCoord);
+
+			Plane rotationPlane = new Plane(planeCoord);
+			Cartesian3dCoordinate center = new Cartesian3dCoordinate(centerCoord);
+			var comparer = new CircularVectorComparer(rotationPlane, center);
+
+			// 2. Execute
+			int result = comparer.Compare(p1, p2);
+			int reverse = comparer.Compare(p2, p1);
+
+			// 3. Verify
+			Assert.Equal(expected, result);
+			Assert.Equal(-expected, reverse);
+		}
+
 		#endregion Test Methods
 
 		#region Private Methods
+
+		private IPlanar GetPlanar(string coord)
+		{
+			Mock<IPlanar> mock = new Mock<IPlanar>();
+			Plane p = new Plane(coord);
+			mock.SetupGet(o => o.Plane).Returns(p);
+			return mock.Object;
+		}
 
 		private void CircularVectorComparer_Compare3dVector_BeExpected(string xCoord, string yCoord, string plane, int expected)
 		{

@@ -33,7 +33,7 @@ namespace Twisty.Engine.Geometry
 				throw new ArgumentNullException(nameof(coordinates));
 
 			if (!coordinates.StartsWith("(") || !coordinates.EndsWith(")") || coordinates.Length < 3)
-				throw new FormatException("Coordiantes doesn't follow the expected format '(DDD.D, DDD.D, DDD.D)' where 'DDD.D' must be a valid Double.");
+				throw new FormatException("Coordinates doesn't follow the expected format '(DDD.D, DDD.D, DDD.D)' where 'DDD.D' must be a valid Double.");
 
 			string[] values = coordinates.Substring(1, coordinates.Length - 2).Split(' ', StringSplitOptions.RemoveEmptyEntries);
 			double[] result = new double[values.Length];
@@ -42,7 +42,7 @@ namespace Twisty.Engine.Geometry
 				if (double.TryParse(values[i], NumberStyles.Any, CultureInfo.InvariantCulture, out double d))
 					result[i] = d;
 				else
-					throw new FormatException("Coordiantes doesn't follow the expected format '(DDD.D, DDD.D, DDD.D)' where 'DDD.D' must be a valid Double.");
+					throw new FormatException("Coordinates doesn't follow the expected format '(DDD.D, DDD.D, DDD.D)' where 'DDD.D' must be a valid Double.");
 
 			return result;
 		}

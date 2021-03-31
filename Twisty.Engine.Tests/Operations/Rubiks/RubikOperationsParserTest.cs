@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Twisty.Engine.Operations;
 using Twisty.Engine.Operations.Rubiks;
+using Twisty.Engine.Tests.Assertions;
 using Xunit;
 
 namespace Twisty.Engine.Tests.Operations.Rubiks
@@ -79,12 +80,12 @@ namespace Twisty.Engine.Tests.Operations.Rubiks
 			RubikOperationsParser p = new RubikOperationsParser();
 
 			// 2. Execute
-			var r1 = p.Parse(command).Cast<RubikOperation>().FirstOrDefault();
-			var r2 = p.Parse(command + "'").Cast<RubikOperation>().FirstOrDefault();
+			var r1 = p.Parse(command).Cast<LayerOperation>().First();
+			var r2 = p.Parse(command + "'").Cast<LayerOperation>().First();
 
 			// 3. Verify
-			Assert.True(r1.IsClockwise);
-			Assert.False(r2.IsClockwise);
+			Assert.Equal(Math.PI / 2.0, r1.Theta, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(-Math.PI / 2.0, r2.Theta, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		[Theory]
@@ -97,12 +98,45 @@ namespace Twisty.Engine.Tests.Operations.Rubiks
 			RubikOperationsParser p = new RubikOperationsParser();
 
 			// 2. Execute
-			Action a = () => p.Parse(command);
+			void a() => p.Parse(command);
 
 			// 3. Verify
 			var e = Assert.Throws<OperationParsingException>(a);
 			Assert.Equal(command, e.Command);
 			Assert.Equal(badIndex, e.Index);
+		}
+
+		[Theory]
+		[InlineData("R", "R")]
+		[InlineData("RL'", "RL'")]
+		public void RubikOperationsParser_TryClean_ReturnTrueAndCleaned(string command, string expected)
+		{
+			// 1. Prepare
+			RubikOperationsParser p = new RubikOperationsParser();
+
+			// 2. Execute
+			bool b = p.TryClean(command, out string cleaned);
+
+			// 3. Verify
+			Assert.True(b);
+			Assert.Equal(expected, cleaned);
+		}
+
+		[Theory]
+		[InlineData("this is a test")]
+		[InlineData("?")]
+		[InlineData("FGH")]
+		public void RubikOperationsParser_TryCleanInvalid_ReturnFalse(string command)
+		{
+			// 1. Prepare
+			RubikOperationsParser p = new RubikOperationsParser();
+
+			// 2. Execute
+			bool b = p.TryClean(command, out string cleaned);
+
+			// 3. Verify
+			Assert.False(b);
+			Assert.Equal(command, cleaned);
 		}
 
 		#endregion Test Methods

@@ -1,0 +1,82 @@
+﻿<Window x:Class="Twisty.Runner.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Twisty.Runner"
+		xmlns:views="clr-namespace:Twisty.Runner.Views"
+		mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800"
+		DataContext="{Binding MainWindowViewModel, Source={StaticResource ViewModelLocator}}">
+	<DockPanel>
+		<Menu DockPanel.Dock="Top">
+			<MenuItem Header="_File">
+				<MenuItem Header="_Puzzle">
+					<MenuItem Header="Rubik 2x2x2"
+						CommandParameter="Rubik[2]"
+						Command="{Binding DataContext.SelectCore, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" />
+					<MenuItem Header="Rubik 3x3x3"
+						CommandParameter="Rubik[3]"
+						Command="{Binding DataContext.SelectCore, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" />
+					<MenuItem Header="Skewb"
+						CommandParameter="Skewb"
+						Command="{Binding DataContext.SelectCore, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" />
+				</MenuItem>
+				<MenuItem Header="_Exit"
+					Command="{Binding Exit, Source={StaticResource AppCommands}}"/>
+			</MenuItem>
+			<MenuItem Header="_View">
+				<MenuItem Header="_Stickerless"
+						CommandParameter="stickerless"
+						Command="{Binding DataContext.SelectMaterializer, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" />
+				<MenuItem Header="_Topologic"
+						CommandParameter="ratio"
+						Command="{Binding DataContext.SelectMaterializer, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" />
+			</MenuItem>
+		</Menu>
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="1*" />
+				<ColumnDefinition Width="1*" />
+				<ColumnDefinition Width="1*" />
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="1*" />
+				<RowDefinition Height="1*" />
+			</Grid.RowDefinitions>
+			<views:RotationCoreStandardView
+					x:Name="CubeView1"
+					ObjectStructures="{Binding Path=DataContext.Core.VisualObject, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+					ObjectRotations="{Binding Path=DataContext.VisualPositions, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+					Grid.Column="0"
+					Grid.Row="0" />
+			<views:RotationCoreStandardView
+					x:Name="CubeView2"
+					ObjectStructures="{Binding Path=DataContext.Core.VisualObject, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+					ObjectRotations="{Binding Path=DataContext.VisualPositions, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+					CurrentCamera="6,3,3"
+					Grid.Column="1"
+					Grid.Row="0" />
+			<views:RotationCoreStandardView
+					x:Name="CubeView3"
+					ObjectStructures="{Binding Path=DataContext.Core.VisualObject, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+					ObjectRotations="{Binding Path=DataContext.VisualPositions, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+					CurrentCamera="6,3,-3"
+					Grid.Column="0"
+					Grid.Row="1" />
+			<views:RotationCoreStandardView
+					x:Name="CubeView4"
+					ObjectStructures="{Binding Path=DataContext.Core.VisualObject, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+					ObjectRotations="{Binding Path=DataContext.VisualPositions, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+					CurrentCamera="-6,-3,3"
+					Grid.Column="1"
+					Grid.Row="1" />
+			<views:AlgorithmConsole
+					x:Name="ConsoleInput"
+					Grid.Column="2"
+					Grid.Row="0"
+					Grid.RowSpan="2"
+					Core="{Binding Path=DataContext.Core, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+		</Grid>
+	</DockPanel>
+</Window>

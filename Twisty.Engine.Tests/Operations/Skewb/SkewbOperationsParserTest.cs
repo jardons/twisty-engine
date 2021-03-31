@@ -5,6 +5,7 @@ using System.Text;
 using Twisty.Engine.Operations;
 using Twisty.Engine.Operations.Rubiks;
 using Twisty.Engine.Operations.Skewb;
+using Twisty.Engine.Tests.Assertions;
 using Xunit;
 
 namespace Twisty.Engine.Tests.Operations.Rubiks
@@ -58,8 +59,8 @@ namespace Twisty.Engine.Tests.Operations.Rubiks
 			Assert.NotNull(parsedReverse);
 			Assert.Single(parsed);
 			Assert.Single(parsedReverse);
-			Assert.True(parsed.Cast<SkewbOperation>().FirstOrDefault().IsClockwise);
-			Assert.False(parsedReverse.Cast<SkewbOperation>().FirstOrDefault().IsClockwise);
+			GeometryAssert.AngleEqual(Math.PI * 2.0 / 3.0, parsed.Cast<AxisOperation>().First().Theta);
+			GeometryAssert.AngleEqual(-Math.PI * 2.0 / 3.0, parsedReverse.Cast<AxisOperation>().First().Theta);
 		}
 
 		[Theory]
@@ -72,12 +73,49 @@ namespace Twisty.Engine.Tests.Operations.Rubiks
 			SkewbOperationsParser p = new SkewbOperationsParser();
 
 			// 2. Execute
-			Action a = () => p.Parse(command);
+			void a() => p.Parse(command);
 
 			// 3. Verify
 			var e = Assert.Throws<OperationParsingException>(a);
 			Assert.Equal(command, e.Command);
 			Assert.Equal(badIndex, e.Index);
+		}
+
+		[Theory]
+		// Unchanged
+		[InlineData("R", "R")]
+		[InlineData("RL'", "RL'")]
+		// Cases correction
+		[InlineData("r", "R")]
+		[InlineData("lu'", "LU'")]
+		public void SkewbOperationsParser_TryClean_ReturnTrueAndCleaned(string command, string expected)
+		{
+			// 1. Prepare
+			SkewbOperationsParser p = new SkewbOperationsParser();
+
+			// 2. Execute
+			bool b = p.TryClean(command, out string cleaned);
+
+			// 3. Verify
+			Assert.True(b);
+			Assert.Equal(expected, cleaned);
+		}
+
+		[Theory]
+		[InlineData("this is a test")]
+		[InlineData("?")]
+		[InlineData("FGH")]
+		public void SkewbOperationsParser_TryCleanInvalid_ReturnFalse(string command)
+		{
+			// 1. Prepare
+			SkewbOperationsParser p = new SkewbOperationsParser();
+
+			// 2. Execute
+			bool b = p.TryClean(command, out string cleaned);
+
+			// 3. Verify
+			Assert.False(b);
+			Assert.Equal(command, cleaned);
 		}
 
 		#endregion Test Methods

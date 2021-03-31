@@ -19,7 +19,7 @@ namespace Twisty.Engine.Structure
 		public CenterBlock(Cartesian3dCoordinate initialPosition, BlockFace face)
 			: base(face)
 		{
-			base.Position = initialPosition;
+			base.InitialPosition = initialPosition;
 
 			// Each corner block is unique in the cube and be identified by his face.
 			Id = $"CF_{face.Id}";

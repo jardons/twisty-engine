@@ -11,24 +11,22 @@ namespace Twisty.Engine.Tests.Structure.Rubiks
 	[Trait("Category", "Structure")]
 	public class RubikCubeTest
 	{
-		private const int PRECISION_DOUBLE = 10;
-
 		#region Test Methods
 
 		[Theory]
-		[InlineData(RubikCube.ID_FACE_UP, true, "(1 -1 1)", RubikCube.ID_FACE_FRONT, RubikCube.ID_FACE_RIGHT)]
-		[InlineData(RubikCube.ID_FACE_UP, false, "(1 -1 1)", RubikCube.ID_FACE_FRONT, RubikCube.ID_FACE_LEFT)]
-		public void RubikCube_RotateOnceOnSize2_FindExpectedFace(string axisId, bool isClockwise, string blockCoordinate, string checkedFaceId, string expectedBlockFace)
+		[InlineData(RubikCube.ID_FACE_UP, Math.PI / 2.0, "(1 -1 1)", RubikCube.ID_FACE_FRONT, RubikCube.ID_FACE_RIGHT)]
+		[InlineData(RubikCube.ID_FACE_UP, -Math.PI / 2.0, "(1 -1 1)", RubikCube.ID_FACE_FRONT, RubikCube.ID_FACE_LEFT)]
+		public void RubikCube_RotateOnceOnSize2_FindExpectedFace(string axisId, double theta, string blockCoordinate, string checkedFaceId, string expectedBlockFace)
 		{
 			// 1. Prepare
 			Cartesian3dCoordinate blockPosition = new Cartesian3dCoordinate(blockCoordinate);
 			RubikCube c = new RubikCube(2);
 			var axis = c.GetAxis(axisId);
 			var initialBlock = c.Blocks.FirstOrDefault(b => b.Position.IsSameVector(blockPosition));
-			var targetFaceVector = c.GetFace(checkedFaceId).Coordinates.Normal;
+			var targetFaceVector = c.GetFace(checkedFaceId).Plane.Normal;
 
 			// 2. Execute
-			c.RotateAround(axis, isClockwise);
+			c.RotateAround(axis, theta);
 			var block = c.Blocks.FirstOrDefault(b => b.Position.IsSameVector(blockPosition));
 			var face = block.GetBlockFace(targetFaceVector);
 
@@ -106,12 +104,12 @@ namespace Twisty.Engine.Tests.Structure.Rubiks
 			var initialPosition = center.Position;
 
 			// 2. Execute
-			c.RotateAround(axis, true);
+			c.RotateAround(axis, Math.PI / 2.0);
 
 			// 3. Verify
-			Assert.Equal(initialPosition.X, center.Position.X, PRECISION_DOUBLE);
-			Assert.Equal(initialPosition.Y, center.Position.Y, PRECISION_DOUBLE);
-			Assert.Equal(initialPosition.Z, center.Position.Z, PRECISION_DOUBLE);
+			Assert.Equal(initialPosition.X, center.Position.X, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(initialPosition.Y, center.Position.Y, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(initialPosition.Z, center.Position.Z, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		#endregion Test Methods

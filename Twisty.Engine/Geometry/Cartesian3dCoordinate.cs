@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Twisty.Engine.Geometry
@@ -35,6 +36,18 @@ namespace Twisty.Engine.Geometry
 		public static readonly Cartesian3dCoordinate XAxis = new Cartesian3dCoordinate(1.0, 0.0, 0.0);
 
 		/// <summary>
+		/// Gets the Positive Y Axis.
+		/// </summary>
+		public static readonly Cartesian3dCoordinate YAxis = new Cartesian3dCoordinate(0.0, 1.0, 0.0);
+
+		/// <summary>
+		/// Gets the Positive Z Axis.
+		/// </summary>
+		public static readonly Cartesian3dCoordinate ZAxis = new Cartesian3dCoordinate(0.0, 0.0, 1.0);
+
+		#region ctor(s)
+
+		/// <summary>
 		/// Create a new Cartesian3dCoordinate from a coordinates string on the format "(X Y Z)".
 		/// </summary>
 		/// <param name="coordinates">Coordinates in the format "(X Y Z)".</param>
@@ -68,6 +81,8 @@ namespace Twisty.Engine.Geometry
 			this.Y = y;
 			this.Z = z;
 		}
+
+		#endregion ctor(s)
 
 		#region Public Properties
 
@@ -130,6 +145,11 @@ namespace Twisty.Engine.Geometry
 		/// Gets a boolean indicating if whether the current coordonate is the origin point crossing all axes or not.
 		/// </summary>
 		public bool IsZero => X.IsZero() && Y.IsZero() && Z.IsZero();
+
+		/// <summary>
+		/// Gets the Reverse vector of this one.
+		/// </summary>
+		public Cartesian3dCoordinate Reverse => new Cartesian3dCoordinate(-this.X, -this.Y, -this.Z);
 
 		#endregion Public Properties
 
@@ -266,10 +286,10 @@ namespace Twisty.Engine.Geometry
 					return this;
 				else
 					// Formula is not working for reverse referential vector, we just reverse the current coordinates.
-					return new Cartesian3dCoordinate(-this.X, -this.Y, -this.Z);
+					return this.Reverse;
 			}
 
-			Cartesian3dCoordinate origin = new Cartesian3dCoordinate(1, 0, 0);
+			Cartesian3dCoordinate origin = XAxis;
 
 			// Calculate formula variables.
 			Cartesian3dCoordinate v = origin.CrossProduct(referential);
@@ -311,6 +331,14 @@ namespace Twisty.Engine.Geometry
 		}
 
 		/// <summary>
+		/// Gets the projection of the current verctor on another provided vector.
+		/// </summary>
+		/// <param name="vector">Vector providing the direction on which the original vector will be projected.</param>
+		/// <returnsThe point coordinate resulting of the projection of this vector on the provided vector.</returns>
+		public Cartesian3dCoordinate ProjectOn(Cartesian3dCoordinate vector)
+			=> this.DotProduct(vector) / vector.DotProduct(vector) * vector;
+
+		/// <summary>
 		/// Gets the normalized coordinate of this vector.
 		/// </summary>
 		/// <returns>A new Cartesian3dCoordinate containing the normalized coordinate of this vector.</returns>
@@ -342,6 +370,14 @@ namespace Twisty.Engine.Geometry
 		{
 			return Trigonometry.Acos(this.DotProduct(x) / (this.Magnitude * x.Magnitude));
 		}
+
+		/// <summary>
+		/// Gets the distance between this point and another provided one.
+		/// </summary>
+		/// <param name="p">Other point to which the distance will be calculated.</param>
+		/// <returns>Distance between this point and another provided one.</returns>
+		public double GetDistanceTo(Cartesian3dCoordinate p)
+			=> Math.Pow(Math.Pow(this.X - p.X, 2.0) + Math.Pow(this.Y - p.Y, 2.0) + Math.Pow(this.Z - p.Z, 2.0), 0.5);
 
 		/// <summary>
 		/// Gets the dot product between this vector in a 1 X 3 format and a second one in a 3 X 1 format.
@@ -382,6 +418,35 @@ namespace Twisty.Engine.Geometry
 		public bool IsSameVector(Cartesian3dCoordinate cc) => this.Normalize().IsSamePoint(cc.Normalize());
 
 		#endregion Public Methods
+
+		#region Public Static Methods
+
+		/// <summary>
+		/// Get the center of mass point for the provided collection of points.
+		/// </summary>
+		/// <param name="points">Points for which the center of mass will be calculated.</param>
+		/// <returns>COordinate of the point in the center of mass of the provided points list.</returns>
+		public static Cartesian3dCoordinate GetCenterOfMass(IEnumerable<Cartesian3dCoordinate> points)
+		{
+			int count = 0;
+			double x = 0.0;
+			double y = 0.0;
+			double z = 0.0;
+			foreach (Cartesian3dCoordinate p in points)
+			{
+				++count;
+				x += p.X;
+				y += p.Y;
+				z += p.Z;
+			}
+
+			if (count == 0)
+				return Zero;
+
+			return new Cartesian3dCoordinate(x / count, y / count, z / count);
+		}
+
+		#endregion Public Static Methods
 
 		#region Operators
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Twisty.Engine.Geometry
 {
@@ -10,6 +11,7 @@ namespace Twisty.Engine.Geometry
 	/// y = y1 + b * t
 	/// z = z1 + c * t
 	/// </summary>
+	[DebuggerDisplay("({Point.X}, {Point.Y}, {Point.Z} # {Vector.X}, {Vector.Y}, {Vector.Z})")]
 	public class ParametricLine
 	{
 		/// <summary>
@@ -120,12 +122,180 @@ namespace Twisty.Engine.Geometry
 		/// <param name="p">Plane to which the orientation of the Line will be compared.</param>
 		/// <returns>A boolean indicating whether the Line and the Plane are parallel or not.</returns>
 		/// <remarks>
-		/// A line is parallel to a Plan when the this calculation is true :
+		/// A line is parallel to a Plan when this calculation is true :
 		/// aA + bB + cC = 0
 		/// </remarks>
 		public bool IsParallelTo(Plane p)
+			=> ((this.A * p.A) + (this.B * p.B) + (this.C * p.C)).IsZero();
+
+		/// <summary>
+		/// Evaluate if the current line is parallel to another given line.
+		/// </summary>
+		/// <param name="l">Line to which the orientation of the Line will be compared.</param>
+		/// <returns>A boolean indicating whether both the Lines are parallel or not.</returns>
+		public bool IsParallelTo(ParametricLine l)
+			=> this.Vector.IsSameVector(l.Vector) || this.Vector.IsSameVector(l.Vector.Reverse);
+
+		/// <summary>
+		/// Gets a boolean indicating if whether the provided point belong to the line or note.
+		/// </summary>
+		/// <param name="point">Coordiantes of the point for which we will test if he belong to the line or not.</param>
+		/// <returns>A boolean indicating if whether the provided point belong to the line or note.</returns>
+		public bool Contains(Cartesian3dCoordinate point)
 		{
-			return ((this.A * p.A) + (this.B * p.B) + (this.C * p.C)).IsZero();
+			// A point belong to the line when t has the same value for both of the 3 formula :
+			// { x = x0 + at
+			// { y = y0 + bt
+			// { z = z0 + ct
+
+			// This can lead to divide per zero, we will start per filtering those cases.
+			// A value of 0.0 for A, B or C would indicate that X, Y or Z is a constant for the line.
+			// We can then exclude all points with variation on thoses axes.
+			double tRef = double.NaN;
+			if (this.A.IsZero())
+			{
+				if (!this.Point.X.IsEqualTo(point.X))
+					return false;
+			}
+			else
+			{
+				// X axis is kept as a comparison reference.
+				tRef = (point.X - this.X) / this.A;
+			}
+
+			if (this.B.IsZero())
+			{
+				if (!this.Point.Y.IsEqualTo(point.Y))
+					return false;
+			}
+			else
+			{
+				double tY = (point.Y - this.Y) / this.B;
+
+				// Compare value of t for Z to previous calculated one.
+				// If no comparison base is available yet, we keep the t value of Y to compare it to the Z one.
+				if (double.IsNaN(tRef))
+					tRef = tY;
+				else if (!tRef.IsEqualTo(tY))
+					return false;
+			}
+
+			if (this.C.IsZero())
+			{
+				if (!this.Point.Z.IsEqualTo(point.Z))
+					return false;
+			}
+			else if (!double.IsNaN(tRef))
+			{
+				// Compare value of t for Z to previous calculated one.
+				// If no comparison base is available yet, we are parallel to Z axis and all Z value are correct.
+				double tZ = (point.Z - this.Z) / this.C;
+				if (!tRef.IsEqualTo(tZ))
+					return false;
+			}
+
+			// All exclusion have been checked, the point is contained.
+			return true;
+		}
+
+		/// <summary>
+		/// Gets the shortest distance between a point and the line.
+		/// </summary>
+		/// <param name="point">Coordinates of the point that will be compared to the Line.</param>
+		/// <returns>A double value indicating the distance to the Line.</returns>
+		/// <remarks>
+		/// Distance can be calculated by building a parallelogram and calculate it height from its surface.
+		/// 
+		///       p1        v1
+		/// ------*===================*---------------
+		///      /                |  /
+		///     /                d| /
+		///    /                  |/
+		///   *===================*
+		///  p0
+		/// 
+		/// Surface:
+		/// S = (p1 - p0) x v1
+		/// 
+		/// Distance:
+		/// d = || S || / || v1 ||
+		/// </remarks>
+		public double GetDistanceTo(Cartesian3dCoordinate point)
+			=> (this.Point - point).CrossProduct(this.Vector).Magnitude / this.Vector.Magnitude;
+
+		/// <summary>
+		/// Gets the intersection point between this line and the provided one.
+		/// </summary>
+		/// <param name="line">Parametric line taht should intersect with the current one.</param>
+		/// <returns>Coordinate of the intersection point between both lines.</returns>
+		public Cartesian3dCoordinate GetIntersection(ParametricLine line)
+		{
+			// We are calculating the R vector resulting from both line equations :
+			// R = P1 + V1t1 and R = P2 + V2t2
+			// P1 + V1t1 = P2 + V2t2
+			// t1 = (P2 + V2t2 - P1) / V1
+
+			// By isolating 2 coordinate, we can evaluate the following formula :
+			// t1 = (X2 + A2t2 - X1) / A1 = (Y2 + B2t2 - Y1) / B1
+			// t1 = (X2 + A2t2 - X1) * B1 = (Y2 + B2t2 - Y1) * A1
+			// t1 = X2B1 + A2t2B1 - X1B1  = Y2A1 + B2t2A1 - Y1A1
+
+			// Giving us the formula for t2 :
+			// A2t2B1 - B2t2A1 = Y2A1 - Y1A1 - X2B1 + X1B1
+			// t2(A2B1 - B2A1) = (Y2-Y1)A1 + (X1-X2)B1
+			// t2 = ((Y2-Y1)A1 + (X1-X2)B1) / (A2B1 - B2A1)
+			double divisor = (line.A * this.B) - (line.B * this.A);
+			if (!divisor.IsZero())
+			{
+				double t = (((line.Y - this.Y) * this.A) + ((this.X - line.X) * this.B)) / divisor;
+				var p = line.GetValueForT(t);
+
+				// If we find a point not included in current line, both line don't intersect.
+				if (this.Contains(p))
+					return p;
+			}
+
+			// If previous formula cause a division by zero, replicate the same logic on another pair of coordinate of the vector.
+			divisor = (line.A * this.C) - (line.C * this.A);
+			if (!divisor.IsZero())
+			{
+				double t = (((line.Z - this.Z) * this.A) + ((this.X - line.X) * this.C)) / divisor;
+				var p = line.GetValueForT(t);
+
+				// If we find a point not included in current line, both line don't intersect.
+				if (this.Contains(p))
+					return p;
+			}
+
+			// Last possible combination
+			divisor = (line.B * this.C) - (line.C * this.B);
+			if (!divisor.IsZero())
+			{
+				double t = (((line.Z - this.Z) * this.B) + ((this.Y - line.Y) * this.C)) / divisor;
+				var p = line.GetValueForT(t);
+
+				// If we find a point not included in current line, both line don't intersect.
+				if (this.Contains(p))
+					return p;
+			}
+
+			throw new GeometricException("Their is not intersection between the provided ParametricLine.");
+		}
+
+		/// <summary>
+		/// Gets a ParametricLine perpendicular to the ParametricLine and passing through a provided point.
+		/// </summary>
+		/// <param name="point">Point through which the perpendicular line to the ParametricLine should go.</param>
+		/// <returns>A new line going through the provided point and the current ParametricLine.</returns>
+		public ParametricLine GetPerpendicular(Cartesian3dCoordinate point)
+		{
+			// Calculate vector between Line reference point and provided point.
+			Cartesian3dCoordinate v = point - this.Point;
+
+			// By substracting the projection on the original Vector, we got the perpendicular direction.
+			Cartesian3dCoordinate direction = v - v.ProjectOn(this.Vector);
+
+			return new ParametricLine(point, direction);
 		}
 
 		/// <summary>
@@ -140,5 +310,16 @@ namespace Twisty.Engine.Geometry
 		}
 
 		#endregion Public methods
+
+		#region Private Methods
+
+		private Cartesian3dCoordinate GetValueForT(double t)
+			=> new Cartesian3dCoordinate(
+				this.X + (this.A * t),
+				this.Y + (this.B * t),
+				this.Z + (this.C * t)
+			);
+
+		#endregion Private Methods
 	}
 }
