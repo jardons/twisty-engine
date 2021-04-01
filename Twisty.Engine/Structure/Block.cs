@@ -13,7 +13,7 @@ namespace Twisty.Engine.Structure
 	[DebuggerDisplay("{Id}")]
 	public abstract class Block : IPositionnedByCartesian3dVector
 	{
-		private List<BlockFace> m_Faces;
+		private readonly List<BlockFace> m_Faces;
 
 		/// <summary>
 		/// Create a new block proposing a single BlockFace.
@@ -21,12 +21,10 @@ namespace Twisty.Engine.Structure
 		/// <param name="face">only available BlockFace.</param>
 		public Block(BlockFace face)
 		{
-			if (face == null)
-				throw new ArgumentNullException("A block need at least one visible BlockFace", nameof(face));
+			if (face is null)
+				throw new ArgumentNullException(nameof(face), "A block need at least one visible BlockFace");
 
-			m_Faces = new List<BlockFace>();
-			m_Faces.Add(face);
-
+			m_Faces = new List<BlockFace> { face };
 			this.Orientation = new RotationMatrix3d();
 		}
 
@@ -36,8 +34,8 @@ namespace Twisty.Engine.Structure
 		/// <param name="faces">Collection of available faces for this block.</param>
 		public Block(IEnumerable<BlockFace> faces)
 		{
-			if (faces == null)
-				throw new ArgumentNullException("A block need at least one visible BlockFace", nameof(faces));
+			if (faces is null)
+				throw new ArgumentNullException(nameof(faces), "A block need at least one visible BlockFace");
 
 			m_Faces = new List<BlockFace>(faces);
 			if (m_Faces.Count == 0)
@@ -91,9 +89,6 @@ namespace Twisty.Engine.Structure
 		/// <returns>The searched Blockface if found, otherwise, null is returned.</returns>
 		public BlockFace GetBlockFace(SphericalVector o)
 		{
-			if (o == null)
-				throw new ArgumentNullException("Orientation is mandatory", nameof(o));
-
 			return m_Faces.FirstOrDefault(f => this.Orientation.Rotate(f.Position).IsSameVector(CoordinateConverter.ConvertToCartesian(o)));
 		}
 
@@ -111,8 +106,8 @@ namespace Twisty.Engine.Structure
 		/// <returns>The searched Blockface if found, otherwise, null is returned.</returns>
 		public BlockFace GetBlockFace(string id)
 		{
-			if (id == null)
-				throw new ArgumentNullException("Id is mandatory", nameof(id));
+			if (id is null)
+				throw new ArgumentNullException(nameof(id), "Id is mandatory");
 
 			return m_Faces.FirstOrDefault(f => f.Id == id);
 		}

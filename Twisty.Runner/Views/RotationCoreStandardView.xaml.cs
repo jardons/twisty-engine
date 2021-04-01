@@ -103,7 +103,7 @@ namespace Twisty.Runner.Views
 
 			m_3dObjects.Clear();
 
-			if (this.ObjectStructures == null)
+			if (this.ObjectStructures is null)
 				return;
 
 			// Create new instance.

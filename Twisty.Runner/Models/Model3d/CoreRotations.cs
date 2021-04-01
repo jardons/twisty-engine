@@ -15,7 +15,7 @@ namespace Twisty.Runner.Models.Model3d
 
 		public CoreRotations(IReadOnlyDictionary<string, IReadOnlyList<SimpleRotation3d>> rotations)
 		{
-			if (rotations == null)
+			if (rotations is null)
 				m_Rotations = new Dictionary<string, IEnumerable<Rotation>>();
 			else
 				m_Rotations = rotations
