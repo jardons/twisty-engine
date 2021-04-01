@@ -4,9 +4,9 @@ extraction:
     # The `index` step builds the code and extracts information during the build
     # process.
     index:
+      solution: "Twidsty.Engine/Twidsty.Engine.csproj"
       # Specify MSBuild settings.
       dotnet:
-        solution: "Twidsty.Engine/Twidsty.Engine.csproj"
         # Specify the MSBuild configuration to use, for example, debug or release.
         # Default: read from the solution file or files.
         arguments: "-c GitHub"
