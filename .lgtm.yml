@@ -8,4 +8,4 @@ extraction:
       dotnet:
         # Specify the MSBuild configuration to use, for example, debug or release.
         # Default: read from the solution file or files.
-        arguments: GitHub
+        arguments: "GitHub"
