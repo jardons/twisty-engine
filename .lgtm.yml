@@ -9,7 +9,7 @@ extraction:
       # to less accurate results.
       buildless: true
       # Specify MSBuild settings.
-      msbuild:
+      dotnet:
         # Specify the MSBuild configuration to use, for example, debug or release.
         # Default: read from the solution file or files.
         configuration: GitHub
