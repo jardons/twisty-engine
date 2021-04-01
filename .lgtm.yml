@@ -1,5 +1,4 @@
 extraction: 
-
   # Define settings for C# analysis
   csharp:
     # The `index` step builds the code and extracts information during the build
