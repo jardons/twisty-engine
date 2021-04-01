@@ -44,7 +44,7 @@ namespace Twisty.Engine.Presenters.Rubiks
 			/// <param name="line">Line to add to the RubikCubeBlockFaceTextView object.</param>
 			public void Append(string line)
 			{
-				if (line == null)
+				if (line is null)
 					throw new ArgumentNullException(nameof(line));
 
 				if (line.Length != m_Width)

@@ -59,7 +59,7 @@ namespace Twisty.Runner.ViewModels
 			{
 				this.m_CameraPosition = value;
 
-				if (this.PropertyChanged != null)
+				if (this.PropertyChanged is not null)
 				{
 					// Trigger View Update.
 					this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(CameraPosition)));
