@@ -4,10 +4,6 @@ extraction:
     # The `index` step builds the code and extracts information during the build
     # process.
     index:
-      # By default, LGTM analyzes the code by building it. You can override this,
-      # and tell LGTM not to build the code. Beware that this can lead
-      # to less accurate results.
-      buildless: true
       # Specify MSBuild settings.
       dotnet:
         # Specify the MSBuild configuration to use, for example, debug or release.
