@@ -1,4 +1,4 @@
-extraction: 
+extraction:
   # Define settings for C# analysis
   csharp:
     # The `index` step builds the code and extracts information during the build
@@ -8,4 +8,4 @@ extraction:
       dotnet:
         # Specify the MSBuild configuration to use, for example, debug or release.
         # Default: read from the solution file or files.
-        arguments: "GitHub"
+        arguments: "-c GitHub"
