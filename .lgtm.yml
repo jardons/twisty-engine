@@ -6,6 +6,7 @@ extraction:
     index:
       # Specify MSBuild settings.
       dotnet:
+        solution: "Twidsty.Engine/Twidsty.Engine.csproj"
         # Specify the MSBuild configuration to use, for example, debug or release.
         # Default: read from the solution file or files.
         arguments: "-c GitHub"
