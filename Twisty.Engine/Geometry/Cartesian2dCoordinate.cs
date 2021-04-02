@@ -27,7 +27,7 @@ namespace Twisty.Engine.Geometry
 		/// <summary>
 		/// Gets the Zero point coordinates.
 		/// </summary>
-		public static readonly Cartesian2dCoordinate Zero = new Cartesian2dCoordinate(0.0, 0.0);
+		public static readonly Cartesian2dCoordinate Zero = new(0.0, 0.0);
 
 		/// <summary>
 		/// Create a new Cartesian3dCoordinate from a coordinates string on the format "(X Y)".

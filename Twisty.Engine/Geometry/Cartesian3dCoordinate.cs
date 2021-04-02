@@ -28,22 +28,22 @@ namespace Twisty.Engine.Geometry
 		/// <summary>
 		/// Gets the Zero point coordinates.
 		/// </summary>
-		public static readonly Cartesian3dCoordinate Zero = new Cartesian3dCoordinate(0.0, 0.0, 0.0);
+		public static readonly Cartesian3dCoordinate Zero = new(0.0, 0.0, 0.0);
 
 		/// <summary>
 		/// Gets the Positive X Axis.
 		/// </summary>
-		public static readonly Cartesian3dCoordinate XAxis = new Cartesian3dCoordinate(1.0, 0.0, 0.0);
+		public static readonly Cartesian3dCoordinate XAxis = new(1.0, 0.0, 0.0);
 
 		/// <summary>
 		/// Gets the Positive Y Axis.
 		/// </summary>
-		public static readonly Cartesian3dCoordinate YAxis = new Cartesian3dCoordinate(0.0, 1.0, 0.0);
+		public static readonly Cartesian3dCoordinate YAxis = new(0.0, 1.0, 0.0);
 
 		/// <summary>
 		/// Gets the Positive Z Axis.
 		/// </summary>
-		public static readonly Cartesian3dCoordinate ZAxis = new Cartesian3dCoordinate(0.0, 0.0, 1.0);
+		public static readonly Cartesian3dCoordinate ZAxis = new(0.0, 0.0, 1.0);
 
 		#region ctor(s)
 
