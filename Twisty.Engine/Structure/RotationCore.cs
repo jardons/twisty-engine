@@ -12,11 +12,11 @@ namespace Twisty.Engine.Structure
 	{
 		#region Private Members
 
-		private List<Block> m_Blocks;
+		private readonly List<Block> m_Blocks;
 
-		private Dictionary<string, RotationAxis> m_Axes;
+		private readonly Dictionary<string, RotationAxis> m_Axes;
 
-		private Dictionary<string, CoreFace> m_Faces;
+		private readonly Dictionary<string, CoreFace> m_Faces;
 
 		#endregion Private Members
 
@@ -124,12 +124,48 @@ namespace Twisty.Engine.Structure
 				aboveLayer = axis.GetUpperLayer();
 
 			var blocks = GetBlocksAbove(aboveLayer.Plane);
+
+			if (!CanRotateAround(axis, theta, blocks))
+				throw new RotationCoreOperationException("Rotation is not allowed");
+
 			this.Rotate(blocks, axis.Vector, theta);
+		}
+
+		/// <summary>
+		/// Checks if a rotation is possible.
+		/// </summary>
+		/// <param name="axis"></param>
+		/// <param name="aboveLayer"></param>
+		/// <returns></returns>
+		public bool CanRotateAround(RotationAxis axis, double theta, LayerSeparator aboveLayer = null)
+		{
+			if (axis is null)
+				throw new ArgumentNullException(nameof(axis));
+
+			if (aboveLayer is null)
+				aboveLayer = axis.GetUpperLayer();
+
+			var blocks = GetBlocksAbove(aboveLayer.Plane);
+
+			// As constraints need to be implemented, we accept any seleciton moving blocks.
+			return CanRotateAround(axis, theta, blocks);
 		}
 
 		#endregion Public Methods
 
 		#region Private Members
+
+		/// <summary>
+		/// Checks if a rotation is possible.
+		/// </summary>
+		/// <param name="axis"></param>
+		/// <param name="aboveLayer"></param>
+		/// <returns></returns>
+		public bool CanRotateAround(RotationAxis axis, double theta, IEnumerable<Block> blocks)
+		{
+			// As constraints need to be implemented, we accept any seleciton moving blocks.
+			return blocks.Any();
+		}
 
 		/// <summary>
 		/// Gets all blocks of the core above a specific plane.

@@ -28,14 +28,14 @@ namespace Twisty.Engine.Geometry.Rotations
 		/// </summary>
 		/// <param name="axis">Axis around which the rotation is executed</param>
 		/// <param name="angle">Angle of the clockwise rotation.</param>
-		public RotationMatrix3d(Cartesian3dCoordinate axis, double angle)
+		public RotationMatrix3d(in Cartesian3dCoordinate axis, double angle)
 			: this(new SimpleRotation3d(axis, angle)) { }
 
 		/// <summary>
 		/// Create a new rotation matrix based on a rotation.
 		/// </summary>
 		/// <param name="rotation">Initial rotation applied to this matrix.</param>
-		public RotationMatrix3d(SimpleRotation3d rotation)
+		public RotationMatrix3d(in SimpleRotation3d rotation)
 		{
 			// Angle is reverse to provide a clockwise rotation.
 			double c = Trigonometry.Cos(-rotation.Angle);
@@ -92,7 +92,7 @@ namespace Twisty.Engine.Geometry.Rotations
 		/// </summary>
 		/// <param name="cc">Cartesian COordiante of the point to rotate.</param>
 		/// <returns>Rotated value.</returns>
-		public Cartesian3dCoordinate Rotate(Cartesian3dCoordinate cc)
+		public Cartesian3dCoordinate Rotate(in Cartesian3dCoordinate cc)
 		{
 			return new Cartesian3dCoordinate(
 				(cc.X * m_Matrix[0, 0]) + (cc.Y * m_Matrix[0, 1]) + (cc.Z * m_Matrix[0, 2]),
@@ -105,7 +105,7 @@ namespace Twisty.Engine.Geometry.Rotations
 		/// </summary>
 		/// <param name="cc">Cartesian Coordinate of the point to rotate.</param>
 		/// <returns>Rotated value.</returns>
-		public RotationMatrix3d Rotate(RotationMatrix3d cc)
+		public RotationMatrix3d Rotate(in RotationMatrix3d cc)
 		{
 			return new RotationMatrix3d(
 				new double[3, 3]
@@ -139,7 +139,7 @@ namespace Twisty.Engine.Geometry.Rotations
 		/// </remarks>
 		public IReadOnlyList<SimpleRotation3d> GetEulerAngles()
 		{
-			List<SimpleRotation3d> result = new List<SimpleRotation3d>();
+			List<SimpleRotation3d> result = new();
 
 			// Generate rotation aroung main angles.
 			// Psi(ψ) : rotation around X axis.

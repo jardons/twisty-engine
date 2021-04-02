@@ -52,7 +52,7 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		/// <param name="cc">Cartesian coordinate to convert.</param>
 		/// <returns>The Vector converted to a Homogeneous representation.</returns>
-		public static HomogeneousCoordinate ConvertToHomogeneous(Cartesian3dCoordinate cc)
+		public static HomogeneousCoordinate ConvertToHomogeneous(in Cartesian3dCoordinate cc)
 		{
 			return new HomogeneousCoordinate(
 				cc.X,
@@ -67,7 +67,7 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		/// <param name="sc">Spherical coordinate to convert.</param>
 		/// <returns>The Vector converted to a Cartesian representation.</returns>
-		public static Cartesian3dCoordinate ConvertToCartesian(SphericalVector sc)
+		public static Cartesian3dCoordinate ConvertToCartesian(in SphericalVector sc)
 		{
 			double sinTheta = Trigonometry.Sin(sc.Theta);
 
@@ -83,7 +83,7 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		/// <param name="hc">Homogeneous coordinate to convert.</param>
 		/// <returns>The Vector converted to a Cartesian representation.</returns>
-		public static Cartesian3dCoordinate ConvertToCartesian(HomogeneousCoordinate hc)
+		public static Cartesian3dCoordinate ConvertToCartesian(in HomogeneousCoordinate hc)
 		{
 			return hc.W.IsZero()
 				? new Cartesian3dCoordinate(
@@ -103,7 +103,7 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		/// <param name="cc">Cartesian coordinate to convert.</param>
 		/// <returns>The Vector converted to a Spherical representation.</returns>
-		public static SphericalVector ConvertToSpherical(Cartesian3dCoordinate cc)
+		public static SphericalVector ConvertToSpherical(in Cartesian3dCoordinate cc)
 		{
 			// Pre validate value to avoid double.NaN in calculation result.
 			if (cc.IsZero)

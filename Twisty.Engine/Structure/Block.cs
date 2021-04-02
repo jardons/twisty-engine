@@ -49,7 +49,7 @@ namespace Twisty.Engine.Structure
 		/// <summary>
 		/// Initial Position is stored using the direction relative to the Form center.
 		/// </summary>
-		public Cartesian3dCoordinate InitialPosition { get; set; }
+		public Cartesian3dCoordinate InitialPosition { get; init; }
 
 		/// <summary>
 		/// Position is stored using the direction relative to the Form center.
@@ -59,7 +59,7 @@ namespace Twisty.Engine.Structure
 		/// <summary>
 		/// Current Orientation of the block.
 		/// </summary>
-		public RotationMatrix3d Orientation { get; set; }
+		public RotationMatrix3d Orientation { get; private set; }
 
 		/// <summary>
 		/// Gets the unique ID of the block.

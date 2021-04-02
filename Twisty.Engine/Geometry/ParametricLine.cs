@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace Twisty.Engine.Geometry
 {
 	/// <summary>
-	/// Class defining a line between 2 points in his parametrics form.
+	/// Immutable class defining a line between 2 points in his parametrics form.
 	/// 
 	/// The formula used to defined a parametric line is :
 	/// x = x1 + a * t
@@ -54,7 +54,7 @@ namespace Twisty.Engine.Geometry
 		/// Create a ParametricLine starting at the initial coordinate and following a provided Vector.
 		/// </summary>
 		/// <param name="v">Vector providing the direction of the line.</param>
-		public ParametricLine(Cartesian3dCoordinate v)
+		public ParametricLine(in Cartesian3dCoordinate v)
 		{
 			this.Point = Cartesian3dCoordinate.Zero;
 			this.Vector = v;
@@ -65,7 +65,7 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		/// <param name="p">Initial point of the line.</param>
 		/// <param name="v">Vector providing the direction of the line.</param
-		public ParametricLine(Cartesian3dCoordinate p, Cartesian3dCoordinate v)
+		public ParametricLine(in Cartesian3dCoordinate p, in Cartesian3dCoordinate v)
 		{
 			this.Point = p;
 			this.Vector = v;
@@ -125,7 +125,7 @@ namespace Twisty.Engine.Geometry
 		/// A line is parallel to a Plan when this calculation is true :
 		/// aA + bB + cC = 0
 		/// </remarks>
-		public bool IsParallelTo(Plane p)
+		public bool IsParallelTo(in Plane p)
 			=> ((this.A * p.A) + (this.B * p.B) + (this.C * p.C)).IsZero();
 
 		/// <summary>
@@ -133,7 +133,7 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		/// <param name="l">Line to which the orientation of the Line will be compared.</param>
 		/// <returns>A boolean indicating whether both the Lines are parallel or not.</returns>
-		public bool IsParallelTo(ParametricLine l)
+		public bool IsParallelTo(in ParametricLine l)
 			=> this.Vector.IsSameVector(l.Vector) || this.Vector.IsSameVector(l.Vector.Reverse);
 
 		/// <summary>
@@ -141,7 +141,7 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		/// <param name="point">Coordiantes of the point for which we will test if he belong to the line or not.</param>
 		/// <returns>A boolean indicating if whether the provided point belong to the line or note.</returns>
-		public bool Contains(Cartesian3dCoordinate point)
+		public bool Contains(in Cartesian3dCoordinate point)
 		{
 			// A point belong to the line when t has the same value for both of the 3 formula :
 			// { x = x0 + at
@@ -220,7 +220,7 @@ namespace Twisty.Engine.Geometry
 		/// Distance:
 		/// d = || S || / || v1 ||
 		/// </remarks>
-		public double GetDistanceTo(Cartesian3dCoordinate point)
+		public double GetDistanceTo(in Cartesian3dCoordinate point)
 			=> (this.Point - point).CrossProduct(this.Vector).Magnitude / this.Vector.Magnitude;
 
 		/// <summary>
@@ -228,7 +228,7 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		/// <param name="line">Parametric line taht should intersect with the current one.</param>
 		/// <returns>Coordinate of the intersection point between both lines.</returns>
-		public Cartesian3dCoordinate GetIntersection(ParametricLine line)
+		public Cartesian3dCoordinate GetIntersection(in ParametricLine line)
 		{
 			// We are calculating the R vector resulting from both line equations :
 			// R = P1 + V1t1 and R = P2 + V2t2
@@ -287,7 +287,7 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		/// <param name="point">Point through which the perpendicular line to the ParametricLine should go.</param>
 		/// <returns>A new line going through the provided point and the current ParametricLine.</returns>
-		public ParametricLine GetPerpendicular(Cartesian3dCoordinate point)
+		public ParametricLine GetPerpendicular(in Cartesian3dCoordinate point)
 		{
 			// Calculate vector between Line reference point and provided point.
 			Cartesian3dCoordinate v = point - this.Point;
@@ -304,7 +304,7 @@ namespace Twisty.Engine.Geometry
 		/// <param name="p1">Starting point of the line.</param>
 		/// <param name="p2">Ending point of the line.</param>
 		/// <returns>The Parametric line linking the provided points.</returns>
-		public static ParametricLine FromTwoPoints(Cartesian3dCoordinate p1, Cartesian3dCoordinate p2)
+		public static ParametricLine FromTwoPoints(in Cartesian3dCoordinate p1, in Cartesian3dCoordinate p2)
 		{
 			return new ParametricLine(p1, new Cartesian3dCoordinate(p2.X - p1.X, p2.Y - p1.Y, p2.Z - p1.Z));
 		}
@@ -314,7 +314,7 @@ namespace Twisty.Engine.Geometry
 		#region Private Methods
 
 		private Cartesian3dCoordinate GetValueForT(double t)
-			=> new Cartesian3dCoordinate(
+			=> new(
 				this.X + (this.A * t),
 				this.Y + (this.B * t),
 				this.Z + (this.C * t)
