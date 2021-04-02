@@ -87,7 +87,7 @@ namespace Twisty.Bash.Controllers
 					for (int gridRow = 0; gridRow < 4; ++gridRow)
 					{
 						var cubeFace = grid[gridRow, gridLine];
-						if (cubeFace == null)
+						if (cubeFace is null)
 						{
 							Console.Write("      ");
 							continue;

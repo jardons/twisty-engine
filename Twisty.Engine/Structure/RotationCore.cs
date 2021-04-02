@@ -74,7 +74,7 @@ namespace Twisty.Engine.Structure
 			if (!m_Faces.ContainsKey(faceId))
 				throw new ArgumentNullException("Face Id should exist.", nameof(faceId));
 
-			return m_Blocks.Where(b => b.GetBlockFace(m_Faces[faceId].Plane.Normal) != null);
+			return m_Blocks.Where(b => b.GetBlockFace(m_Faces[faceId].Plane.Normal) is not null);
 		}
 
 		/// <summary>
@@ -83,7 +83,7 @@ namespace Twisty.Engine.Structure
 		/// <param name="v">Orientation of the face of the puzzle.</param>
 		/// <returns>The list of blocks currently visible on the requested face.</returns>
 		/// <remarks>Logic is only valid for standard forms. Any shapeshifting form would need to improve this logic.</remarks>
-		public IEnumerable<Block> GetBlocksForFace(Cartesian3dCoordinate v) => m_Blocks.Where(b => b.GetBlockFace(v) != null);
+		public IEnumerable<Block> GetBlocksForFace(Cartesian3dCoordinate v) => m_Blocks.Where(b => b.GetBlockFace(v) is not null);
 
 		/// <summary>
 		/// Gets an axis using its id.
@@ -117,10 +117,10 @@ namespace Twisty.Engine.Structure
 		/// </param>
 		public void RotateAround(RotationAxis axis, double theta, LayerSeparator aboveLayer = null)
 		{
-			if (axis == null)
+			if (axis is null)
 				throw new ArgumentNullException(nameof(axis));
 
-			if (aboveLayer == null)
+			if (aboveLayer is null)
 				aboveLayer = axis.GetUpperLayer();
 
 			var blocks = GetBlocksAbove(aboveLayer.Plane);

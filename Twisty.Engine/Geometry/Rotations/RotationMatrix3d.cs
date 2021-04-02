@@ -74,7 +74,7 @@ namespace Twisty.Engine.Geometry.Rotations
 		/// <param name="matrix">Precalculated matrix as a table format.</param>
 		private RotationMatrix3d(double[,] matrix)
 		{
-			if (matrix == null)
+			if (matrix is null)
 				throw new ArgumentNullException(nameof(matrix));
 
 			if (matrix.Length != 9)

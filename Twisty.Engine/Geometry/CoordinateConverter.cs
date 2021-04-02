@@ -29,7 +29,7 @@ namespace Twisty.Engine.Geometry
 		/// <returns>A table of double containing the coordinate in the given order.</returns>
 		public static double[] ParseCoordinates(string coordinates)
 		{
-			if (coordinates == null)
+			if (coordinates is null)
 				throw new ArgumentNullException(nameof(coordinates));
 
 			if (!coordinates.StartsWith("(") || !coordinates.EndsWith(")") || coordinates.Length < 3)

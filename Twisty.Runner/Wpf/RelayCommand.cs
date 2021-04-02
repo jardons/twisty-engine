@@ -38,7 +38,7 @@ namespace Twisty.Runner.Wpf
 
 		public bool CanExecute(object parameter)
 		{
-			return this.m_CanExecute == null || this.m_CanExecute(parameter);
+			return this.m_CanExecute is null || this.m_CanExecute(parameter);
 		}
 
 		public void Execute(object parameter)

@@ -24,7 +24,7 @@ namespace Twisty.Engine.Structure
 		/// <exception cref="System.ArgumentException">Axis id cannot be an empty or a white string.</exception>
 		public RotationAxis(string id, Cartesian3dCoordinate axis, IDictionary<string, double> layersDistances = null)
 		{
-			if (id == null)
+			if (id is null)
 				throw new ArgumentNullException(nameof(id), "Axis id is mandatory.");
 
 			if (string.IsNullOrWhiteSpace(id))
@@ -35,7 +35,7 @@ namespace Twisty.Engine.Structure
 
 			this.Id = id;
 			this.Vector = axis;
-			this.Layers = layersDistances == null
+			this.Layers = layersDistances is null
 				? new[] { new LayerSeparator($"L_{id}", new Plane(axis, 0.0)) }
 				: layersDistances.Select(kv => new LayerSeparator(kv.Key, new Plane(axis, kv.Value)));
 		}

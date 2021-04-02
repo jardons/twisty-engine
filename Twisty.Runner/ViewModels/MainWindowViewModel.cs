@@ -50,7 +50,7 @@ namespace Twisty.Runner.ViewModels
 			set
 			{
 				m_Core = value;
-				if (PropertyChanged != null)
+				if (PropertyChanged is not null)
 					this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(Core)));
 			}
 		}
@@ -61,7 +61,7 @@ namespace Twisty.Runner.ViewModels
 			set
 			{
 				m_VisualPositions = value;
-				if (PropertyChanged != null)
+				if (PropertyChanged is not null)
 					this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(VisualPositions)));
 			}
 		}
@@ -72,7 +72,7 @@ namespace Twisty.Runner.ViewModels
 			set
 			{
 				m_MaterializerId = value;
-				if (PropertyChanged != null)
+				if (PropertyChanged is not null)
 					this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(MaterializerId)));
 			}
 		}
