@@ -9,22 +9,46 @@ namespace Twisty.Engine.Tests.Structure
 	[Trait("Category", "Structure")]
 	public class BlockTest
 	{
-		public class TestBlock : Block
+		#region Test Methods
+
+		[Fact]
+		public void Block_CreateBlockWithNullId_ThrowArgumentNullException()
 		{
-			public TestBlock(BlockFace f)
-				: base(f)
-			{
-			}
+			// 1. Prepare
+			Block b;
+			BlockFace f = new("face", Cartesian3dCoordinate.XAxis);
+			IEnumerable<BlockFace> faces = new List<BlockFace> { f };
 
-			public TestBlock(IEnumerable<BlockFace> f)
-				: base(f)
-			{
-			}
+			// 2. Execute
+			void a1() => b = new(null, Cartesian3dCoordinate.XAxis, f);
+			void a2() => b = new(null, Cartesian3dCoordinate.XAxis, faces);
 
-			public override string Id => string.Empty;
+			// 3. Verify
+			Assert.Throws<ArgumentNullException>(a1);
+			Assert.Throws<ArgumentNullException>(a2);
 		}
 
-		#region Test Methods
+		[Theory]
+		[InlineData("")]
+		[InlineData("\t")]
+		[InlineData(" ")]
+		[InlineData("    ")]
+		[InlineData("\n")]
+		public void Block_CreateBlockWithEmptyId_ThrowArgumentNullException(string id)
+		{
+			// 1. Prepare
+			Block b;
+			BlockFace f = new("face", Cartesian3dCoordinate.XAxis);
+			IEnumerable<BlockFace> faces = new List<BlockFace> { f };
+
+			// 2. Execute
+			void a1() => b = new(id, Cartesian3dCoordinate.XAxis, f);
+			void a2() => b = new(id, Cartesian3dCoordinate.XAxis, faces);
+
+			// 3. Verify
+			Assert.Throws<ArgumentException>(a1);
+			Assert.Throws<ArgumentException>(a2);
+		}
 
 		[Fact]
 		public void Block_CreateBlockWithNullFace_ThrowArgumentNullException()
@@ -35,8 +59,8 @@ namespace Twisty.Engine.Tests.Structure
 			IEnumerable<BlockFace> faces = null;
 
 			// 2. Execute
-			Action a1 = () => b = new TestBlock(f);
-			Action a2 = () => b = new TestBlock(faces);
+			void a1() => b = new("id", Cartesian3dCoordinate.XAxis, f);
+			void a2() => b = new("id", Cartesian3dCoordinate.XAxis, faces);
 
 			// 3. Verify
 			Assert.Throws<ArgumentNullException>(a1);
@@ -51,7 +75,7 @@ namespace Twisty.Engine.Tests.Structure
 			IEnumerable<BlockFace> faces = new List<BlockFace>(0);
 
 			// 2. Execute
-			Action a = () => b = new TestBlock(faces);
+			void a() => b = new("id", Cartesian3dCoordinate.XAxis, faces);
 
 			// 3. Verify
 			Assert.Throws<ArgumentException>(a);
@@ -64,7 +88,7 @@ namespace Twisty.Engine.Tests.Structure
 			SphericalVector faceOrientation = new SphericalVector(Math.PI, Math.PI);
 
 			// 2. Execute
-			Block b = new TestBlock(new BlockFace("test", faceOrientation));
+			Block b = new("id", Cartesian3dCoordinate.XAxis, new BlockFace("test", faceOrientation));
 			BlockFace f = b.GetBlockFace(faceOrientation);
 
 			// 3. Verify
@@ -73,7 +97,7 @@ namespace Twisty.Engine.Tests.Structure
 
 		[Theory]
 		// Base Axis Rotations
-		[InlineData("(0 0 1)", Math.PI /2.0, "(1 0 0)", "(0 -1 0)")]
+		[InlineData("(0 0 1)", Math.PI / 2.0, "(1 0 0)", "(0 -1 0)")]
 		[InlineData("(0 0 1)", Math.PI / 2.0, "(0 1 0)", "(1 0 0)")]
 		[InlineData("(0 0 1)", Math.PI / 2.0, "(-1 0 0)", "(0 1 0)")]
 		[InlineData("(0 0 1)", Math.PI / 2.0, "(0 -1 0)", "(-1 0 0)")]
@@ -86,7 +110,7 @@ namespace Twisty.Engine.Tests.Structure
 			Cartesian3dCoordinate axis = new Cartesian3dCoordinate(rotationAxisCc);
 			Cartesian3dCoordinate faceOrientation = new Cartesian3dCoordinate(faceCc);
 			Cartesian3dCoordinate expectedOrientation = new Cartesian3dCoordinate(expectedCc);
-			Block b = new TestBlock(new BlockFace("test", faceOrientation));
+			Block b = new("id", Cartesian3dCoordinate.XAxis, new BlockFace("test", faceOrientation));
 
 			// 2. Execute
 			b.RotateAround(axis, theta);
@@ -101,7 +125,7 @@ namespace Twisty.Engine.Tests.Structure
 		{
 			// 1. Prepare
 			SphericalVector faceOrientation = new SphericalVector(Math.PI, Math.PI);
-			Block b = new TestBlock(new BlockFace("test", faceOrientation));
+			Block b = new("id", Cartesian3dCoordinate.XAxis, new BlockFace("test", faceOrientation));
 
 			// 2. Execute
 			BlockFace f = b.GetBlockFace(new SphericalVector(100, 100));
@@ -117,7 +141,7 @@ namespace Twisty.Engine.Tests.Structure
 			// 1. Prepare
 			Cartesian3dCoordinate axis = new Cartesian3dCoordinate(axisCc);
 			Cartesian3dCoordinate faceOrientation = new Cartesian3dCoordinate(originalFace);
-			Block b = new TestBlock(new BlockFace("test", faceOrientation));
+			Block b = new("id", Cartesian3dCoordinate.XAxis, new BlockFace("test", faceOrientation));
 
 			b.RotateAround(axis, theta);
 
