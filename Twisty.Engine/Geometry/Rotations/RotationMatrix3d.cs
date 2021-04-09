@@ -9,6 +9,11 @@ namespace Twisty.Engine.Geometry.Rotations
 	public class RotationMatrix3d
 	{
 		/// <summary>
+		/// Gets the unrotated matrix.
+		/// </summary>
+		public readonly static RotationMatrix3d Unrotated = new();
+
+		/// <summary>
 		/// Rotation matrix on the form of [Columns Index, Rows Index]
 		/// </summary>
 		private readonly double[,] m_Matrix;
@@ -18,7 +23,7 @@ namespace Twisty.Engine.Geometry.Rotations
 		/// <summary>
 		/// Create a unrotated rotation matrix.
 		/// </summary>
-		public RotationMatrix3d()
+		private RotationMatrix3d()
 		{
 			this.m_Matrix = new double[,] { { 1.0, 0.0, 0.0 }, { 0.0, 1.0, 0.0 }, { 0.0, 0.0, 1.0 } };
 		}
