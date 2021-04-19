@@ -51,12 +51,12 @@ namespace Twisty.Engine.Structure
 		/// <param name="blocks">List of block to which created centers will be added.</param>
 		protected static void AddCentersToList(IList<Block> blocks)
 		{
-			blocks.Add(new CenterBlock(POSITION_FACE_DOWN, new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN)));
-			blocks.Add(new CenterBlock(POSITION_FACE_UP, new BlockFace(ID_FACE_UP, POSITION_FACE_UP)));
-			blocks.Add(new CenterBlock(POSITION_FACE_LEFT, new BlockFace(ID_FACE_LEFT, POSITION_FACE_LEFT)));
-			blocks.Add(new CenterBlock(POSITION_FACE_RIGHT, new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)));
-			blocks.Add(new CenterBlock(POSITION_FACE_FRONT, new BlockFace(ID_FACE_FRONT, POSITION_FACE_FRONT)));
-			blocks.Add(new CenterBlock(POSITION_FACE_BACK, new BlockFace(ID_FACE_BACK, POSITION_FACE_BACK)));
+			blocks.Add(new Block($"CF_{ID_FACE_DOWN}", POSITION_FACE_DOWN, new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN)));
+			blocks.Add(new Block($"CF_{ID_FACE_UP}", POSITION_FACE_UP, new BlockFace(ID_FACE_UP, POSITION_FACE_UP)));
+			blocks.Add(new Block($"CF_{ID_FACE_LEFT}", POSITION_FACE_LEFT, new BlockFace(ID_FACE_LEFT, POSITION_FACE_LEFT)));
+			blocks.Add(new Block($"CF_{ID_FACE_RIGHT}", POSITION_FACE_RIGHT, new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)));
+			blocks.Add(new Block($"CF_{ID_FACE_FRONT}", POSITION_FACE_FRONT, new BlockFace(ID_FACE_FRONT, POSITION_FACE_FRONT)));
+			blocks.Add(new Block($"CF_{ID_FACE_BACK}", POSITION_FACE_BACK, new BlockFace(ID_FACE_BACK, POSITION_FACE_BACK)));
 		}
 
 		/// <summary>
