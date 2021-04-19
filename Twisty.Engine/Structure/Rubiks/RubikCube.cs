@@ -104,45 +104,55 @@ namespace Twisty.Engine.Structure.Rubiks
 		/// <param name="blocks">List of block to which created edges will be added.</param>
 		private static void AddEdgesToList(IList<Block> blocks)
 		{
-			blocks.Add(new EdgeBlock(POSITION_FACE_DOWN + POSITION_FACE_FRONT,
+			blocks.Add(CreateEdgeBlock(POSITION_FACE_DOWN + POSITION_FACE_FRONT,
 				new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN),
 				new BlockFace(ID_FACE_FRONT, POSITION_FACE_FRONT)));
-			blocks.Add(new EdgeBlock(POSITION_FACE_DOWN + POSITION_FACE_LEFT,
+			blocks.Add(CreateEdgeBlock(POSITION_FACE_DOWN + POSITION_FACE_LEFT,
 				new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN),
 				new BlockFace(ID_FACE_LEFT, POSITION_FACE_LEFT)));
-			blocks.Add(new EdgeBlock(POSITION_FACE_DOWN + POSITION_FACE_BACK,
+			blocks.Add(CreateEdgeBlock(POSITION_FACE_DOWN + POSITION_FACE_BACK,
 				new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN),
 				new BlockFace(ID_FACE_BACK, POSITION_FACE_BACK)));
-			blocks.Add(new EdgeBlock(POSITION_FACE_DOWN + POSITION_FACE_RIGHT,
+			blocks.Add(CreateEdgeBlock(POSITION_FACE_DOWN + POSITION_FACE_RIGHT,
 				new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN),
 				new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)));
 
-			blocks.Add(new EdgeBlock(POSITION_FACE_UP + POSITION_FACE_FRONT,
+			blocks.Add(CreateEdgeBlock(POSITION_FACE_UP + POSITION_FACE_FRONT,
 				new BlockFace(ID_FACE_UP, POSITION_FACE_UP),
 				new BlockFace(ID_FACE_FRONT, POSITION_FACE_FRONT)));
-			blocks.Add(new EdgeBlock(POSITION_FACE_UP + POSITION_FACE_LEFT,
+			blocks.Add(CreateEdgeBlock(POSITION_FACE_UP + POSITION_FACE_LEFT,
 				new BlockFace(ID_FACE_UP, POSITION_FACE_UP),
 				new BlockFace(ID_FACE_LEFT, POSITION_FACE_LEFT)));
-			blocks.Add(new EdgeBlock(POSITION_FACE_UP + POSITION_FACE_BACK,
+			blocks.Add(CreateEdgeBlock(POSITION_FACE_UP + POSITION_FACE_BACK,
 				new BlockFace(ID_FACE_UP, POSITION_FACE_UP),
 				new BlockFace(ID_FACE_BACK, POSITION_FACE_BACK)));
-			blocks.Add(new EdgeBlock(POSITION_FACE_UP + POSITION_FACE_RIGHT,
+			blocks.Add(CreateEdgeBlock(POSITION_FACE_UP + POSITION_FACE_RIGHT,
 				new BlockFace(ID_FACE_UP, POSITION_FACE_UP),
 				new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)));
 
-			blocks.Add(new EdgeBlock(POSITION_FACE_LEFT + POSITION_FACE_FRONT,
+			blocks.Add(CreateEdgeBlock(POSITION_FACE_LEFT + POSITION_FACE_FRONT,
 				new BlockFace(ID_FACE_LEFT, POSITION_FACE_LEFT),
 				new BlockFace(ID_FACE_FRONT, POSITION_FACE_FRONT)));
-			blocks.Add(new EdgeBlock(POSITION_FACE_FRONT + POSITION_FACE_RIGHT,
+			blocks.Add(CreateEdgeBlock(POSITION_FACE_FRONT + POSITION_FACE_RIGHT,
 				new BlockFace(ID_FACE_FRONT, POSITION_FACE_FRONT),
 				new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)));
-			blocks.Add(new EdgeBlock(POSITION_FACE_RIGHT + POSITION_FACE_BACK,
+			blocks.Add(CreateEdgeBlock(POSITION_FACE_RIGHT + POSITION_FACE_BACK,
 				new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT),
 				new BlockFace(ID_FACE_BACK, POSITION_FACE_BACK)));
-			blocks.Add(new EdgeBlock(POSITION_FACE_BACK + POSITION_FACE_LEFT,
+			blocks.Add(CreateEdgeBlock(POSITION_FACE_BACK + POSITION_FACE_LEFT,
 				new BlockFace(ID_FACE_BACK, POSITION_FACE_BACK),
 				new BlockFace(ID_FACE_LEFT, POSITION_FACE_LEFT)));
 		}
+
+		/// <summary>
+		/// Create an edge block.
+		/// </summary>
+		/// <param name="position"></param>
+		/// <param name="face1"></param>
+		/// <param name="face2"></param>
+		/// <returns></returns>
+		private static Block CreateEdgeBlock(Cartesian3dCoordinate position, BlockFace face1, BlockFace face2)
+			=> new($"E_{face1.Id}{face2.Id}", position, face1, face2);
 
 		#endregion Private Members
 	}
