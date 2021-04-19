@@ -66,28 +66,32 @@ namespace Twisty.Engine.Structure
 		protected static void AddCornersToList(IList<Block> blocks)
 		{
 			// 4 bottoms corners.
-			blocks.Add(new CornerBlock(
+			blocks.Add(new Block(
+				$"C{ID_FACE_DOWN}{ID_FACE_FRONT}{ID_FACE_RIGHT}",
 				POSITION_CORNER_DOWN_FRONT_RIGHT,
 				new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN),
 				new BlockFace(ID_FACE_FRONT, POSITION_FACE_FRONT),
 				new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)
 			));
 
-			blocks.Add(new CornerBlock(
+			blocks.Add(new Block(
+				$"C{ID_FACE_DOWN}{ID_FACE_BACK}{ID_FACE_RIGHT}",
 				POSITION_CORNER_DOWN_BACK_RIGHT,
 				new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN),
 				new BlockFace(ID_FACE_BACK, POSITION_FACE_BACK),
 				new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)
 			));
 
-			blocks.Add(new CornerBlock(
+			blocks.Add(new Block(
+				$"C{ID_FACE_DOWN}{ID_FACE_FRONT}{ID_FACE_LEFT}",
 				POSITION_CORNER_DOWN_FRONT_LEFT,
 				new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN),
 				new BlockFace(ID_FACE_FRONT, POSITION_FACE_FRONT),
 				new BlockFace(ID_FACE_LEFT, POSITION_FACE_LEFT)
 			));
 
-			blocks.Add(new CornerBlock(
+			blocks.Add(new Block(
+				$"C{ID_FACE_DOWN}{ID_FACE_BACK}{ID_FACE_LEFT}",
 				POSITION_CORNER_DOWN_BACK_LEFT,
 				new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN),
 				new BlockFace(ID_FACE_BACK, POSITION_FACE_BACK),
@@ -95,28 +99,32 @@ namespace Twisty.Engine.Structure
 			));
 
 			// 4 tops corners.
-			blocks.Add(new CornerBlock(
+			blocks.Add(new Block(
+				$"C{ID_FACE_UP}{ID_FACE_FRONT}{ID_FACE_RIGHT}",
 				POSITION_CORNER_UP_FRONT_RIGHT,
 				new BlockFace(ID_FACE_UP, POSITION_FACE_UP),
 				new BlockFace(ID_FACE_FRONT, POSITION_FACE_FRONT),
 				new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)
 			));
 
-			blocks.Add(new CornerBlock(
+			blocks.Add(new Block(
+				$"C{ID_FACE_UP}{ID_FACE_BACK}{ID_FACE_RIGHT}",
 				POSITION_CORNER_UP_BACK_RIGHT,
 				new BlockFace(ID_FACE_UP, POSITION_FACE_UP),
 				new BlockFace(ID_FACE_BACK, POSITION_FACE_BACK),
 				new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)
 			));
 
-			blocks.Add(new CornerBlock(
+			blocks.Add(new Block(
+				$"C{ID_FACE_UP}{ID_FACE_FRONT}{ID_FACE_LEFT}",
 				POSITION_CORNER_UP_FRONT_LEFT,
 				new BlockFace(ID_FACE_UP, POSITION_FACE_UP),
 				new BlockFace(ID_FACE_FRONT, POSITION_FACE_FRONT),
 				new BlockFace(ID_FACE_LEFT, POSITION_FACE_LEFT)
 			));
 
-			blocks.Add(new CornerBlock(
+			blocks.Add(new Block(
+				$"C{ID_FACE_UP}{ID_FACE_BACK}{ID_FACE_LEFT}",
 				POSITION_CORNER_UP_BACK_LEFT,
 				new BlockFace(ID_FACE_UP, POSITION_FACE_UP),
 				new BlockFace(ID_FACE_BACK, POSITION_FACE_BACK),

@@ -17,7 +17,7 @@ namespace Twisty.Engine.Tests.Structure
 			// 1. Prepare
 			Block b;
 			BlockFace f = new("face", Cartesian3dCoordinate.XAxis);
-			IEnumerable<BlockFace> faces = new List<BlockFace> { f };
+			var faces = new BlockFace[] { f };
 
 			// 2. Execute
 			void a1() => b = new(null, Cartesian3dCoordinate.XAxis, f);
@@ -39,7 +39,7 @@ namespace Twisty.Engine.Tests.Structure
 			// 1. Prepare
 			Block b;
 			BlockFace f = new("face", Cartesian3dCoordinate.XAxis);
-			IEnumerable<BlockFace> faces = new List<BlockFace> { f };
+			var faces = new BlockFace[] { f };
 
 			// 2. Execute
 			void a1() => b = new(id, Cartesian3dCoordinate.XAxis, f);
@@ -56,7 +56,7 @@ namespace Twisty.Engine.Tests.Structure
 			// 1. Prepare
 			Block b;
 			BlockFace f = null;
-			IEnumerable<BlockFace> faces = null;
+			BlockFace[] faces = null;
 
 			// 2. Execute
 			void a1() => b = new("id", Cartesian3dCoordinate.XAxis, f);
@@ -72,7 +72,7 @@ namespace Twisty.Engine.Tests.Structure
 		{
 			// 1. Prepare
 			Block b;
-			IEnumerable<BlockFace> faces = new List<BlockFace>(0);
+			var faces = new BlockFace[0];
 
 			// 2. Execute
 			void a() => b = new("id", Cartesian3dCoordinate.XAxis, faces);

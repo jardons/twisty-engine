@@ -45,7 +45,7 @@ namespace Twisty.Engine.Structure
 		/// <param name="id">Unique id of the block in the cube.</param>
 		/// <param name="initialPosition">Initial position vector of the block in the cube.</param>
 		/// <param name="faces">Collection of available faces for this block.</param>
-		public Block(string id, Cartesian3dCoordinate initialPosition, IEnumerable<BlockFace> faces)
+		public Block(string id, Cartesian3dCoordinate initialPosition, params BlockFace[] faces)
 		{
 			if (id is null)
 				throw new ArgumentNullException(nameof(id), "Id is mandatory.");
