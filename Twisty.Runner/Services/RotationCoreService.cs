@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Twisty.Engine.Geometry.Rotations;
 using Twisty.Engine.Materialization;
+using Twisty.Engine.Materialization.Colors;
 using Twisty.Engine.Operations;
 using Twisty.Engine.Operations.Rubiks;
 using Twisty.Engine.Operations.Skewb;
@@ -128,7 +129,7 @@ namespace Twisty.Runner.Services
 			return p;
 		}
 
-		private IMaterializer GetMaterializer(string materializerId)
+		private static IMaterializer GetMaterializer(string materializerId)
 			=> materializerId switch
 			{
 				"fixed" => new ResizedMaterializer(new StandardMaterializer(), 0.25, ResizingMode.Fixed),
