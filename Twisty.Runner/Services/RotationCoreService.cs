@@ -4,13 +4,10 @@ using System.Linq;
 using System.Text;
 using Twisty.Engine.Geometry.Rotations;
 using Twisty.Engine.Materialization;
-using Twisty.Engine.Materialization.Colors;
 using Twisty.Engine.Operations;
 using Twisty.Engine.Operations.Rubiks;
 using Twisty.Engine.Operations.Skewb;
 using Twisty.Engine.Structure;
-using Twisty.Engine.Structure.Rubiks;
-using Twisty.Engine.Structure.Skewb;
 using Twisty.Runner.Models;
 using Twisty.Runner.Models.Model3d;
 

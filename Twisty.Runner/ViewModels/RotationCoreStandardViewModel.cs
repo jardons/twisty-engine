@@ -30,7 +30,7 @@ namespace Twisty.Runner.ViewModels
 		#region ICoreDisplayViewModel Members
 
 		/// <summary>
-		/// LIst of Camera available in the interface.
+		/// List of Camera available in the interface.
 		/// </summary>
 		public ObservableCollection<CameraDescription> AvailableCameras { get; }
 

@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Twisty.Runner.Models.Model3d;
 using Twisty.Runner.ViewModels;
+using Twisty.Runner.Wpf.Model3d;
 
 namespace Twisty.Runner.Views
 {
@@ -49,11 +50,11 @@ namespace Twisty.Runner.Views
 
 		#endregion Binding Properties
 
-		private Dictionary<string, ModelVisual3D> m_3dObjects;
+		private IDictionary<string, Block3dObject> m_3dObjects;
 
 		public RotationCoreStandardView()
 		{
-			m_3dObjects = new Dictionary<string, ModelVisual3D>();
+			m_3dObjects = new Dictionary<string, Block3dObject>();
 
 			InitializeComponent();
 
@@ -99,7 +100,7 @@ namespace Twisty.Runner.Views
 		{
 			// Remove Previous instance of the core.
 			foreach (var o in m_3dObjects.Values)
-				AnimatedCore.Children.Remove(o);
+				AnimatedCore.Children.Remove(o.Visual);
 
 			m_3dObjects.Clear();
 
@@ -109,95 +110,22 @@ namespace Twisty.Runner.Views
 			// Create new instance.
 			foreach (Core3dObject o in this.ObjectStructures.Objects)
 			{
-				var v = CreateVisuals(o);
+				var v = new Block3dObject(o);
 
 				m_3dObjects.Add(o.Id, v);
-				AnimatedCore.Children.Add(v);
+				AnimatedCore.Children.Add(v.Visual);
 			}
 		}
-
-		private ModelVisual3D CreateVisuals(Core3dObject o)
-		{
-			Model3DGroup group = new Model3DGroup();
-
-			foreach (var part in o.Parts)
-			{
-				// Create visual object.
-				GeometryModel3D model = new GeometryModel3D
-				{
-					Geometry = GetMesh(part.Points),
-					Material = GetBrush(part.FrontColor),
-					BackMaterial = GetBrush(part.BackColor)
-				};
-
-				group.Children.Add(model);
-			}
-
-			return new ModelVisual3D { Content = group };
-		}
-
-		/// <summary>
-		/// Create the Mesh for a single block face.
-		/// </summary>
-		/// <param name="points"></param>
-		/// <returns></returns>
-		private MeshGeometry3D GetMesh(IReadOnlyList<Point3D> points)
-		{
-			// Mesh will be created by suming triangle sharing a common vertice in the center of the surface.
-			MeshGeometry3D geo = new MeshGeometry3D();
-			geo.Positions.Add(points[0]);
-			geo.Positions.Add(points[1]);
-			geo.Positions.Add(points[2]);
-
-			geo.TriangleIndices.Add(0);
-			geo.TriangleIndices.Add(1);
-			geo.TriangleIndices.Add(2);
-
-			for (int i = 3; i < points.Count; ++i)
-			{
-				// Update positions.
-				geo.Positions.Add(points[i]);
-
-				geo.TriangleIndices.Add(0);         // First Point
-				geo.TriangleIndices.Add(i - 1);     // Previous
-				geo.TriangleIndices.Add(i);         // Current
-			}
-
-			return geo;
-		}
-
-		private DiffuseMaterial GetBrush(Color c)
-			=> new DiffuseMaterial { Brush = new SolidColorBrush(c) };
 
 		/// <summary>
 		/// Refresh the display state of the Core object.
 		/// </summary>
 		private void RefreshRotations()
 		{
-			foreach (var key in this.m_3dObjects.Keys)
+			foreach (var o in this.m_3dObjects.Values)
 			{
-				m_3dObjects[key].Transform = GetTransform(this.ObjectRotations.GetRotations(key));
+				o.ApplyRotation(this.ObjectRotations.GetRotations(o.Key));
 			}
-		}
-
-		private Transform3D GetTransform(IEnumerable<Models.Model3d.Rotation> rotations)
-		{
-			Transform3DGroup group = new Transform3DGroup();
-
-			// Use Euler angles to provide correct orientation on every blocks.
-			foreach (var rotation in rotations)
-			{
-				group.Children.Add(new RotateTransform3D
-				{
-					Rotation = new AxisAngleRotation3D
-					{
-						Axis = rotation.Axis,
-						Angle = rotation.Angle
-					}
-				});
-			}
-
-			return group;
 		}
 
 		#endregion Private Methods
