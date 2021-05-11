@@ -20,7 +20,7 @@ namespace Twisty.Runner.ViewModels
 
 		// Internal models
 		private RotationCoreObject m_Core;
-		private CoreRotations m_VisualPositions;
+		private CoreAlterations m_VisualAlterations;
 		private string m_MaterializerId;
 
 		public MainWindowViewModel(IRotationCoreService rotationCoreService)
@@ -55,14 +55,14 @@ namespace Twisty.Runner.ViewModels
 			}
 		}
 
-		public CoreRotations VisualPositions
+		public CoreAlterations Alterations
 		{
-			get => m_VisualPositions;
+			get => m_VisualAlterations;
 			set
 			{
-				m_VisualPositions = value;
+				m_VisualAlterations = value;
 				if (PropertyChanged is not null)
-					this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(VisualPositions)));
+					this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(Alterations)));
 			}
 		}
 
@@ -89,13 +89,13 @@ namespace Twisty.Runner.ViewModels
 
 		private void LoadCore(string id)
 		{
-			this.Core = m_RotationCoreService.CreateNewCore(id, MaterializerId, () => RefreshPositions());
-			this.RefreshPositions();
+			this.Core = m_RotationCoreService.CreateNewCore(id, MaterializerId, () => RefreshAlterations());
+			this.RefreshAlterations();
 		}
 
-		private void RefreshPositions()
+		private void RefreshAlterations()
 		{
-			this.VisualPositions = this.m_RotationCoreService.CalculatePositions(this.Core);
+			this.Alterations = this.m_RotationCoreService.CalculateAlterations(this.Core);
 		}
 	}
 }

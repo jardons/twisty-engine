@@ -45,7 +45,20 @@ namespace Twisty.Engine.Structure.Analysis
 		/// </summary>
 		/// <param name="b">Block for which alteration status will be evaluated.</param>
 		/// <returns>The alteration status of the provided block.</returns>
-		public AlterationType GetAlterations(in Block b)
+		public IReadOnlyDictionary<string, AlterationType> GetAlterations()
+		{
+			return m_Blocks.Blocks.ToDictionary(
+				b => b.Id,
+				b => this.GetBlockAlterations(b)
+			);
+		}
+
+		/// <summary>
+		/// Gets alteration state for the block provided as argument.
+		/// </summary>
+		/// <param name="b">Block for which alteration status will be evaluated.</param>
+		/// <returns>The alteration status of the provided block.</returns>
+		public AlterationType GetBlockAlterations(in Block b)
 		{
 			var position = b.Position;
 			var originalBlock = m_Blocks.GetBlockForInitialPosition(position);

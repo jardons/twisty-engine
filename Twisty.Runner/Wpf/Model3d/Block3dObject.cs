@@ -40,6 +40,12 @@ namespace Twisty.Runner.Wpf.Model3d
 				p.SetColor(c);
 		}
 
+		public void ResetColor()
+		{
+			foreach (var p in m_3dModels)
+				p.ResetColor();
+		}
+
 		public void ApplyRotation(IEnumerable<Rotation> rotations)
 		{
 			Transform3DGroup group = new();

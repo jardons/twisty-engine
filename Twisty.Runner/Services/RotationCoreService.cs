@@ -8,6 +8,7 @@ using Twisty.Engine.Operations;
 using Twisty.Engine.Operations.Rubiks;
 using Twisty.Engine.Operations.Skewb;
 using Twisty.Engine.Structure;
+using Twisty.Engine.Structure.Analysis;
 using Twisty.Runner.Models;
 using Twisty.Runner.Models.Model3d;
 
@@ -17,7 +18,7 @@ namespace Twisty.Runner.Services
 	{
 		public RotationCoreObject CreateNewCore(string coreTypeId, string materializerId, Action onRotationChange);
 
-		CoreRotations CalculatePositions(RotationCoreObject core);
+		CoreAlterations CalculateAlterations(RotationCoreObject core);
 
 		void RunCommand(RotationCoreObject core, string command);
 
@@ -77,14 +78,16 @@ namespace Twisty.Runner.Services
 			return new RotationCoreObject(coreTypeId, core, runner, core3d);
 		}
 
-		public CoreRotations CalculatePositions(RotationCoreObject core)
+		public CoreAlterations CalculateAlterations(RotationCoreObject core)
 		{
 			var positions = new Dictionary<string, IReadOnlyList<SimpleRotation3d>>();
 
 			foreach (var block in core.Core.Blocks)
 				positions[block.Id] = block.Orientation.GetEulerAngles();
 
-			return new CoreRotations(positions);
+			ResolutionAnalyzer analyzer = new(core.Core);
+
+			return new CoreAlterations(positions, analyzer.GetAlterations());
 		}
 
 		public void RunCommand(RotationCoreObject core, string command)

@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Twisty.Engine.Structure.Analysis;
 using Twisty.Runner.Models.Model3d;
 using Twisty.Runner.ViewModels;
 using Twisty.Runner.Wpf.Model3d;
@@ -37,15 +38,15 @@ namespace Twisty.Runner.Views
 						((RotationCoreStandardView)defectImageControl).ObjectStructures = eventArgs.NewValue as Core3d
 				));
 
-		private static readonly DependencyProperty ObjectRotationsProperty =
-			DependencyProperty.Register("ObjectRotations",
-				typeof(CoreRotations),
+		private static readonly DependencyProperty AlterationsProperty =
+			DependencyProperty.Register("Alterations",
+				typeof(CoreAlterations),
 				typeof(RotationCoreStandardView),
 				new FrameworkPropertyMetadata(
 					null,
 					FrameworkPropertyMetadataOptions.AffectsRender,
 					(DependencyObject defectImageControl, DependencyPropertyChangedEventArgs eventArgs) =>
-						((RotationCoreStandardView)defectImageControl).ObjectRotations = (CoreRotations)eventArgs.NewValue
+						((RotationCoreStandardView)defectImageControl).Alterations = (CoreAlterations)eventArgs.NewValue
 				));
 
 		#endregion Binding Properties
@@ -59,6 +60,14 @@ namespace Twisty.Runner.Views
 			InitializeComponent();
 
 			this.DataContext.CameraPosition = new Point3D(6.0, -3.0, 3.0);
+
+			this.showAlterations.Checked += OnShowAlterationsChange;
+			this.showAlterations.Unchecked += OnShowAlterationsChange;
+		}
+
+		private void OnShowAlterationsChange(object sender, RoutedEventArgs e)
+		{
+			this.RefreshColors();
 		}
 
 		#region Public Properties
@@ -76,13 +85,14 @@ namespace Twisty.Runner.Views
 			}
 		}
 
-		public CoreRotations ObjectRotations
+		public CoreAlterations Alterations
 		{
-			get => (CoreRotations)this.GetValue(ObjectRotationsProperty);
+			get => (CoreAlterations)this.GetValue(AlterationsProperty);
 			set
 			{
-				this.SetValue(ObjectRotationsProperty, value);
+				this.SetValue(AlterationsProperty, value);
 				this.RefreshRotations();
+				this.RefreshColors();
 			}
 		}
 
@@ -124,7 +134,32 @@ namespace Twisty.Runner.Views
 		{
 			foreach (var o in this.m_3dObjects.Values)
 			{
-				o.ApplyRotation(this.ObjectRotations.GetRotations(o.Key));
+				o.ApplyRotation(this.Alterations.GetRotations(o.Key));
+			}
+		}
+
+		/// <summary>
+		/// Refresh the display state of the Core object.
+		/// </summary>
+		private void RefreshColors()
+		{
+			if (this.showAlterations.IsChecked ?? false)
+			{
+				foreach (var o in this.m_3dObjects.Values)
+				{
+					Color c = this.Alterations.GetAlteration(o.Key) switch
+					{
+						AlterationType.Orientation => Color.FromRgb(100, 100, 100),
+						AlterationType.Position => Color.FromRgb(0, 0, 0),
+						_ => Color.FromRgb(byte.MaxValue, byte.MaxValue, byte.MaxValue)
+					};
+					o.SetColor(c);
+				}
+			}
+			else
+			{
+				foreach (var o in this.m_3dObjects.Values)
+					o.ResetColor();
 			}
 		}
 

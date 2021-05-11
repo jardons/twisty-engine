@@ -24,7 +24,7 @@ namespace Twisty.Engine.Tests.Structure.Analysis
 			ResolutionAnalyzer a = new(CreateStructure(b));
 
 			// 2. Execute
-			AlterationType r = a.GetAlterations(b);
+			AlterationType r = a.GetBlockAlterations(b);
 
 			// 3. Verify
 			Assert.Equal(AlterationType.None, r);
@@ -47,7 +47,7 @@ namespace Twisty.Engine.Tests.Structure.Analysis
 
 			// 2. Execute
 			b.RotateAround(Cartesian3dCoordinate.ZAxis, Math.PI / 2.0);
-			AlterationType r = a.GetAlterations(b);
+			AlterationType r = a.GetBlockAlterations(b);
 
 			// 3. Verify
 			Assert.Equal(AlterationType.Position, r);
@@ -71,7 +71,7 @@ namespace Twisty.Engine.Tests.Structure.Analysis
 			// 2. Execute
 			b.RotateAround(Cartesian3dCoordinate.ZAxis, Math.PI);
 			originalBlock.RotateAround(axis, Math.PI);
-			AlterationType r = a.GetAlterations(b);
+			AlterationType r = a.GetBlockAlterations(b);
 
 			// 3. Verify
 			Assert.Equal(AlterationType.None, r);
@@ -95,7 +95,7 @@ namespace Twisty.Engine.Tests.Structure.Analysis
 			// 2. Execute
 			b.RotateAround(Cartesian3dCoordinate.ZAxis, Math.PI);
 			originalBlock.RotateAround(axis, Math.PI);
-			AlterationType r = a.GetAlterations(b);
+			AlterationType r = a.GetBlockAlterations(b);
 
 			// 3. Verify
 			Assert.Equal(AlterationType.Position, r);
@@ -115,7 +115,7 @@ namespace Twisty.Engine.Tests.Structure.Analysis
 
 			// 2. Execute
 			b.RotateAround(axis, Math.PI / 3.0);
-			AlterationType r = a.GetAlterations(b);
+			AlterationType r = a.GetBlockAlterations(b);
 
 			// 3. Verify
 			Assert.Equal(AlterationType.None, r);
@@ -136,7 +136,7 @@ namespace Twisty.Engine.Tests.Structure.Analysis
 
 			// 2. Execute
 			b.RotateAround(axis, Math.PI / 3.0);
-			AlterationType r = a.GetAlterations(b);
+			AlterationType r = a.GetBlockAlterations(b);
 
 			// 3. Verify
 			Assert.Equal(AlterationType.Orientation, r);
