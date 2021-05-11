@@ -6,7 +6,7 @@ using System.Text;
 namespace Twisty.Engine.Geometry
 {
 	/// <summary>
-	/// Class providing cartesian coordinates representation of a point or vector in a 2 dimensions plane.
+	/// Immutable class providing cartesian coordinates representation of a point or vector in a 2 dimensions plane.
 	/// Vector coordinates are representated by the combination of coordinates following the 2 perpendicular axis X and Y.
 	/// </summary>
 	/// <example>
@@ -28,6 +28,8 @@ namespace Twisty.Engine.Geometry
 		/// Gets the Zero point coordinates.
 		/// </summary>
 		public static readonly Cartesian2dCoordinate Zero = new(0.0, 0.0);
+
+		#region ctor(s)
 
 		/// <summary>
 		/// Create a new Cartesian3dCoordinate from a coordinates string on the format "(X Y)".
@@ -60,6 +62,8 @@ namespace Twisty.Engine.Geometry
 			this.X = x;
 			this.Y = y;
 		}
+
+		#endregion ctor(s)
 
 		#region Public Properties
 
@@ -113,7 +117,7 @@ namespace Twisty.Engine.Geometry
 		/// <param name="v1">First vector from which the second one will be substracted.</param>
 		/// <param name="v2">Substracted Vector.</param>
 		/// <returns>Result of the subbstraction of the 2 vectors.</returns>
-		public static Cartesian2dCoordinate operator -(Cartesian2dCoordinate v1, Cartesian2dCoordinate v2)
+		public static Cartesian2dCoordinate operator -(in Cartesian2dCoordinate v1, in Cartesian2dCoordinate v2)
 		{
 			return new Cartesian2dCoordinate(
 					v1.X - v2.X,
@@ -127,7 +131,7 @@ namespace Twisty.Engine.Geometry
 		/// <param name="v1">First vector to add.</param>
 		/// <param name="v2">Second vector to add.</param>
 		/// <returns>Result of the sum of the 2 vectors.</returns>
-		public static Cartesian2dCoordinate operator +(Cartesian2dCoordinate v1, Cartesian2dCoordinate v2)
+		public static Cartesian2dCoordinate operator +(in Cartesian2dCoordinate v1, in Cartesian2dCoordinate v2)
 		{
 			return new Cartesian2dCoordinate(
 					v1.X + v2.X,

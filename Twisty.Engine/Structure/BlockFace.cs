@@ -3,7 +3,7 @@
 namespace Twisty.Engine.Structure
 {
 	/// <summary>
-	/// Class representing one face for a block.
+	/// Immutable class representing one face for a block.
 	/// </summary>
 	public class BlockFace
 	{
@@ -34,7 +34,7 @@ namespace Twisty.Engine.Structure
 		/// Position is relative to the Block Center.
 		/// </summary>
 		/// <remarks>distance from the block is not specified as we stay in a conceptual level.</remarks>
-		public Cartesian3dCoordinate Position { get; private set; }
+		public Cartesian3dCoordinate Position { get; }
 
 		/// <summary>
 		/// Textual identifier used to identify BlockFaces among them and should match the correct face of the owner.

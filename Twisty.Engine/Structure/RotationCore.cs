@@ -8,15 +8,15 @@ namespace Twisty.Engine.Structure
 	/// <summary>
 	/// Class describing the object that will represent the central rotation point around which blocks will rotate.
 	/// </summary>
-	public abstract class RotationCore : IRotatable
+	public abstract class RotationCore : IRotatable, IBlocksStructure
 	{
 		#region Private Members
 
-		private List<Block> m_Blocks;
+		private readonly List<Block> m_Blocks;
 
-		private Dictionary<string, RotationAxis> m_Axes;
+		private readonly Dictionary<string, RotationAxis> m_Axes;
 
-		private Dictionary<string, CoreFace> m_Faces;
+		private readonly Dictionary<string, CoreFace> m_Faces;
 
 		#endregion Private Members
 
@@ -72,7 +72,7 @@ namespace Twisty.Engine.Structure
 		public IEnumerable<Block> GetBlocksForFace(string faceId)
 		{
 			if (!m_Faces.ContainsKey(faceId))
-				throw new ArgumentNullException("Face Id should exist.", nameof(faceId));
+				throw new ArgumentNullException(nameof(faceId), "Face Id should exist.");
 
 			return m_Blocks.Where(b => b.GetBlockFace(m_Faces[faceId].Plane.Normal) is not null);
 		}
@@ -100,6 +100,14 @@ namespace Twisty.Engine.Structure
 		public Block GetBlock(string blockId) => m_Blocks.FirstOrDefault(b => b.Id == blockId);
 
 		/// <summary>
+		/// Get a block using its original position.
+		/// </summary>
+		/// <param name="position">Directiona position of the block relative to the core center.</param>
+		/// <returns>Block for the corresponding initial position or null if not found.</returns>
+		public Block GetBlockForInitialPosition(Cartesian3dCoordinate position)
+			=> this.Blocks.FirstOrDefault(b => b.InitialPosition.IsSameVector(position));
+
+		/// <summary>
 		/// Gets a face using its id.
 		/// </summary>
 		/// <param name="faceId">Id of the face we are looking up.</param>
@@ -124,12 +132,48 @@ namespace Twisty.Engine.Structure
 				aboveLayer = axis.GetUpperLayer();
 
 			var blocks = GetBlocksAbove(aboveLayer.Plane);
-			this.Rotate(blocks, axis.Vector, theta);
+
+			if (!CanRotateAround(axis, theta, blocks))
+				throw new RotationCoreOperationException("Rotation is not allowed");
+
+			Rotate(blocks, axis.Vector, theta);
+		}
+
+		/// <summary>
+		/// Checks if a rotation is possible.
+		/// </summary>
+		/// <param name="axis"></param>
+		/// <param name="aboveLayer"></param>
+		/// <returns></returns>
+		public bool CanRotateAround(RotationAxis axis, double theta, LayerSeparator aboveLayer = null)
+		{
+			if (axis is null)
+				throw new ArgumentNullException(nameof(axis));
+
+			if (aboveLayer is null)
+				aboveLayer = axis.GetUpperLayer();
+
+			var blocks = GetBlocksAbove(aboveLayer.Plane);
+
+			// As constraints need to be implemented, we accept any seleciton moving blocks.
+			return CanRotateAround(axis, theta, blocks);
 		}
 
 		#endregion Public Methods
 
 		#region Private Members
+
+		/// <summary>
+		/// Checks if a rotation is possible.
+		/// </summary>
+		/// <param name="axis"></param>
+		/// <param name="aboveLayer"></param>
+		/// <returns></returns>
+		private bool CanRotateAround(RotationAxis axis, double theta, IEnumerable<Block> blocks)
+		{
+			// As constraints need to be implemented, we accept any seleciton moving blocks.
+			return blocks.Any();
+		}
 
 		/// <summary>
 		/// Gets all blocks of the core above a specific plane.
@@ -155,7 +199,7 @@ namespace Twisty.Engine.Structure
 		/// <param name="blocks">Collection for which position will be rotated.</param>
 		/// <param name="rotationAxis">Axis used for the rotation of the blocks.</param>
 		/// <param name="theta">Angle in radians of the rotations to execute on each blocks.</param>
-		private void Rotate(IEnumerable<Block> blocks, Cartesian3dCoordinate rotationAxis, double theta)
+		private static void Rotate(IEnumerable<Block> blocks, Cartesian3dCoordinate rotationAxis, double theta)
 		{
 			if (theta.IsZero())
 				return;

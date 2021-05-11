@@ -22,6 +22,8 @@
 					DisplayMemberPath="Name"
 					SelectedValuePath="Id"
 					SelectedValue="{Binding ActiveCameraId}" />
+			<CheckBox x:Name="showAlterations"
+				IsChecked="{Binding ShowAlterations}" />
 		</StackPanel>
 		<Canvas Name="canvasBox" Grid.Column="1" Grid.Row="2">
 			<Viewport3D Name="AnimatedCore"

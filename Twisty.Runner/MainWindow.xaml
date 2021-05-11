@@ -32,6 +32,9 @@
 				<MenuItem Header="_Topologic"
 						CommandParameter="ratio"
 						Command="{Binding DataContext.SelectMaterializer, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" />
+				<MenuItem Header="_Resolution"
+						CommandParameter="resolution"
+						Command="{Binding DataContext.SelectMaterializer, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" />
 			</MenuItem>
 		</Menu>
 		<Grid>
@@ -47,27 +50,27 @@
 			<views:RotationCoreStandardView
 					x:Name="CubeView1"
 					ObjectStructures="{Binding Path=DataContext.Core.VisualObject, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
-					ObjectRotations="{Binding Path=DataContext.VisualPositions, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+					Alterations="{Binding Path=DataContext.Alterations, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
 					Grid.Column="0"
 					Grid.Row="0" />
 			<views:RotationCoreStandardView
 					x:Name="CubeView2"
 					ObjectStructures="{Binding Path=DataContext.Core.VisualObject, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
-					ObjectRotations="{Binding Path=DataContext.VisualPositions, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+					Alterations="{Binding Path=DataContext.Alterations, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
 					CurrentCamera="6,3,3"
 					Grid.Column="1"
 					Grid.Row="0" />
 			<views:RotationCoreStandardView
 					x:Name="CubeView3"
 					ObjectStructures="{Binding Path=DataContext.Core.VisualObject, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
-					ObjectRotations="{Binding Path=DataContext.VisualPositions, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+					Alterations="{Binding Path=DataContext.Alterations, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
 					CurrentCamera="6,3,-3"
 					Grid.Column="0"
 					Grid.Row="1" />
 			<views:RotationCoreStandardView
 					x:Name="CubeView4"
 					ObjectStructures="{Binding Path=DataContext.Core.VisualObject, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
-					ObjectRotations="{Binding Path=DataContext.VisualPositions, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+					Alterations="{Binding Path=DataContext.Alterations, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
 					CurrentCamera="-6,-3,3"
 					Grid.Column="1"
 					Grid.Row="1" />

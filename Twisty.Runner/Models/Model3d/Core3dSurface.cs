@@ -14,8 +14,8 @@ namespace Twisty.Runner.Models.Model3d
 	{
 		public Core3dSurface(MaterializedObjectPart p)
 		{
-			this.FrontColor = GetColor(p.ColorId);
-			this.BackColor = GetColor(p.ColorId);
+			this.FrontColor = GetColor(p.Color);
+			this.BackColor = GetColor(p.Color);
 			this.Points = p.Points.Select(p => p.ToWpfPoint3D()).ToList();
 		}
 
@@ -25,19 +25,7 @@ namespace Twisty.Runner.Models.Model3d
 
 		public IReadOnlyList<Point3D> Points { get; }
 
-		private static Color GetColor(string faceId = null)
-		{
-			return faceId switch
-			{
-				"F" => Color.FromRgb(0, 0, 255),
-				"L" => Color.FromRgb(255, 105, 0),
-				"R" => Color.FromRgb(255, 0, 0),
-				"D" => Color.FromRgb(255, 255, 255),
-				"B" => Color.FromRgb(0, 250, 0),
-				"U" => Color.FromRgb(255, 255, 0),
-				// Return black when not able to match a color.
-				_ => Color.FromRgb(0, 0, 0),
-			};
-		}
+		private static Color GetColor(System.Drawing.Color color)
+			=> Color.FromArgb(color.A, color.R, color.G, color.B);
 	}
 }

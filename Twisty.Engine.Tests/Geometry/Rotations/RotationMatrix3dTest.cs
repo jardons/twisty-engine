@@ -98,7 +98,7 @@ namespace Twisty.Engine.Tests.Geometry.Rotations
 		public void RotationMatrix3d_GetEulerAnglesFromNonRotated_Empty()
 		{
 			// Prepare
-			RotationMatrix3d m = new RotationMatrix3d();
+			RotationMatrix3d m = RotationMatrix3d.Unrotated;
 
 			// Execute
 			var r = m.GetEulerAngles();

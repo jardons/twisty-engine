@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using Twisty.Engine.Geometry;
+using Twisty.Engine.Materialization.Colors;
 using Twisty.Engine.Structure;
 
 namespace Twisty.Engine.Materialization
 {
 	public class StandardMaterializer : IMaterializer
 	{
-		public StandardMaterializer()
-		{
-		}
+		public IFaceColorProvider FaceColorProvider { get; init; } = new StandardCubeFaceColorProvider();
 
 		public MaterializedCore Materialize(RotationCore core)
 		{
 			// Create new instance.
-			List<MaterializedObject> objects = new List<MaterializedObject>();
+			List<MaterializedObject> objects = new();
 			foreach (var b in core.Blocks)
 			{
 				objects.Add(MaterializeObject(core, b));
@@ -27,21 +27,21 @@ namespace Twisty.Engine.Materialization
 
 		private MaterializedObject MaterializeObject(RotationCore core, Block b)
 		{
-			List<MaterializedObjectPart> parts = new List<MaterializedObjectPart>();
+			List<MaterializedObjectPart> parts = new();
 			foreach (BlockFace face in b.Faces)
 			{
 				// Get the face from the cube as the block face don't contain face Plane coordinates.
 				CoreFace cubeFace = core.GetFace(face.Id);
 
-				Cartesian3dCoordinate center = this.GetInternalPoint(core, b.Id, face.Id);
+				Cartesian3dCoordinate center = GetInternalPoint(core, b.Id, face.Id);
 				var points = this.GetFaceVertices(core, cubeFace, center);
-				parts.Add(new MaterializedObjectPart(face.Id, points));
+				parts.Add(new MaterializedObjectPart(FaceColorProvider.GetColor(core, b, face), points));
 			}
 
 			return new MaterializedObject(b.Id, parts);
 		}
 
-		private Cartesian3dCoordinate GetInternalPoint(RotationCore core, string blockId, string faceId)
+		private static Cartesian3dCoordinate GetInternalPoint(RotationCore core, string blockId, string faceId)
 		{
 			CoreFace cubeFace = core.GetFace(faceId);
 			Block b = core.GetBlock(blockId);
@@ -61,7 +61,7 @@ namespace Twisty.Engine.Materialization
 		private IList<Cartesian3dCoordinate> GetFaceVertices(RotationCore core, CoreFace face, Cartesian3dCoordinate internalPoint)
 		{
 			var planes = this.GetFaceBondaries(core, face, internalPoint);
-			List<Cartesian3dCoordinate> points = new List<Cartesian3dCoordinate>(planes.Count);
+			List<Cartesian3dCoordinate> points = new(planes.Count);
 
 			// As it's a loop, previous border of first row is the last one.
 			var previousLine = planes[planes.Count - 1].Plane.GetIntersection(face.Plane);
@@ -115,7 +115,7 @@ namespace Twisty.Engine.Materialization
 			return result;
 		}
 
-		private List<IPlanar> FilterToClosestPlanar(IEnumerable<IPlanar> planars, Cartesian3dCoordinate internalPoint, Plane referencePlane)
+		private static List<IPlanar> FilterToClosestPlanar(IEnumerable<IPlanar> planars, Cartesian3dCoordinate internalPoint, Plane referencePlane)
 		{
 			// Keep cuts from the closest to the fartest.
 			var tuples = planars.Select(o => new Tuple<IPlanar, double, Cartesian3dCoordinate>(
@@ -143,7 +143,7 @@ namespace Twisty.Engine.Materialization
 			return result.Select(t => t.Item1).ToList();
 		}
 
-		private bool IsBehindClosestCut(Cartesian3dCoordinate testedPoint, IList<Cartesian3dCoordinate> points, Cartesian3dCoordinate internalPoint,
+		private static bool IsBehindClosestCut(Cartesian3dCoordinate testedPoint, IList<Cartesian3dCoordinate> points, Cartesian3dCoordinate internalPoint,
 			IEnumerable<Plane> planes)
 		{
 			ParametricLine testedLine = ParametricLine.FromTwoPoints(internalPoint, testedPoint);
@@ -186,7 +186,7 @@ namespace Twisty.Engine.Materialization
 			return false;
 		}
 
-		private bool IsPointBetween(Cartesian3dCoordinate testedPoint, Cartesian3dCoordinate p1, Cartesian3dCoordinate p2)
+		private static bool IsPointBetween(Cartesian3dCoordinate testedPoint, Cartesian3dCoordinate p1, Cartesian3dCoordinate p2)
 		{
 			double dt1 = testedPoint.GetDistanceTo(p1);
 			double dt2 = testedPoint.GetDistanceTo(p2);
@@ -212,7 +212,7 @@ namespace Twisty.Engine.Materialization
 		/// </summary>
 		/// <param name="p">Coordinate of the point to validate.</param>
 		/// <returns>A boolean indicating if whether the point is inside the RotationCore scope or not</returns>
-		private bool IsPointInCore(Cartesian3dCoordinate p) =>
+		private static bool IsPointInCore(Cartesian3dCoordinate p) =>
 			p.X >= -1.0 && p.X <= 1.0
 				&& p.Y >= -1.0 && p.Y <= 1.0
 				&& p.Z >= -1.0 && p.Z <= 1.0;

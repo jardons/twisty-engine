@@ -5,7 +5,7 @@ using System.Text;
 namespace Twisty.Engine.Geometry.Rotations
 {
 	/// <summary>
-	/// Class describing a single rotation around an unique axis.
+	/// Immutable class describing a single rotation around an unique axis.
 	/// </summary>
 	public class SimpleRotation3d
 	{
@@ -14,7 +14,7 @@ namespace Twisty.Engine.Geometry.Rotations
 		/// </summary>
 		/// <param name="axis">Axis around which the rotation is executed.</param>
 		/// <param name="angle">Angle of the clockwise rotation.</param>
-		public SimpleRotation3d(Cartesian3dCoordinate axis, double angle)
+		public SimpleRotation3d(in Cartesian3dCoordinate axis, double angle)
 		{
 			if (axis.IsZero)
 				throw new ArgumentException("Axis shoulb de directed.", nameof(axis));
