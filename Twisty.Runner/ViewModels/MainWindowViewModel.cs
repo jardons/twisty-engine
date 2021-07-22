@@ -10,10 +10,11 @@ using Twisty.Runner.Services;
 using Twisty.Runner.Models;
 using System.Windows.Input;
 using Twisty.Runner.Wpf;
+using Twisty.Runner.ViewModels.Abstracts;
 
 namespace Twisty.Runner.ViewModels
 {
-	public class MainWindowViewModel : INotifyPropertyChanged
+	public class MainWindowViewModel : BaseViewModel
 	{
 		// Services
 		private readonly IRotationCoreService m_RotationCoreService;
@@ -50,8 +51,7 @@ namespace Twisty.Runner.ViewModels
 			set
 			{
 				m_Core = value;
-				if (PropertyChanged is not null)
-					this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(Core)));
+				this.TriggerPropertyChanged(nameof(Core));
 			}
 		}
 
@@ -61,8 +61,7 @@ namespace Twisty.Runner.ViewModels
 			set
 			{
 				m_VisualAlterations = value;
-				if (PropertyChanged is not null)
-					this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(Alterations)));
+				this.TriggerPropertyChanged(nameof(Alterations));
 			}
 		}
 
@@ -72,8 +71,7 @@ namespace Twisty.Runner.ViewModels
 			set
 			{
 				m_MaterializerId = value;
-				if (PropertyChanged is not null)
-					this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(MaterializerId)));
+				this.TriggerPropertyChanged(nameof(MaterializerId));
 			}
 		}
 
@@ -81,11 +79,7 @@ namespace Twisty.Runner.ViewModels
 
 		public ICommand SelectMaterializer { get; }
 
-		#region INotifyPropertyChanged Members
-
-		public event PropertyChangedEventHandler PropertyChanged;
-
-		#endregion INotifyPropertyChanged Members
+		#region Private Members
 
 		private void LoadCore(string id)
 		{
@@ -97,5 +91,7 @@ namespace Twisty.Runner.ViewModels
 		{
 			this.Alterations = this.m_RotationCoreService.CalculateAlterations(this.Core);
 		}
+
+		#endregion Private Members
 	}
 }

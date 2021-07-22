@@ -7,10 +7,11 @@ using System.Text;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using Twisty.Runner.Models;
+using Twisty.Runner.ViewModels.Abstracts;
 
 namespace Twisty.Runner.ViewModels
 {
-	public class RotationCoreStandardViewModel : INotifyPropertyChanged
+	public class RotationCoreStandardViewModel : BaseViewModel
 	{
 		private Point3D m_CameraPosition;
 
@@ -59,13 +60,7 @@ namespace Twisty.Runner.ViewModels
 			{
 				this.m_CameraPosition = value;
 
-				if (this.PropertyChanged is not null)
-				{
-					// Trigger View Update.
-					this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(CameraPosition)));
-					this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(CameraDirection)));
-					this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(ActiveCameraId)));
-				}
+				this.TriggerPropertyChanged(nameof(CameraPosition), nameof(CameraDirection), nameof(ActiveCameraId));
 			}
 		}
 
@@ -79,11 +74,5 @@ namespace Twisty.Runner.ViewModels
 				-this.CameraPosition.Z);
 
 		#endregion ICoreDisplayViewModel Members
-
-		#region INotifyPropertyChanged Members
-
-		public event PropertyChangedEventHandler PropertyChanged;
-
-		#endregion INotifyPropertyChanged Members
 	}
 }

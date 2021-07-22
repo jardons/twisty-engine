@@ -6,11 +6,12 @@ using System.Text;
 using System.Windows.Input;
 using Twisty.Runner.Models;
 using Twisty.Runner.Services;
+using Twisty.Runner.ViewModels.Abstracts;
 using Twisty.Runner.Wpf;
 
 namespace Twisty.Runner.ViewModels
 {
-	public class AlgorithmConsoleViewModel : INotifyPropertyChanged
+	public class AlgorithmConsoleViewModel : BaseViewModel
 	{
 		// Services
 		private readonly IRotationCoreService m_RotationCoreService;
@@ -47,10 +48,10 @@ namespace Twisty.Runner.ViewModels
 				if (!ReferenceEquals(value, m_Core))
 				{
 					m_Core = value;
-					this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(Core)));
+					this.TriggerPropertyChanged(nameof(Core));
 
 					this.History.Clear();
-					this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(History)));
+					this.TriggerPropertyChanged(nameof(History));
 				}
 			}
 		}
@@ -70,11 +71,11 @@ namespace Twisty.Runner.ViewModels
 					m_InputAlgoritm = command;
 
 				// Trigger View Update.
-				this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(InputAlgoritm)));
+				this.TriggerPropertyChanged(nameof(InputAlgoritm));
 				if (oldHasInput != this.HasInputAlgorithm)
-					this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(HasInputAlgorithm)));
+					this.TriggerPropertyChanged(nameof(HasInputAlgorithm));
 				if (oldValid != this.IsValidAlgorithm)
-					this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsValidAlgorithm)));
+					this.TriggerPropertyChanged(nameof(IsValidAlgorithm));
 			}
 		}
 
@@ -86,12 +87,6 @@ namespace Twisty.Runner.ViewModels
 		public ObservableCollection<string> History { get; }
 
 		public RelayCommand ExecuteCommand { get; private set; }
-
-		#region INotifyPropertyChanged Members
-
-		public event PropertyChangedEventHandler PropertyChanged;
-
-		#endregion INotifyPropertyChanged Members
 
 		#region Private Members
 
@@ -115,7 +110,7 @@ namespace Twisty.Runner.ViewModels
 			this.History.Insert(0, command);
 
 			// Trigger View Update.
-			this.PropertyChanged(this, new PropertyChangedEventArgs(nameof(History)));
+			this.TriggerPropertyChanged(nameof(History));
 		}
 
 		#endregion Private Members
