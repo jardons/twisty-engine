@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Twisty.Engine.Algorythms
+namespace Twisty.Engine.Algorithms
 {
-	public class Algorythm
+	public class Algorithm
 	{
-		public Algorythm(string command)
+		public Algorithm(string command)
 		{
 			this.Command = command;
 		}

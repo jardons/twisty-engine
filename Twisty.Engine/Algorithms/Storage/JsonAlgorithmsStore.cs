@@ -8,17 +8,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Twisty.Engine.Algorythms.Storage
+namespace Twisty.Engine.Algorithms.Storage
 {
-	public class JsonAlgorythmsStore
+	public class JsonAlgorithmsStore
 	{
 		private readonly string m_StorePath;
-		public JsonAlgorythmsStore(string storePath)
+		public JsonAlgorithmsStore(string storePath)
 		{
 			m_StorePath = storePath;
 		}
 
-		public AlgorythmsLibrary Read(string coreId)
+		public AlgorithmsLibrary Read(string coreId)
 		{
 			// Generate full path.
 			string path = GetPathForCore(coreId);
@@ -29,10 +29,10 @@ namespace Twisty.Engine.Algorythms.Storage
 
 			JObject o = (JObject)JToken.ReadFrom(reader);
 
-			return o.ToObject<AlgorythmsLibrary>();
+			return o.ToObject<AlgorithmsLibrary>();
 		}
 
-		public void Write(string coreId, AlgorythmsLibrary library)
+		public void Write(string coreId, AlgorithmsLibrary library)
 		{
 			// Generate full path.
 			string path = GetPathForCore(coreId);
