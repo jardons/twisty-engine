@@ -29,7 +29,8 @@ namespace Twisty.Runner.Wpf
 		/// </summary>
 		public void RaiseCanExecuteChanged()
 		{
-			CanExecuteChanged(this, EventArgs.Empty);
+			if (CanExecuteChanged is not null)
+				CanExecuteChanged(this, EventArgs.Empty);
 		}
 
 		#region ICommand Members

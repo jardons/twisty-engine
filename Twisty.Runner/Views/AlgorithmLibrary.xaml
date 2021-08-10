@@ -31,9 +31,6 @@
 					</ListBoxItem>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
-			<ListBox.InputBindings>
-				<MouseBinding Gesture="LeftDoubleClick" Command="{Binding ExecuteCommand}" />
-			</ListBox.InputBindings>
 		</ListBox>
 	</Grid>
 </UserControl>

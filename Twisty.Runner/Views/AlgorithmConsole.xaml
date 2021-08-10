@@ -22,21 +22,29 @@
 				Grid.Row="0"
 				Grid.ColumnSpan="2"
 				ItemsSource="{Binding History}">
-			<ListBox.InputBindings>
-				<MouseBinding Gesture="LeftDoubleClick" Command="{Binding ExecuteCommand}" />
-			</ListBox.InputBindings>
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<ListBoxItem Content="{Binding}">
+						<ListBoxItem.InputBindings>
+							<MouseBinding MouseAction="LeftDoubleClick" 
+									Command="{Binding Path=DataContext.ExecuteCommand, RelativeSource={RelativeSource AncestorType=local:AlgorithmConsole, Mode=FindAncestor} }"
+									CommandParameter="{Binding}" />
+						</ListBoxItem.InputBindings>
+					</ListBoxItem>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
 		</ListBox>
 		<TextBox x:Name="Input"
 				Grid.Column="0"
 				Grid.Row="1"
 				Text="{Binding Path=InputAlgoritm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 			<TextBox.InputBindings>
-				<KeyBinding Command="{Binding ExecuteCommand}" Key="Return" />
+				<KeyBinding Command="{Binding ExecuteInputCommand}" Key="Return" />
 			</TextBox.InputBindings>
 		</TextBox>
 		<Button x:Name="ButtonExecute"
 				Grid.Column="1"
 				Grid.Row="1"
-				Command="{Binding ExecuteCommand}">Execute</Button>
+				Command="{Binding ExecuteInputCommand}">Execute</Button>
 	</Grid>
 </UserControl>

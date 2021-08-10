@@ -26,6 +26,10 @@ namespace Twisty.Runner.ViewModels
 			History = new ObservableCollection<string>();
 
 			this.ExecuteCommand = new RelayCommand(
+				(p) => this.Execute(p as string)
+			);
+
+			this.ExecuteInputCommand = new RelayCommand(
 				(p) => this.ExecuteInput(),
 				(p) => this.HasInputAlgorithm && this.IsValidAlgorithm
 			);
@@ -35,7 +39,7 @@ namespace Twisty.Runner.ViewModels
 			{
 				if (e.PropertyName == nameof(HasInputAlgorithm)
 						|| e.PropertyName == nameof(IsValidAlgorithm))
-					ExecuteCommand.RaiseCanExecuteChanged();
+					ExecuteInputCommand.RaiseCanExecuteChanged();
 			};
 		}
 
@@ -88,13 +92,20 @@ namespace Twisty.Runner.ViewModels
 
 		public RelayCommand ExecuteCommand { get; private set; }
 
+		public RelayCommand ExecuteInputCommand { get; private set; }
+
 		#region Private Members
 
 		private void ExecuteInput()
 		{
-			m_RotationCoreService.RunCommand(this.Core, this.InputAlgoritm);
-			AddToHistory(this.InputAlgoritm);
+			this.Execute(this.InputAlgoritm);
 			this.InputAlgoritm = string.Empty;
+		}
+
+		private void Execute(string command)
+		{
+			m_RotationCoreService.RunCommand(this.Core, command);
+			AddToHistory(command);
 		}
 
 		private void AddToHistory(string command)
