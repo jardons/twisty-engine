@@ -40,10 +40,12 @@ namespace Twisty.Runner
 		{
 			// Services
 			m_Services.AddSingleton<IRotationCoreService>(new RotationCoreService());
+			m_Services.AddSingleton<AlgorithmsStorageService>(new AlgorithmsStorageService());
 
 			// View Models
 			m_Services.AddTransient<MainWindowViewModel>();
 			m_Services.AddTransient<AlgorithmConsoleViewModel>();
+			m_Services.AddTransient<AlgorithmLibraryViewModel>();
 			m_Services.AddTransient<RotationCoreStandardViewModel>();
 
 			// Windows

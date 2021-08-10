@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.757
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31129.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Twisty.Engine", "Twisty.Engine\Twisty.Engine.csproj", "{D424880E-1D3F-4902-B36D-A7BDF613390C}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Twisty.Bash", "Twisty.Console\Twisty.Bash.csproj", "{A304AD50-F293-41FB-BBE7-C77D00B93598}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Twisty.Runner", "Twisty.Runner\Twisty.Runner.csproj", "{AC5B7928-47C3-4E0B-834D-F8FD8EF536D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Twisty.Data", "Twisty.Data\Twisty.Data.csproj", "{AF62D94F-5ADE-45D3-B90A-3C68D61FABD0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +45,12 @@ Global
 		{AC5B7928-47C3-4E0B-834D-F8FD8EF536D6}.GitHub|Any CPU.ActiveCfg = Debug|Any CPU
 		{AC5B7928-47C3-4E0B-834D-F8FD8EF536D6}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{AC5B7928-47C3-4E0B-834D-F8FD8EF536D6}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{AF62D94F-5ADE-45D3-B90A-3C68D61FABD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF62D94F-5ADE-45D3-B90A-3C68D61FABD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF62D94F-5ADE-45D3-B90A-3C68D61FABD0}.GitHub|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF62D94F-5ADE-45D3-B90A-3C68D61FABD0}.GitHub|Any CPU.Build.0 = Debug|Any CPU
+		{AF62D94F-5ADE-45D3-B90A-3C68D61FABD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF62D94F-5ADE-45D3-B90A-3C68D61FABD0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

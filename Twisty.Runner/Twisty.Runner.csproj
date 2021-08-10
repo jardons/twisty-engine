@@ -12,16 +12,24 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Twisty.Data\Twisty.Data.csproj" />
     <ProjectReference Include="..\Twisty.Engine\Twisty.Engine.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Views\AlgorithmLibrary.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\AlgorithmConsole.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Views\AlgorithmLibrary.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\AlgorithmConsole.xaml">
       <SubType>Designer</SubType>
     </Page>

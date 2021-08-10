@@ -74,12 +74,21 @@
 					CurrentCamera="-6,-3,3"
 					Grid.Column="1"
 					Grid.Row="1" />
-			<views:AlgorithmConsole
-					x:Name="ConsoleInput"
+			<TabControl
 					Grid.Column="2"
 					Grid.Row="0"
-					Grid.RowSpan="2"
-					Core="{Binding Path=DataContext.Core, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+					Grid.RowSpan="2">
+				<TabItem Header="Input">
+					<views:AlgorithmConsole
+						x:Name="ConsoleInput"
+						Core="{Binding Path=DataContext.Core, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+				</TabItem>
+				<TabItem Header="Library">
+					<views:AlgorithmLibrary
+						x:Name="Library"
+						Core="{Binding Path=DataContext.Core, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+				</TabItem>
+			</TabControl>
 		</Grid>
 	</DockPanel>
 </Window>

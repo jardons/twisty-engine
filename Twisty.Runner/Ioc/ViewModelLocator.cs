@@ -33,6 +33,12 @@ namespace Twisty.Runner.Ioc
 			=> m_Provider.GetService<AlgorithmConsoleViewModel>();
 
 		/// <summary>
+		/// Gets a new AlgorithmConsoleViewModel.
+		/// </summary>
+		public AlgorithmLibraryViewModel AlgorithmLibraryViewModel
+			=> m_Provider.GetService<AlgorithmLibraryViewModel>();
+
+		/// <summary>
 		/// Gets a new RotationCoreStandardViewModel.
 		/// </summary>
 		public RotationCoreStandardViewModel RotationCoreStandardViewModel

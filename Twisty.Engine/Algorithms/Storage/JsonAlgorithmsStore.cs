@@ -23,6 +23,10 @@ namespace Twisty.Engine.Algorithms.Storage
 			// Generate full path.
 			string path = GetPathForCore(coreId);
 
+			// If file don't exist, return an empty library.
+			if (!File.Exists(path))
+				return new();
+
 			// read JSON directly from a file
 			using StreamReader file = File.OpenText(path);
 			using JsonTextReader reader = new(file);
