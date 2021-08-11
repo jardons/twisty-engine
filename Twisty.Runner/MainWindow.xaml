@@ -32,9 +32,6 @@
 				<MenuItem Header="_Topologic"
 						CommandParameter="ratio"
 						Command="{Binding DataContext.SelectMaterializer, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" />
-				<MenuItem Header="_Resolution"
-						CommandParameter="resolution"
-						Command="{Binding DataContext.SelectMaterializer, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" />
 			</MenuItem>
 		</Menu>
 		<Grid>
