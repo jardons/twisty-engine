@@ -37,9 +37,9 @@ namespace Twisty.Engine.Geometry
 		public static bool IsZero(this double d1) => Math.Abs(d1) < PRECISION;
 
 		/// <summary>
-		/// ALign the current double on the ratio limits to avoid precisions issues.
+		/// Align the current double on the ratio limits to avoid precisions issues.
 		/// </summary>
-		/// <param name="d">Double value to aligne on the ratio limits</param>
+		/// <param name="d">Double value to align on the ratio limits</param>
 		/// <returns>
 		/// Aligned boolean aligned between -1 and 1.
 		/// Zero values will also be rounded to 0.0 to clean loss of precision.

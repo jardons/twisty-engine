@@ -102,7 +102,7 @@ namespace Twisty.Engine.Structure
 		/// <summary>
 		/// Get a block using its original position.
 		/// </summary>
-		/// <param name="position">Directiona position of the block relative to the core center.</param>
+		/// <param name="position">Initial position of the block relative to the core center.</param>
 		/// <returns>Block for the corresponding initial position or null if not found.</returns>
 		public Block GetBlockForInitialPosition(Cartesian3dCoordinate position)
 			=> this.Blocks.FirstOrDefault(b => b.InitialPosition.IsSameVector(position));

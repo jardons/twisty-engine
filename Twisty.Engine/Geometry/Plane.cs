@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace Twisty.Engine.Geometry
 {
@@ -329,6 +330,7 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		/// <param name="l">Parametric line with which we calculate the product.</param>
 		/// <returns>Result of the sum of the product of the A, B and C factor of the plane and parametric line formula.</returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private double GetSumOfAbcProduct(in ParametricLine l)
 			=> (this.A * l.A) + (this.B * l.B) + (this.C * l.C);
 
@@ -337,6 +339,7 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		/// <param name="cc">Parametric line with which we calculate the product.</param>
 		/// <returns>Result of the sum of the product of the A, B and C factor of the plane and parametric line formula.</returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private double GetSumOfAbcProduct(in Cartesian3dCoordinate cc)
 			=> (this.A * cc.X) + (this.B * cc.Y) + (this.C * cc.Z);
 
@@ -347,6 +350,7 @@ namespace Twisty.Engine.Geometry
 		/// <param name="p">Second Plane with which we search the intersection point.</param>
 		/// <param name="cc">Calculated coordinate of one of the intersection point between the 2 Planes in case of success.</param>
 		/// <returns>A boolean indicating whther this function was able to evaluate the expected point or not.</returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private bool TryGetPointAtIntersectionOnZUsingA(in Plane p, out Cartesian3dCoordinate cc)
 		{
 			// Avoid to divide by 0.0 at the end. (see last formula)
@@ -410,6 +414,7 @@ namespace Twisty.Engine.Geometry
 		/// <param name="p">Second Plane with which we search the intersection point.</param>
 		/// <param name="cc">Calculated coordinate of one of the intersection point between the 2 Planes in case of success.</param>
 		/// <returns>A boolean indicating whther this function was able to evaluate the expected point or not.</returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private bool TryGetPointAtIntersectionOnZUsingB(in Plane p, out Cartesian3dCoordinate cc)
 		{
 			// Avoid to divide by 0.0 at the end. (see last formula)
@@ -473,6 +478,7 @@ namespace Twisty.Engine.Geometry
 		/// <param name="p">Second Plane with which we search the intersection point.</param>
 		/// <param name="cc">Calculated coordinate of one of the intersection point between the 2 Planes in case of success.</param>
 		/// <returns>A boolean indicating whther this function was able to evaluate the expected point or not.</returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private bool TryGetPointAtIntersectionOnYUsingC(in Plane p, out Cartesian3dCoordinate cc)
 		{
 			// Avoid to divide by 0.0 at the end. (see last formula)
@@ -536,6 +542,7 @@ namespace Twisty.Engine.Geometry
 		/// <param name="p">Second Plane with which we search the intersection point.</param>
 		/// <param name="cc">Calculated coordinate of one of the intersection point between the 2 Planes in case of success.</param>
 		/// <returns>A boolean indicating whther this function was able to evaluate the expected point or not.</returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private bool TryGetPointAtIntersectionOnYUsingA(in Plane p, out Cartesian3dCoordinate cc)
 		{
 			// Avoid to divide by 0.0 at the end. (see last formula)
@@ -601,6 +608,7 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		/// <param name="p">Second Plane with which we search the intersection point.</param>
 		/// <returns>Coordinate of one of the intersection point between the 2 Planes.</returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private bool TryGetPointAtIntersectionOnXUsingC(in Plane p, out Cartesian3dCoordinate cc)
 		{
 			// Avoid to divide by 0.0 at the end. (see last formula)
@@ -663,6 +671,7 @@ namespace Twisty.Engine.Geometry
 		/// </summary>
 		/// <param name="p">Second Plane with which we search the intersection point.</param>
 		/// <returns>Coordinate of one of the intersection point between the 2 Planes.</returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private bool TryGetPointAtIntersectionOnXUsingB(in Plane p, out Cartesian3dCoordinate cc)
 		{
 			// Avoid to divide by 0.0 at the end. (see last formula)
