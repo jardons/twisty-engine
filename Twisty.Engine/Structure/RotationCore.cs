@@ -96,8 +96,16 @@ namespace Twisty.Engine.Structure
 		/// Gets a block using its id.
 		/// </summary>
 		/// <param name="blockId">Id of the block we are looking up.</param>
-		/// <returns>Block for the corresponding or null if not found.</returns>
+		/// <returns>Block for the corresponding id or null if not found.</returns>
 		public Block GetBlock(string blockId) => m_Blocks.FirstOrDefault(b => b.Id == blockId);
+
+		/// <summary>
+		/// Gets a block for a specified position or null if no block exist there.
+		/// </summary>
+		/// <param name="position">Position at which we try to find a block.</param>
+		/// <returns>Block for the corresponding id or null if not found.</returns>
+		public Block GetBlock(Cartesian3dCoordinate position)
+			=> m_Blocks.FirstOrDefault(b => b.Position.IsSameVector(position));
 
 		/// <summary>
 		/// Get a block using its original position.

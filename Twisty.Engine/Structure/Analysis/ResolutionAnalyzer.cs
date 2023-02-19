@@ -63,27 +63,7 @@ namespace Twisty.Engine.Structure.Analysis
 			var position = b.Position;
 			var originalBlock = m_Blocks.GetBlockForInitialPosition(position);
 
-			if (b.Faces.Count != originalBlock.Faces.Count)
-				return AlterationType.Position;
-
-			AlterationType finalResult = AlterationType.None;
-
-			foreach (var face in b.Faces)
-			{
-				var originalFace = originalBlock.GetBlockFace(face.Id);
-				if (originalFace is null)
-					return AlterationType.Position;
-
-				// One face is enough to declare an orientation difference.
-				if (finalResult == AlterationType.Orientation)
-					continue;
-
-				if (!b.Orientation.Rotate(face.Position).IsSameVector(originalFace.Position))
-					// Indicate the orientation issue, but we still need to confirm it's not a position difference.
-					finalResult = AlterationType.Orientation;
-			}
-
-			return finalResult;
+			return b.GetAlteration(originalBlock);
 		}
 	}
 }
