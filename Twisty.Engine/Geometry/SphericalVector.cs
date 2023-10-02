@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Twisty.Engine.Geometry
 {
@@ -121,7 +122,7 @@ namespace Twisty.Engine.Geometry
 		/// <summary>
 		/// Gets a boolean indicating whether the Vector is direct on the origin (0,0) coordinate or not.
 		/// </summary>
-		public bool IsOnOrigin => this.Phi.IsZero() && this.Theta.IsZero();
+		public readonly bool IsOnOrigin => this.Phi.IsZero() && this.Theta.IsZero();
 
 		/// <summary>
 		/// Rotate the current vector around a specified vector from a defined angle in radians.
@@ -129,39 +130,13 @@ namespace Twisty.Engine.Geometry
 		/// <param name="v">Vector used as a rotation axis.</param>
 		/// <param name="theta">Angle of rotation expressed in radians.</param>
 		/// <returns>The coordinates of the resulting rotated vector.</returns>
-		public SphericalVector RotateAround(SphericalVector v, double theta)
+		public readonly SphericalVector RotateAround(SphericalVector v, double theta)
 		{
 			if (theta.IsZero())
 				return this;
 
 			return CoordinateConverter.ConvertToSpherical(CoordinateConverter.ConvertToCartesian(this).RotateAroundVector(CoordinateConverter.ConvertToCartesian(v), theta));
 		}
-
-		#region Operators Overrides
-
-		/// <summary>
-		/// Compare 2 Orientation class instance to ensure they are equals.
-		/// </summary>
-		/// <param name="o1">First object to compare.</param>
-		/// <param name="o2">Second object to compare.</param>
-		/// <returns>A boolean indicating whether the 2 objects are equals or not.</returns>
-		public static bool operator ==(SphericalVector o1, SphericalVector o2)
-		{
-			return o1.Theta.IsEqualTo(o2.Theta) && o1.Phi.IsEqualTo(o2.Phi);
-		}
-
-		/// <summary>
-		/// Compare 2 Orientation class instance to ensure they are different.
-		/// </summary>
-		/// <param name="o1">First object to compare.</param>
-		/// <param name="o2">Second object to compare.</param>
-		/// <returns>A boolean indicating whether the 2 objects are different or not.</returns>
-		public static bool operator !=(SphericalVector o1, SphericalVector o2)
-		{
-			return !o1.Theta.IsEqualTo(o2.Theta) || !o1.Phi.IsEqualTo(o2.Phi);
-		}
-
-		#endregion Operators Overrides
 
 		#region Private Methods
 
