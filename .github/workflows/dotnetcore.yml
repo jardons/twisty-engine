@@ -8,12 +8,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+    - uses: actions/checkout@v2.1.0
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: 7.0.x
     - name: Build with dotnet
-      run: dotnet build --configuration GitHub
+      run: dotnet build --configuration Release
     - name: Run Units Tests
-      run: dotnet test --configuration GitHub
+      run: dotnet test
