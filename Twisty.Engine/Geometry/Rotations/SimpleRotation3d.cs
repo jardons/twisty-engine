@@ -17,7 +17,7 @@ namespace Twisty.Engine.Geometry.Rotations
 		public SimpleRotation3d(in Cartesian3dCoordinate axis, double angle)
 		{
 			if (axis.IsZero)
-				throw new ArgumentException("Axis shoulb de directed.", nameof(axis));
+				throw new ArgumentException("Axis should de directed.", nameof(axis));
 
 			this.Axis = axis;
 			this.Angle = angle;
