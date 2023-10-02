@@ -109,7 +109,7 @@ namespace Twisty.Engine.Geometry
 		///          _________________
 		/// ||V|| = V Xv² * Yv² * Zv² '
 		/// </remarks>
-		public double Magnitude => Math.Sqrt((this.X * this.X) + (this.Y * this.Y) + (this.Z * this.Z));
+		public readonly double Magnitude => Math.Sqrt((this.X * this.X) + (this.Y * this.Y) + (this.Z * this.Z));
 
 		/// <summary>
 		/// Gets the angle in radians between the vector and the X axis.
@@ -149,7 +149,7 @@ namespace Twisty.Engine.Geometry
 		/// <summary>
 		/// Gets the Reverse vector of this one.
 		/// </summary>
-		public Cartesian3dCoordinate Reverse => new(-this.X, -this.Y, -this.Z);
+		public readonly Cartesian3dCoordinate Reverse => new(-this.X, -this.Y, -this.Z);
 
 		#endregion Public Properties
 
