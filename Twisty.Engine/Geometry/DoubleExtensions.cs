@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace Twisty.Engine.Geometry
 {
@@ -23,6 +24,7 @@ namespace Twisty.Engine.Geometry
 		/// Note that this function is designed to compare small double.
 		/// It's usage is fair enough for the current project but can not be seen as a correct generic solution.
 		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsEqualTo(this double d1, double d2) => Math.Abs(d1 - d2) < PRECISION;
 
 		/// <summary>
@@ -34,6 +36,7 @@ namespace Twisty.Engine.Geometry
 		/// Note that this function is designed to compare small double.
 		/// It's usage is fair enough for the current project but can not be seen as a correct generic solution.
 		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsZero(this double d1) => Math.Abs(d1) < PRECISION;
 
 		/// <summary>
@@ -44,6 +47,7 @@ namespace Twisty.Engine.Geometry
 		/// Aligned boolean aligned between -1 and 1.
 		/// Zero values will also be rounded to 0.0 to clean loss of precision.
 		/// </returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static double AlignRatioLimits(this double d)
 		{
 			if (d.IsZero())
