@@ -33,7 +33,7 @@ namespace Twisty.Engine.Structure
 			if (face is null)
 				throw new ArgumentNullException(nameof(face), "A block need at least one visible BlockFace");
 
-			m_Faces = new List<BlockFace> { face };
+			m_Faces = [face];
 			this.Id = id;
 			this.InitialPosition = initialPosition;
 			this.Orientation = RotationMatrix3d.Unrotated;

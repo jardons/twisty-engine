@@ -135,8 +135,7 @@ public abstract class RotationCore : IRotatable, IBlocksStructure
 	/// </param>
 	public void RotateAround(RotationAxis axis, double theta, LayerSeparator aboveLayer = null)
 	{
-		if (axis is null)
-			throw new ArgumentNullException(nameof(axis));
+		ArgumentNullException.ThrowIfNull(axis);
 
 		aboveLayer ??= axis.GetUpperLayer();
 
@@ -156,8 +155,7 @@ public abstract class RotationCore : IRotatable, IBlocksStructure
 	/// <returns></returns>
 	public bool CanRotateAround(RotationAxis axis, double theta, LayerSeparator aboveLayer = null)
 	{
-		if (axis is null)
-			throw new ArgumentNullException(nameof(axis));
+		ArgumentNullException.ThrowIfNull(axis);
 
 		aboveLayer ??= axis.GetUpperLayer();
 
@@ -175,10 +173,14 @@ public abstract class RotationCore : IRotatable, IBlocksStructure
 	/// Checks if a rotation is possible.
 	/// </summary>
 	/// <param name="axis"></param>
+	/// <param name="theta"></param>
+	/// <param name="blocks"></param>
 	/// <param name="aboveLayer"></param>
 	/// <returns></returns>
 	private bool CanRotateAround(RotationAxis axis, double theta, IEnumerable<Block> blocks)
 	{
+		ArgumentNullException.ThrowIfNull(axis);
+
 		// As constraints need to be implemented, we accept any selection moving blocks.
 		return blocks.Any();
 	}
