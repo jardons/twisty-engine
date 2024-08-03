@@ -137,7 +137,7 @@ namespace Twisty.Engine.Structure
 		#region Private Members
 
 		/// <summary>
-		/// Generate the axes that will be available for the rotation of the cube.
+		/// Generate the faces that will be represent the cube.
 		/// </summary>
 		/// <returns>The list of faces available on a cube.</returns>
 		private static IEnumerable<CoreFace> GenerateFaces()
