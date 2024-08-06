@@ -142,15 +142,14 @@ namespace Twisty.Engine.Structure
 		/// <returns>The list of faces available on a cube.</returns>
 		private static IEnumerable<CoreFace> GenerateFaces()
 		{
-			return new List<CoreFace>()
-			{
+			return [
 				new CoreFace(ID_FACE_UP, new Plane(POSITION_FACE_UP, -1.0)),
 				new CoreFace(ID_FACE_DOWN, new Plane(POSITION_FACE_DOWN, -1.0)),
 				new CoreFace(ID_FACE_FRONT, new Plane(POSITION_FACE_FRONT, -1.0)),
 				new CoreFace(ID_FACE_BACK, new Plane(POSITION_FACE_BACK, -1.0)),
 				new CoreFace(ID_FACE_RIGHT, new Plane(POSITION_FACE_RIGHT, -1.0)),
 				new CoreFace(ID_FACE_LEFT, new Plane(POSITION_FACE_LEFT, -1.0)),
-			};
+			];
 		}
 
 		#endregion Private Members

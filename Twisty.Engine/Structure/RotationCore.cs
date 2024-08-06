@@ -12,11 +12,16 @@ public abstract class RotationCore : IRotatable, IBlocksStructure
 {
 	#region Private Members
 
+	/// <summary>
+	/// Gets all the satelites parts moving around the Core.
+	/// </summary>
 	private readonly Block[] m_Blocks;
 
 	private readonly Dictionary<string, RotationAxis> m_Axes;
 
 	private readonly Dictionary<string, CoreFace> m_Faces;
+
+	private readonly IRotationValidator[] m_RotationValidators;
 
 	#endregion Private Members
 
@@ -38,6 +43,8 @@ public abstract class RotationCore : IRotatable, IBlocksStructure
 		m_Faces = new Dictionary<string, CoreFace>();
 		foreach (var f in faces)
 			m_Faces.Add(f.Id, f);
+
+		m_RotationValidators = [];
 	}
 
 	#endregion ctor(s)
@@ -141,7 +148,7 @@ public abstract class RotationCore : IRotatable, IBlocksStructure
 
 		var blocks = GetBlocksAbove(aboveLayer.Plane);
 
-		if (!CanRotateAround(axis, theta, blocks))
+		if (!m_RotationValidators.All(p => p.CanRotateAround(axis, theta, blocks)))
 			throw new RotationCoreOperationException("Rotation is not allowed");
 
 		Rotate(blocks, axis.Vector, theta);
@@ -161,29 +168,13 @@ public abstract class RotationCore : IRotatable, IBlocksStructure
 
 		var blocks = GetBlocksAbove(aboveLayer.Plane);
 
-		// As constraints need to be implemented, we accept any seleciton moving blocks.
-		return CanRotateAround(axis, theta, blocks);
+		// As constraints need to be implemented, we accept any selection moving blocks.
+		return m_RotationValidators.All(p => p.CanRotateAround(axis, theta, blocks));
 	}
 
 	#endregion Public Methods
 
 	#region Private Members
-
-	/// <summary>
-	/// Checks if a rotation is possible.
-	/// </summary>
-	/// <param name="axis"></param>
-	/// <param name="theta"></param>
-	/// <param name="blocks"></param>
-	/// <param name="aboveLayer"></param>
-	/// <returns></returns>
-	private bool CanRotateAround(RotationAxis axis, double theta, IEnumerable<Block> blocks)
-	{
-		ArgumentNullException.ThrowIfNull(axis);
-
-		// As constraints need to be implemented, we accept any selection moving blocks.
-		return blocks.Any();
-	}
 
 	/// <summary>
 	/// Gets all blocks of the core above a specific plane.
