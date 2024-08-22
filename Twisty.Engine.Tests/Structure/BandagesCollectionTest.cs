@@ -42,7 +42,7 @@ public class BandagesCollectionTest
 	}
 
 	[Fact]
-	public void CanRotateAroundWithAllBandagedBlock_True()
+	public void CanRotateAroundWithAllBandagedBlockMoving_True()
 	{
 		// 1. Prepare
 		var axis = new RotationAxis("test", Cartesian3dCoordinate.XAxis);
@@ -54,6 +54,27 @@ public class BandagesCollectionTest
 		];
 
 		bandages.Band(blocks[0], blocks[1]);
+
+		// 2. Execute
+		var b = bandages.CanRotateAround(axis, Math.PI, blocks);
+
+		// 3. Verify
+		Assert.True(b);
+	}
+
+	[Fact]
+	public void CanRotateAroundWithAllBandagedBlockNotMoving_True()
+	{
+		// 1. Prepare
+		var axis = new RotationAxis("test", Cartesian3dCoordinate.XAxis);
+		var bandages = new BandagesCollection();
+
+		Block[] blocks = [
+			new Block("b2", Cartesian3dCoordinate.XAxis, new BlockFace("face", Cartesian3dCoordinate.XAxis))
+		];
+
+		bandages.Band(new Block("b0", Cartesian3dCoordinate.XAxis, new BlockFace("face", Cartesian3dCoordinate.XAxis)),
+			new Block("b1", Cartesian3dCoordinate.XAxis, new BlockFace("face", Cartesian3dCoordinate.XAxis)));
 
 		// 2. Execute
 		var b = bandages.CanRotateAround(axis, Math.PI, blocks);
