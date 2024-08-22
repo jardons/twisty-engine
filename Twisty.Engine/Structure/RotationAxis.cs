@@ -36,7 +36,7 @@ namespace Twisty.Engine.Structure
 			this.Id = id;
 			this.Vector = axis;
 			this.Layers = layersDistances is null
-				? new[] { new LayerSeparator($"L_{id}", new Plane(axis, 0.0)) }
+				? [ new LayerSeparator($"L_{id}", new Plane(axis, 0.0)) ]
 				: layersDistances.Select(kv => new LayerSeparator(kv.Key, new Plane(axis, kv.Value)));
 		}
 
