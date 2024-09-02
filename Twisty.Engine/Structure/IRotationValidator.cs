@@ -2,7 +2,7 @@
 
 namespace Twisty.Engine.Structure;
 
-public interface IRotationValidator
+public interface IRotationValidator<T>
 {
 	/// <summary>
 	/// Checks if a rotation is possible.
@@ -10,5 +10,5 @@ public interface IRotationValidator
 	/// <param name="axis"></param>
 	/// <param name="blocks"></param>
 	/// <returns></returns>
-	bool CanRotateAround(RotationAxis axis, double theta, IEnumerable<Block> blocks);
+	bool CanRotateAround(RotationAxis axis, double theta, IEnumerable<T> blocks);
 }

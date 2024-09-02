@@ -10,10 +10,11 @@ namespace Twisty.Engine.Structure;
 /// <summary>
 /// Collections of bandages used for a RotationCore allowing to validate rotation operations.
 /// </summary>
-public class BandagesCollection : IRotationValidator, IEnumerable<Bandage>
+/// <typeparam name="T">Type of the block id.</typeparam>
+public class BandagesCollection<T> : IRotationValidator<T>, IEnumerable<Bandage<T>>
 {
-	private readonly Dictionary<string, int> m_Index;
-	private readonly List<Bandage> m_Bandages;
+	private readonly Dictionary<T, int> m_Index;
+	private readonly List<Bandage<T>> m_Bandages;
 
 	/// <summary>
 	/// Create a new BandagesCollection.
@@ -24,21 +25,40 @@ public class BandagesCollection : IRotationValidator, IEnumerable<Bandage>
 		m_Bandages = [];
 	}
 
-	/// <summary>
-	/// Band two blocks together in the collection.
-	/// </summary>
-	/// <param name="principalBlock"></param>
-	/// <param name="extendedBlock"></param>
-	public void Band(Block principalBlock, Block extendedBlock)
+    /// <summary>
+    /// Band two blocks together in the collection.
+    /// </summary>
+    /// <param name="principalBlockId"></param>
+    /// <param name="extendedBlock"></param>
+    public void Band(T principalBlockId, T extendedBlockId)
 	{
-		if (m_Index.TryGetValue(principalBlock.Id, out int i))
+		if (m_Index.TryGetValue(principalBlockId, out int i))
 		{
-			m_Bandages[i].Extensions.Add(extendedBlock);
+			m_Bandages[i].Extensions.Add(extendedBlockId);
 		}
 		else
 		{
-			m_Index[principalBlock.Id] = m_Bandages.Count;
-			m_Bandages.Add(new Bandage(principalBlock, [extendedBlock]));
+			m_Index[principalBlockId] = m_Bandages.Count;
+			m_Bandages.Add(new Bandage<T>(principalBlockId, [ extendedBlockId ]));
+		}
+	}
+
+    /// <summary>
+    /// Band several blocks together in the collection.
+    /// </summary>
+    /// <param name="principalBlockId"></param>
+    /// <param name="extendedBlocksIds"></param>
+    public void Band(T principalBlockId, IEnumerable<T> extendedBlocksIds)
+	{
+		if (m_Index.TryGetValue(principalBlockId, out int i))
+		{
+			foreach (var b in extendedBlocksIds)
+				m_Bandages[i].Extensions.Add(b);
+		}
+		else
+		{
+			m_Index[principalBlockId] = m_Bandages.Count;
+			m_Bandages.Add(new Bandage<T>(principalBlockId, extendedBlocksIds.ToList()));
 		}
 	}
 
@@ -47,27 +67,26 @@ public class BandagesCollection : IRotationValidator, IEnumerable<Bandage>
 	/// </summary>
 	/// <param name="blockId"></param>
 	/// <returns></returns>
-	public Bandage GetBandage(string blockId)
+	public Bandage<T> GetBandage(T blockId)
 		=> m_Index.TryGetValue(blockId, out int i)
 			? m_Bandages[i]
 			: null;
 
 	#region IRotationValidator Members
 
-	public bool CanRotateAround(RotationAxis axis, double theta, IEnumerable<Block> blocks)
+	public bool CanRotateAround(RotationAxis axis, double theta, IEnumerable<T> blockIds)
 	{
-		var expectedList = blocks.SelectMany(b =>
-				 m_Index.TryGetValue(b.Id, out int i)
-					? m_Bandages[i].Extensions.Union([ b ])
-					: [ b ]
+		var expectedList = blockIds.SelectMany(id =>
+				 m_Index.TryGetValue(id, out int i)
+					? m_Bandages[i].Extensions.Union([ id ])
+					: [ id ]
 			)
-			.Select(b => b.Id)
 			.ToHashSet();
 
 		int count = 0;
-		foreach (var b in blocks)
+		foreach (var id in blockIds)
 		{
-			if (!expectedList.Contains(b.Id)) return false;
+			if (!expectedList.Contains(id)) return false;
 			count++;
 		}
 
@@ -79,7 +98,7 @@ public class BandagesCollection : IRotationValidator, IEnumerable<Bandage>
 	#region IEnumerable Members
 
 	/// <inheritdoc />
-	public IEnumerator<Bandage> GetEnumerator()
+	public IEnumerator<Bandage<T>> GetEnumerator()
 		=> m_Bandages.GetEnumerator();
 
 	/// <inheritdoc />

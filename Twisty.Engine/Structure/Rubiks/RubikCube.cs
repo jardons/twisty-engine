@@ -39,15 +39,14 @@ public class RubikCube : CubicRotationCore
 	/// <returns>The list of axis available on a Rubik's cube.</returns>
 	private static IEnumerable<RotationAxis> GenerateAxes(int n)
 	{
-		return new List<RotationAxis>()
-			{
+		return [
 				CreateAxis(ID_FACE_UP, POSITION_FACE_UP, n),
 				CreateAxis(ID_FACE_DOWN, POSITION_FACE_DOWN, n),
 				CreateAxis(ID_FACE_FRONT, POSITION_FACE_FRONT, n),
 				CreateAxis(ID_FACE_BACK, POSITION_FACE_BACK, n),
 				CreateAxis(ID_FACE_RIGHT, POSITION_FACE_RIGHT, n),
 				CreateAxis(ID_FACE_LEFT, POSITION_FACE_LEFT, n),
-			};
+			];
 	}
 
 	/// <summary>

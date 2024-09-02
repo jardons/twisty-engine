@@ -18,6 +18,9 @@
 					<MenuItem Header="Rubik 3x3x3"
 						CommandParameter="Rubik[3]"
 						Command="{Binding DataContext.SelectCore, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" />
+					<MenuItem Header="z-cube bandage A"
+						CommandParameter="Rubik[3]-bandageA"
+						Command="{Binding DataContext.SelectCore, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" />
 					<MenuItem Header="Skewb"
 						CommandParameter="Skewb"
 						Command="{Binding DataContext.SelectCore, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" />

@@ -21,8 +21,6 @@ public abstract class RotationCore : IRotatable, IBlocksStructure
 
 	private readonly Dictionary<string, CoreFace> m_Faces;
 
-	private readonly IRotationValidator[] m_RotationValidators;
-
 	#endregion Private Members
 
 	#region ctor(s)
@@ -43,8 +41,6 @@ public abstract class RotationCore : IRotatable, IBlocksStructure
 		m_Faces = new Dictionary<string, CoreFace>();
 		foreach (var f in faces)
 			m_Faces.Add(f.Id, f);
-
-		m_RotationValidators = [];
 	}
 
 	#endregion ctor(s)
@@ -66,6 +62,11 @@ public abstract class RotationCore : IRotatable, IBlocksStructure
 	/// </summary>
 	public IEnumerable<CoreFace> Faces => m_Faces.Values;
 
+	/// <summary>
+	/// Gets the collection of RotationsValidators used on this RotationCore.
+	/// </summary>
+	public IRotationValidator<string>[] RotationValidators { get; init; } = [];
+
 	#endregion Public Properties
 
 	#region Public Methods
@@ -78,10 +79,10 @@ public abstract class RotationCore : IRotatable, IBlocksStructure
 	/// <remarks>Logic is only valid for standard forms. Any shapeshifting form would need to improve this logic.</remarks>
 	public IEnumerable<Block> GetBlocksForFace(string faceId)
 	{
-		if (!m_Faces.ContainsKey(faceId))
+		if (!m_Faces.TryGetValue(faceId, out CoreFace value))
 			throw new ArgumentNullException(nameof(faceId), "Face Id should exist.");
 
-		return m_Blocks.Where(b => b.GetBlockFace(m_Faces[faceId].Plane.Normal) is not null);
+		return m_Blocks.Where(b => b.GetBlockFace(value.Plane.Normal) is not null);
 	}
 
 	/// <summary>
@@ -148,7 +149,7 @@ public abstract class RotationCore : IRotatable, IBlocksStructure
 
 		var blocks = GetBlocksAbove(aboveLayer.Plane);
 
-		if (!m_RotationValidators.All(p => p.CanRotateAround(axis, theta, blocks)))
+		if (!RotationValidators.All(p => p.CanRotateAround(axis, theta, blocks.Select(b => b.Id))))
 			throw new RotationCoreOperationException("Rotation is not allowed");
 
 		Rotate(blocks, axis.Vector, theta);
@@ -169,7 +170,7 @@ public abstract class RotationCore : IRotatable, IBlocksStructure
 		var blocks = GetBlocksAbove(aboveLayer.Plane);
 
 		// As constraints need to be implemented, we accept any selection moving blocks.
-		return m_RotationValidators.All(p => p.CanRotateAround(axis, theta, blocks));
+		return RotationValidators.All(p => p.CanRotateAround(axis, theta, blocks.Select(b => b.Id)));
 	}
 
 	#endregion Public Methods

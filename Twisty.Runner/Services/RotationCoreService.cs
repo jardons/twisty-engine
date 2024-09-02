@@ -121,7 +121,8 @@ namespace Twisty.Runner.Services
 			{
 				"Rubik[2]" => new RubikOperationsParser(),
 				"Rubik[3]" => new RubikOperationsParser(),
-				"Skewb" => new SkewbOperationsParser(),
+                "Rubik[3]-bandageA" => new RubikOperationsParser(),
+                "Skewb" => new SkewbOperationsParser(),
 				_ => throw new ArgumentException("Unknow parser id.", nameof(id)),
 			};
 

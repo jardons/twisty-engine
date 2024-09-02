@@ -14,6 +14,7 @@ namespace Twisty.Engine.Operations
 		/// Execute the current operation on the provided IRotatable core.
 		/// </summary>
 		/// <param name="core">IRotatable core on which the operation is executed.</param>
-		void ExecuteOn(IRotatable core);
+		/// <returns>A boolean indicating if whether the operation was succesful or not.</returns>
+		bool ExecuteOn(IRotatable core);
 	}
 }

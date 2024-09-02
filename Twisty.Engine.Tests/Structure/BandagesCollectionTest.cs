@@ -16,7 +16,7 @@ public class BandagesCollectionTest
 	{
 		// 1. Prepare
 		var axis = new RotationAxis("test", Cartesian3dCoordinate.XAxis);
-		var bandages = new BandagesCollection();
+		var bandages = new BandagesCollection<Block>();
 		Block[] blocks = [];
 
 		// 2. Execute
@@ -31,7 +31,7 @@ public class BandagesCollectionTest
 	{
 		// 1. Prepare
 		var axis = new RotationAxis("test", Cartesian3dCoordinate.XAxis);
-		var bandages = new BandagesCollection();
+		var bandages = new BandagesCollection<Block>();
 		Block[] blocks = [new Block("b0", Cartesian3dCoordinate.XAxis, new BlockFace("face", Cartesian3dCoordinate.XAxis))];
 
 		// 2. Execute
@@ -46,7 +46,7 @@ public class BandagesCollectionTest
 	{
 		// 1. Prepare
 		var axis = new RotationAxis("test", Cartesian3dCoordinate.XAxis);
-		var bandages = new BandagesCollection();
+		var bandages = new BandagesCollection<Block>();
 
 		Block[] blocks = [
 			new Block("b0", Cartesian3dCoordinate.XAxis, new BlockFace("face", Cartesian3dCoordinate.XAxis)),
@@ -67,7 +67,7 @@ public class BandagesCollectionTest
 	{
 		// 1. Prepare
 		var axis = new RotationAxis("test", Cartesian3dCoordinate.XAxis);
-		var bandages = new BandagesCollection();
+		var bandages = new BandagesCollection<Block>();
 
 		Block[] blocks = [
 			new Block("b2", Cartesian3dCoordinate.XAxis, new BlockFace("face", Cartesian3dCoordinate.XAxis))
@@ -88,7 +88,7 @@ public class BandagesCollectionTest
 	{
 		// 1. Prepare
 		var axis = new RotationAxis("test", Cartesian3dCoordinate.XAxis);
-		var bandages = new BandagesCollection();
+		var bandages = new BandagesCollection<Block>();
 		Block[] blocks = [new Block("b0", Cartesian3dCoordinate.XAxis, new BlockFace("face", Cartesian3dCoordinate.XAxis))];
 
 		bandages.Band(blocks[0], new Block("b1", Cartesian3dCoordinate.XAxis, new BlockFace("face", Cartesian3dCoordinate.XAxis)));
