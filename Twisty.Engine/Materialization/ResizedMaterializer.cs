@@ -38,7 +38,7 @@ namespace Twisty.Engine.Materialization
 
 			var objects = intermediate.Objects.Select(
 				o => new MaterializedObject(o.Id, o.Parts.Select(
-					p => new MaterializedObjectPart(p.Color, convert(p.Points)))
+					p => new MaterializedObjectShape(p.Color, convert(p.Points)))
 				)
 			);
 

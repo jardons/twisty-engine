@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Buffers;
 using Twisty.Engine.Geometry;
 
 namespace Twisty.Engine.Structure;
@@ -10,206 +8,217 @@ namespace Twisty.Engine.Structure;
 /// </summary>
 public abstract class RotationCore : IRotatable, IBlocksStructure
 {
-	#region Private Members
+    #region Private Members
 
-	/// <summary>
-	/// Gets all the satelites parts moving around the Core.
-	/// </summary>
-	private readonly Block[] m_Blocks;
+    /// <summary>
+    /// Gets all the satelites parts moving around the Core.
+    /// </summary>
+    private readonly Block[] m_Blocks;
 
-	private readonly Dictionary<string, RotationAxis> m_Axes;
+    private readonly Dictionary<string, RotationAxis> m_Axes;
 
-	private readonly Dictionary<string, CoreFace> m_Faces;
+    private readonly Dictionary<string, CoreFace> m_Faces;
 
-	#endregion Private Members
+    #endregion Private Members
 
-	#region ctor(s)
+    #region ctor(s)
 
-	/// <summary>
-	/// Create a new RotationCore object
-	/// </summary>
-	/// <param name="blocks">List of blocks available around the center of the RotationCore.</param>
-	/// <param name="axes">List of Rotation Axes proposed around the rotation core.</param>
-	/// <param name="faces">List of faces proposed for this RotationCore in his solved state.</param>
-	protected RotationCore(IEnumerable<Block> blocks, IEnumerable<RotationAxis> axes, IEnumerable<CoreFace> faces)
-	{
-		m_Blocks = blocks.ToArray();
-		m_Axes = new Dictionary<string, RotationAxis>();
-		foreach (var axis in axes)
-			m_Axes.Add(axis.Id, axis);
+    /// <summary>
+    /// Create a new RotationCore object
+    /// </summary>
+    /// <param name="blocks">List of blocks available around the center of the RotationCore.</param>
+    /// <param name="axes">List of Rotation Axes proposed around the rotation core.</param>
+    /// <param name="faces">List of faces proposed for this RotationCore in his solved state.</param>
+    protected RotationCore(IEnumerable<Block> blocks, IEnumerable<RotationAxis> axes, IEnumerable<CoreFace> faces)
+    {
+        m_Blocks = blocks.ToArray();
+        m_Axes = new Dictionary<string, RotationAxis>();
+        foreach (var axis in axes)
+            m_Axes.Add(axis.Id, axis);
 
-		m_Faces = new Dictionary<string, CoreFace>();
-		foreach (var f in faces)
-			m_Faces.Add(f.Id, f);
-	}
+        m_Faces = new Dictionary<string, CoreFace>();
+        foreach (var f in faces)
+            m_Faces.Add(f.Id, f);
+    }
 
-	#endregion ctor(s)
+    #endregion ctor(s)
 
-	#region Public Properties
+    #region Public Properties
 
-	/// <summary>
-	/// Gets the list of blocks available in this core.
-	/// </summary>
-	public IEnumerable<Block> Blocks => m_Blocks;
+    /// <summary>
+    /// Gets the list of blocks available in this core.
+    /// </summary>
+    public IEnumerable<Block> Blocks => m_Blocks;
 
-	/// <summary>
-	/// Gets the list of axes available for rotation around this core.
-	/// </summary>
-	public IEnumerable<RotationAxis> Axes => m_Axes.Values;
+    /// <summary>
+    /// Gets the list of axes available for rotation around this core.
+    /// </summary>
+    public IEnumerable<RotationAxis> Axes => m_Axes.Values;
 
-	/// <summary>
-	/// Gets the list of faces available for rotation around this core.
-	/// </summary>
-	public IEnumerable<CoreFace> Faces => m_Faces.Values;
+    /// <summary>
+    /// Gets the list of faces available for rotation around this core.
+    /// </summary>
+    public IEnumerable<CoreFace> Faces => m_Faces.Values;
 
-	/// <summary>
-	/// Gets the collection of RotationsValidators used on this RotationCore.
-	/// </summary>
-	public IRotationValidator<string>[] RotationValidators { get; init; } = [];
+    /// <summary>
+    /// Gets the collection of RotationsValidators used on this RotationCore.
+    /// </summary>
+    public IRotationValidator<string>[] RotationValidators { get; init; } = [];
 
-	#endregion Public Properties
+    #endregion Public Properties
 
-	#region Public Methods
+    #region Public Methods
 
-	/// <summary>
-	/// Get the Blocks for a specific face of the twisty puzzle based on the current blocks positions.
-	/// </summary>
-	/// <param name="faceId">Orientation of the face of the puzzle.</param>
-	/// <returns>The list of blocks currently visible on the requested face.</returns>
-	/// <remarks>Logic is only valid for standard forms. Any shapeshifting form would need to improve this logic.</remarks>
-	public IEnumerable<Block> GetBlocksForFace(string faceId)
-	{
-		if (!m_Faces.TryGetValue(faceId, out CoreFace value))
-			throw new ArgumentNullException(nameof(faceId), "Face Id should exist.");
+    /// <summary>
+    /// Get the Blocks for a specific face of the twisty puzzle based on the current blocks positions.
+    /// </summary>
+    /// <param name="faceId">Orientation of the face of the puzzle.</param>
+    /// <returns>The list of blocks currently visible on the requested face.</returns>
+    /// <remarks>Logic is only valid for standard forms. Any shapeshifting form would need to improve this logic.</remarks>
+    public IEnumerable<Block> GetBlocksForFace(string faceId)
+    {
+        if (!m_Faces.TryGetValue(faceId, out CoreFace value))
+            throw new ArgumentNullException(nameof(faceId), "Face Id should exist.");
 
-		return m_Blocks.Where(b => b.GetBlockFace(value.Plane.Normal) is not null);
-	}
+        return m_Blocks.Where(b => b.GetBlockFace(value.Plane.Normal) is not null);
+    }
 
-	/// <summary>
-	/// Get the Blocks for a specific face of the twisty puzzle based on the current blocks positions.
-	/// </summary>
-	/// <param name="v">Orientation of the face of the puzzle.</param>
-	/// <returns>The list of blocks currently visible on the requested face.</returns>
-	/// <remarks>Logic is only valid for standard forms. Any shapeshifting form would need to improve this logic.</remarks>
-	public IEnumerable<Block> GetBlocksForFace(Cartesian3dCoordinate v)
-		=> m_Blocks.Where(b => b.GetBlockFace(v) is not null);
+    /// <summary>
+    /// Get the Blocks for a specific face of the twisty puzzle based on the current blocks positions.
+    /// </summary>
+    /// <param name="v">Orientation of the face of the puzzle.</param>
+    /// <returns>The list of blocks currently visible on the requested face.</returns>
+    /// <remarks>Logic is only valid for standard forms. Any shapeshifting form would need to improve this logic.</remarks>
+    public IEnumerable<Block> GetBlocksForFace(Cartesian3dCoordinate v)
+        => m_Blocks.Where(b => b.GetBlockFace(v) is not null);
 
-	/// <summary>
-	/// Gets an axis using its id.
-	/// </summary>
-	/// <param name="axisId">Id of the axis we are looking up.</param>
-	/// <returns>Axis for the corresponding or null if not found.</returns>
-	public RotationAxis GetAxis(string axisId) => m_Axes[axisId];
+    /// <summary>
+    /// Gets an axis using its id.
+    /// </summary>
+    /// <param name="axisId">Id of the axis we are looking up.</param>
+    /// <returns>Axis for the corresponding or null if not found.</returns>
+    public RotationAxis GetAxis(string axisId) => m_Axes[axisId];
 
-	/// <summary>
-	/// Gets a block using its id.
-	/// </summary>
-	/// <param name="blockId">Id of the block we are looking up.</param>
-	/// <returns>Block for the corresponding id or null if not found.</returns>
-	public Block GetBlock(string blockId)
-		=> m_Blocks.FirstOrDefault(b => b.Id == blockId);
+    /// <summary>
+    /// Gets a block using its id.
+    /// </summary>
+    /// <param name="blockId">Id of the block we are looking up.</param>
+    /// <returns>Block for the corresponding id or null if not found.</returns>
+    public Block GetBlock(string blockId)
+        => m_Blocks.FirstOrDefault(b => b.Id == blockId);
 
-	/// <summary>
-	/// Get a block using its original position.
-	/// </summary>
-	/// <param name="position">Directional position of the block relative to the core center.</param>
-	/// <returns>Block for the corresponding initial position or null if not found.</returns>
-	public Block GetBlock(Cartesian3dCoordinate position)
-		=> m_Blocks.FirstOrDefault(b => b.Position.IsSameVector(position));
+    /// <summary>
+    /// Gets blocks using their id.
+    /// </summary>
+    /// <param name="blockIds">Id of the blocks we are looking up.</param>
+    /// <returns>Gets the Blocks corresponding to the  provided ids.</returns>
+    public IList<Block> GetBlocks(IEnumerable<string> blockIds)
+    {
+        // TODO : optimize this bad quick code.
+        return blockIds.Select(GetBlock).ToList();
+    }
 
-	/// <summary>
-	/// Get a block using its original position.
-	/// </summary>
-	/// <param name="position">Initial position of the block relative to the core center.</param>
-	/// <returns>Block for the corresponding initial position or null if not found.</returns>
-	public Block GetBlockForInitialPosition(Cartesian3dCoordinate position)
-		=> this.Blocks.FirstOrDefault(b => b.InitialPosition.IsSameVector(position));
+    /// <summary>
+    /// Get a block using its original position.
+    /// </summary>
+    /// <param name="position">Directional position of the block relative to the core center.</param>
+    /// <returns>Block for the corresponding initial position or null if not found.</returns>
+    public Block GetBlock(Cartesian3dCoordinate position)
+        => m_Blocks.FirstOrDefault(b => b.Position.IsSameVector(position));
 
-	/// <summary>
-	/// Gets a face using its id.
-	/// </summary>
-	/// <param name="faceId">Id of the face we are looking up.</param>
-	/// <returns>Face for the corresponding or null if not found.</returns>
-	public CoreFace GetFace(string faceId) => m_Faces[faceId];
+    /// <summary>
+    /// Get a block using its original position.
+    /// </summary>
+    /// <param name="position">Initial position of the block relative to the core center.</param>
+    /// <returns>Block for the corresponding initial position or null if not found.</returns>
+    public Block GetBlockForInitialPosition(Cartesian3dCoordinate position)
+        => this.Blocks.FirstOrDefault(b => b.InitialPosition.IsSameVector(position));
 
-	/// <summary>
-	/// Rotate a face around a specified rotation axis.
-	/// </summary>
-	/// <param name="axis">Rotation axis aroung which the rotation will be executed.</param>
-	/// <param name="theta">Angle of the rotation to execute.</param>
-	/// <param name="distance">
-	/// Distance of the center above which blocks will be rotated.
-	/// If null, All blocks around the axis are rotated.
-	/// </param>
-	public void RotateAround(RotationAxis axis, double theta, LayerSeparator aboveLayer = null)
-	{
-		ArgumentNullException.ThrowIfNull(axis);
+    /// <summary>
+    /// Gets a face using its id.
+    /// </summary>
+    /// <param name="faceId">Id of the face we are looking up.</param>
+    /// <returns>Face for the corresponding or null if not found.</returns>
+    public CoreFace GetFace(string faceId) => m_Faces[faceId];
 
-		aboveLayer ??= axis.GetUpperLayer();
+    /// <summary>
+    /// Rotate a face around a specified rotation axis.
+    /// </summary>
+    /// <param name="axis">Rotation axis aroung which the rotation will be executed.</param>
+    /// <param name="theta">Angle of the rotation to execute.</param>
+    /// <param name="distance">
+    /// Distance of the center above which blocks will be rotated.
+    /// If null, All blocks around the axis are rotated.
+    /// </param>
+    public void RotateAround(RotationAxis axis, double theta, LayerSeparator aboveLayer = null)
+    {
+        ArgumentNullException.ThrowIfNull(axis);
 
-		var blocks = GetBlocksAbove(aboveLayer.Plane);
+        aboveLayer ??= axis.GetUpperLayer();
 
-		if (!RotationValidators.All(p => p.CanRotateAround(axis, theta, blocks.Select(b => b.Id))))
-			throw new RotationCoreOperationException("Rotation is not allowed");
+        var blocks = GetBlocksAbove(aboveLayer.Plane);
 
-		Rotate(blocks, axis.Vector, theta);
-	}
+        if (!RotationValidators.All(p => p.CanRotateAround(axis, theta, blocks.Select(b => b.Id))))
+            throw new RotationCoreOperationException("Rotation is not allowed");
 
-	/// <summary>
-	/// Checks if a rotation is possible.
-	/// </summary>
-	/// <param name="axis"></param>
-	/// <param name="aboveLayer"></param>
-	/// <returns></returns>
-	public bool CanRotateAround(RotationAxis axis, double theta, LayerSeparator aboveLayer = null)
-	{
-		ArgumentNullException.ThrowIfNull(axis);
+        Rotate(blocks, axis.Vector, theta);
+    }
 
-		aboveLayer ??= axis.GetUpperLayer();
+    /// <summary>
+    /// Checks if a rotation is possible.
+    /// </summary>
+    /// <param name="axis"></param>
+    /// <param name="aboveLayer"></param>
+    /// <returns></returns>
+    public bool CanRotateAround(RotationAxis axis, double theta, LayerSeparator aboveLayer = null)
+    {
+        ArgumentNullException.ThrowIfNull(axis);
 
-		var blocks = GetBlocksAbove(aboveLayer.Plane);
+        aboveLayer ??= axis.GetUpperLayer();
 
-		// As constraints need to be implemented, we accept any selection moving blocks.
-		return RotationValidators.All(p => p.CanRotateAround(axis, theta, blocks.Select(b => b.Id)));
-	}
+        var blocks = GetBlocksAbove(aboveLayer.Plane);
 
-	#endregion Public Methods
+        // As constraints need to be implemented, we accept any selection moving blocks.
+        return RotationValidators.All(p => p.CanRotateAround(axis, theta, blocks.Select(b => b.Id)));
+    }
 
-	#region Private Members
+    #endregion Public Methods
 
-	/// <summary>
-	/// Gets all blocks of the core above a specific plane.
-	/// </summary>
-	/// <param name="p">Plane above which the selected blocks should be present.</param>
-	/// <returns>Collection of blocks above the provided Plane.</returns>
-	private IEnumerable<Block> GetBlocksAbove(Plane p)
-		=> this.Blocks.Where(b => p.IsAbovePlane(b.Position));
+    #region Private Members
 
-	/// <summary>
-	/// Gets all blocks of the core between two specific plane.
-	/// </summary>
-	/// <param name="above">Plane above which the selected blocks should be present.</param>
-	/// <param name="below">Plane below which the selected blocks should be present.</param>
-	/// <returns>Collection of blocks between both the provided Planes.</returns>
-	private IEnumerable<Block> GetBlocksBetween(IPlanar above, IPlanar below)
-		=> this.Blocks.Where(b => below.Plane.IsAbovePlane(b.Position) && above.Plane.IsBelowPlane(b.Position));
+    /// <summary>
+    /// Gets all blocks of the core above a specific plane.
+    /// </summary>
+    /// <param name="p">Plane above which the selected blocks should be present.</param>
+    /// <returns>Collection of blocks above the provided Plane.</returns>
+    private IEnumerable<Block> GetBlocksAbove(Plane p)
+        => this.Blocks.Where(b => p.IsAbovePlane(b.Position));
 
-	/// <summary>
-	/// Perform the rotations of blocks around the axis.
-	/// </summary>
-	/// <typeparam name="T">Type of blocks available in the collection to rotate.</typeparam>
-	/// <param name="blocks">Collection for which position will be rotated.</param>
-	/// <param name="rotationAxis">Axis used for the rotation of the blocks.</param>
-	/// <param name="theta">Angle in radians of the rotations to execute on each blocks.</param>
-	private static void Rotate(IEnumerable<Block> blocks, Cartesian3dCoordinate rotationAxis, double theta)
-	{
-		if (theta.IsZero())
-			return;
+    /// <summary>
+    /// Gets all blocks of the core between two specific plane.
+    /// </summary>
+    /// <param name="above">Plane above which the selected blocks should be present.</param>
+    /// <param name="below">Plane below which the selected blocks should be present.</param>
+    /// <returns>Collection of blocks between both the provided Planes.</returns>
+    private IEnumerable<Block> GetBlocksBetween(IPlanar above, IPlanar below)
+        => this.Blocks.Where(b => below.Plane.IsAbovePlane(b.Position) && above.Plane.IsBelowPlane(b.Position));
 
-		// Rotate the block aroung themselve.
-		foreach (var b in blocks)
-			b.RotateAround(rotationAxis, theta);
-	}
+    /// <summary>
+    /// Perform the rotations of blocks around the axis.
+    /// </summary>
+    /// <typeparam name="T">Type of blocks available in the collection to rotate.</typeparam>
+    /// <param name="blocks">Collection for which position will be rotated.</param>
+    /// <param name="rotationAxis">Axis used for the rotation of the blocks.</param>
+    /// <param name="theta">Angle in radians of the rotations to execute on each blocks.</param>
+    private static void Rotate(IEnumerable<Block> blocks, Cartesian3dCoordinate rotationAxis, double theta)
+    {
+        if (theta.IsZero())
+            return;
 
-	#endregion Private Members
+        // Rotate the block aroung themselve.
+        foreach (var b in blocks)
+            b.RotateAround(rotationAxis, theta);
+    }
+
+    #endregion Private Members
 }
