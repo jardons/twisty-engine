@@ -367,9 +367,7 @@ public struct Cartesian3dCoordinate
     ///               ||X|| ||Y||
     /// </remarks>
     public readonly double GetThetaTo(in Cartesian3dCoordinate x)
-    {
-        return Trigonometry.Acos(this.DotProduct(x) / (this.Magnitude * x.Magnitude));
-    }
+        => Trigonometry.Acos(this.DotProduct(x) / (this.Magnitude * x.Magnitude));
 
     /// <summary>
     /// Gets the distance between this point and another provided one.
