@@ -11,7 +11,7 @@ public class StandardMaterializer : IMaterializer
 
 	public MaterializedCore Materialize(RotationCore core)
 	{
-		BandagesCollection<string> bandages = core.RotationValidators.OfType<BandagesCollection<string>>().FirstOrDefault();
+		BandagesCollection bandages = core.RotationValidators.OfType<BandagesCollection>().FirstOrDefault();
 
 		// Create new instance.
 		List<MaterializedObject> objects = [];
@@ -24,11 +24,10 @@ public class StandardMaterializer : IMaterializer
 			// Materialize all blocks.
 			foreach (var bandage in bandages)
 			{
-				var principalBlock = core.GetBlock(bandage.Principal);
+				var principalBlock = bandage.Principal;
 				var materializedBlock = MaterializeObject(core, principalBlock);
 
-				var extendedBlocks = core
-					.GetBlocks(bandage.Extensions)
+				var extendedBlocks = bandage.Extensions
 					// Gets blocks from the closest to ensure we can always links extenstions.
 					.OrderBy(b => b.Position.GetDistanceTo(principalBlock.Position))
 					.Select(b => MaterializeObject(core, b));

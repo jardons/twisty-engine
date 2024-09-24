@@ -18,19 +18,25 @@ namespace Twisty.Engine.Structure
         /// <returns>Newly created RotationCore.</returns>
         public RotationCore CreateCore(string coreTypeId)
         {
-            return coreTypeId switch
+            RotationCore core = coreTypeId switch
             {
                 "Rubik[2]" => new RubikCube(2),
-                "Rubik[3]" => new RubikCube(3),
-                "Rubik[3]-bandageA" => new RubikCube(3) { RotationValidators = [ GetBandagagesForZCubeA() ] },
+                "Rubik[3]" or "Rubik[3]-bandageA" => new RubikCube(3),
                 "Skewb" => new SkewbCube(),
                 _ => null,
             };
+
+            if (coreTypeId == "Rubik[3]-bandageA")
+            {
+                core.RotationValidators = [GetBandagagesForZCubeA(core)];
+			}
+
+            return core;
         }
 
-        private BandagesCollection<string> GetBandagagesForZCubeA()
+        private BandagesCollection GetBandagagesForZCubeA(RotationCore core)
         {
-            var bandages = new BandagesCollection<string>();
+            var bandages = new BandagesCollection(core);
 
             bandages.Band($"C{RubikCube.ID_FACE_UP}{RubikCube.ID_FACE_FRONT}{RubikCube.ID_FACE_RIGHT}",
                 [

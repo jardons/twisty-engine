@@ -63,7 +63,7 @@ public abstract class RotationCore : IRotatable, IBlocksStructure
     /// <summary>
     /// Gets the collection of RotationsValidators used on this RotationCore.
     /// </summary>
-    public IRotationValidator<string>[] RotationValidators { get; init; } = [];
+    public IRotationValidator[] RotationValidators { get; set; } = [];
 
     #endregion Public Properties
 

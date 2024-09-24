@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Moq;
+using System;
 using System.Collections.Generic;
 using Twisty.Engine.Geometry;
 using Twisty.Engine.Structure;
@@ -16,11 +17,11 @@ public class BandagesCollectionTest
 	{
 		// 1. Prepare
 		var axis = new RotationAxis("test", Cartesian3dCoordinate.XAxis);
-		var bandages = new BandagesCollection<Block>();
 		Block[] blocks = [];
+		var bandages = new BandagesCollection(GetBlocksStructure(blocks).Object);
 
 		// 2. Execute
-		var b = bandages.CanRotateAround(axis, Math.PI, blocks);
+		var b = bandages.CanRotateAround(axis, Math.PI, blocks.Select(b => b.Id));
 
 		// 3. Verify
 		Assert.True(b);
@@ -31,11 +32,11 @@ public class BandagesCollectionTest
 	{
 		// 1. Prepare
 		var axis = new RotationAxis("test", Cartesian3dCoordinate.XAxis);
-		var bandages = new BandagesCollection<Block>();
 		Block[] blocks = [new Block("b0", Cartesian3dCoordinate.XAxis, new BlockFace("face", Cartesian3dCoordinate.XAxis))];
-
+		var bandages = new BandagesCollection(GetBlocksStructure(blocks).Object);
+		
 		// 2. Execute
-		var b = bandages.CanRotateAround(axis, Math.PI, blocks);
+		var b = bandages.CanRotateAround(axis, Math.PI, blocks.Select(b => b.Id));
 
 		// 3. Verify
 		Assert.True(b);
@@ -46,17 +47,16 @@ public class BandagesCollectionTest
 	{
 		// 1. Prepare
 		var axis = new RotationAxis("test", Cartesian3dCoordinate.XAxis);
-		var bandages = new BandagesCollection<Block>();
-
 		Block[] blocks = [
 			new Block("b0", Cartesian3dCoordinate.XAxis, new BlockFace("face", Cartesian3dCoordinate.XAxis)),
 			new Block("b1", Cartesian3dCoordinate.XAxis, new BlockFace("face", Cartesian3dCoordinate.XAxis))
 		];
 
-		bandages.Band(blocks[0], blocks[1]);
+		var bandages = new BandagesCollection(GetBlocksStructure(blocks).Object);
+		bandages.Band(blocks[0].Id, blocks[1].Id);
 
 		// 2. Execute
-		var b = bandages.CanRotateAround(axis, Math.PI, blocks);
+		var b = bandages.CanRotateAround(axis, Math.PI, blocks.Select(b => b.Id));
 
 		// 3. Verify
 		Assert.True(b);
@@ -67,17 +67,19 @@ public class BandagesCollectionTest
 	{
 		// 1. Prepare
 		var axis = new RotationAxis("test", Cartesian3dCoordinate.XAxis);
-		var bandages = new BandagesCollection<Block>();
-
-		Block[] blocks = [
+		Block[] rotatedBlocks = [
 			new Block("b2", Cartesian3dCoordinate.XAxis, new BlockFace("face", Cartesian3dCoordinate.XAxis))
 		];
+		Block[] bandagedBlocks = [
+			new Block("b0", Cartesian3dCoordinate.XAxis, new BlockFace("face", Cartesian3dCoordinate.XAxis)),
+			new Block("b1", Cartesian3dCoordinate.XAxis, new BlockFace("face", Cartesian3dCoordinate.XAxis))
+		];
 
-		bandages.Band(new Block("b0", Cartesian3dCoordinate.XAxis, new BlockFace("face", Cartesian3dCoordinate.XAxis)),
-			new Block("b1", Cartesian3dCoordinate.XAxis, new BlockFace("face", Cartesian3dCoordinate.XAxis)));
+		var bandages = new BandagesCollection(GetBlocksStructure(rotatedBlocks.Union(bandagedBlocks).ToArray()).Object);
+		bandages.Band(bandagedBlocks[0].Id, bandagedBlocks[1].Id);
 
 		// 2. Execute
-		var b = bandages.CanRotateAround(axis, Math.PI, blocks);
+		var b = bandages.CanRotateAround(axis, Math.PI, rotatedBlocks.Select(b => b.Id));
 
 		// 3. Verify
 		Assert.True(b);
@@ -88,17 +90,37 @@ public class BandagesCollectionTest
 	{
 		// 1. Prepare
 		var axis = new RotationAxis("test", Cartesian3dCoordinate.XAxis);
-		var bandages = new BandagesCollection<Block>();
-		Block[] blocks = [new Block("b0", Cartesian3dCoordinate.XAxis, new BlockFace("face", Cartesian3dCoordinate.XAxis))];
+		Block[] rotatedBlocks = [
+			new Block("b2", Cartesian3dCoordinate.XAxis, new BlockFace("face", Cartesian3dCoordinate.XAxis))
+		];
+		Block[] bandagedBlocks = [
+			new Block("b0", Cartesian3dCoordinate.XAxis, new BlockFace("face", Cartesian3dCoordinate.XAxis))
+		];
 
-		bandages.Band(blocks[0], new Block("b1", Cartesian3dCoordinate.XAxis, new BlockFace("face", Cartesian3dCoordinate.XAxis)));
+		var bandages = new BandagesCollection(GetBlocksStructure(rotatedBlocks.Union(bandagedBlocks).ToArray()).Object);
+		bandages.Band(rotatedBlocks[0].Id, bandagedBlocks[0].Id);
 
 		// 2. Execute
-		var b = bandages.CanRotateAround(axis, Math.PI, blocks);
+		var b = bandages.CanRotateAround(axis, Math.PI, rotatedBlocks.Select(b => b.Id));
 
 		// 3. Verify
 		Assert.False(b);
 	}
 
 	#endregion Test Methods
+
+	private Mock<IBlocksStructure> GetBlocksStructure(Block[] blocks)
+	{
+		var m = new Mock<IBlocksStructure>();
+
+		foreach (var b in blocks)
+		{
+			m.Setup(o => o.GetBlock(b.Id)).Returns(b);
+			m.Setup(o => o.GetBlock(b.InitialPosition)).Returns(b);
+		}
+
+		m.SetupGet(o => o.Blocks).Returns(blocks);
+
+		return m;
+	}
 }

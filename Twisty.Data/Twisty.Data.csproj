@@ -10,4 +10,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Structures\" />
+  </ItemGroup>
+
 </Project>

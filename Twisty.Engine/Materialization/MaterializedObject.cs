@@ -9,17 +9,17 @@ public class MaterializedObject
 	/// Create a new MaterializedObject from the list of his internal parts.
 	/// </summary>
 	/// <param name="id">ID of the object.</param>
-	/// <param name="parts">Collection of parts forming the object.</param>
-	internal MaterializedObject(string id, IEnumerable<MaterializedObjectShape> parts)
+	/// <param name="shapes">Collection of shapes forming the object.</param>
+	internal MaterializedObject(string id, IEnumerable<MaterializedObjectShape> shapes)
 	{
 		this.Id = id;
-		this.Parts = parts.ToArray();
+		this.Shapes = shapes.ToArray();
 	}
 
 	/// <summary>
-	/// Gets the collection of Parts forming the object.
+	/// Gets the collection of Shapes forming the object.
 	/// </summary>
-	public IEnumerable<MaterializedObjectShape> Parts { get; }
+	public IEnumerable<MaterializedObjectShape> Shapes { get; }
 
 	/// <summary>
 	/// Gets the Id of the object.
@@ -34,24 +34,24 @@ public class MaterializedObject
 	/// <returns>A new Materialized object representing the extended target object.</returns>
 	public static MaterializedObject Merge(MaterializedObject targetObject, MaterializedObject extensionObject)
 	{
-		// Start from original parts list instead of recreating it.
-		var parts = targetObject.Parts.ToList();
+		// Start from original shapes list instead of recreating it.
+		var shapes = targetObject.Shapes.ToList();
 
-		foreach (var partToMerge in extensionObject.Parts)
+		foreach (var shapeToMerge in extensionObject.Shapes)
 		{
 			// We expect only one face per color in current implementation.
-			var targetPart = parts.FirstOrDefault(p => p.Color == partToMerge.Color);
+			var targetShape = shapes.FirstOrDefault(p => p.Color == shapeToMerge.Color);
 
-			if (targetPart is null)
-				parts.Add(partToMerge);
+			if (targetShape is null)
+				shapes.Add(shapeToMerge);
 			else
 			{
-				// Replace previous part with merged one.
-				parts.Remove(targetPart);
-				parts.Add(MaterializedObjectShape.Merge(targetPart, partToMerge));
+				// Replace previous shape with merged one.
+				shapes.Remove(targetShape);
+				shapes.Add(MaterializedObjectShape.Merge(targetShape, shapeToMerge));
 			}
 		}
 
-		return new MaterializedObject(targetObject.Id, parts);
+		return new MaterializedObject(targetObject.Id, shapes);
 	}
 }

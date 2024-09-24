@@ -19,7 +19,7 @@ namespace Twisty.Runner.Models.Model3d
 			this.Id = o.Id;
 			var parts = new List<Core3dSurface>();
 			this.Parts = parts;
-			foreach (var p in o.Parts)
+			foreach (var p in o.Shapes)
 				parts.Add(new Core3dSurface(p));
 		}
 

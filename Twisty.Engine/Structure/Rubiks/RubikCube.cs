@@ -82,7 +82,7 @@ public class RubikCube : CubicRotationCore
 		if (n <= 1)
 			throw new ArgumentException("Size of the Rubik's Cube should be bigger than 1.", nameof(n));
 
-		List<Block> blocks = new List<Block>();
+		List<Block> blocks = [];
 
 		// Corner are identical in all cubes.
 		AddCornersToList(blocks);
