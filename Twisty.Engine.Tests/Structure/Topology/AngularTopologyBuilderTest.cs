@@ -68,6 +68,7 @@ public class AngularTopologyBuilderTest
 	// Single Face
 	[InlineData("(1 0 0)", "Y", "(0 0 1)", Math.PI)]
 	[InlineData("(1 0 0)", "Z", "(0 0 1)", Math.PI)]
+	[InlineData("(2 0 0)", "Z", "(0 0 1)", Math.PI)]
 	[InlineData("(0 0 1)", "X", "(0 1 1)", Math.PI)]
 	[InlineData("(0 0 1)", "Y", "(0 1 1)", Math.PI)]
 	[InlineData("(0 1 0)", "Y", "(0 0 1)", Math.PI)]
@@ -90,7 +91,7 @@ public class AngularTopologyBuilderTest
 	[InlineData("(0 0 1)", "-X,AlmostX,Y", "(8 7 1)", Math.PI * 0.4)]
 	[InlineData("(0 0 1)", "AlmostX,-X,Y", "(13 -4 1)", Math.PI * 0.3)]
 	[InlineData("(0 0 1)", "Y,AlmostX,-X", "(20 100 15)", Math.PI * 0.2)]
-	public void GetRotatedBlockTopologicId_ReturnExpected(string axisCc, string facesId, string rotationAxisCc, double rotationTheta)
+	public void GetSimpleRotatedBlockTopologicId_ReturnExpected(string axisCc, string facesId, string rotationAxisCc, double rotationTheta)
 	{
 		// 1. Prepare
 		var axis = new Cartesian3dCoordinate(axisCc);
@@ -109,6 +110,75 @@ public class AngularTopologyBuilderTest
 		Assert.NotNull(id);
 		Assert.NotNull(rotatedId);
 		Assert.Equal(id, rotatedId);
+	}
+
+	[Theory]
+	// Single Face
+	[InlineData("(1 0 0)", "Y", "(1 1 0)", "Y", "0#79*79")]
+	[InlineData("(1 0 0)", "Y", "(1 -1 0)", "Y", "0#79*79")]
+	[InlineData("(1 0 0)", "-Y", "(1 -1 0)", "-Y", "0#79*79")]
+	[InlineData("(1 0 0)", "-Y", "(2 1 0)", "-Y", "0#111*46")]
+	[InlineData("(1 0 0)", "-Y", "(-2 1 0)", "-Y", "0#111*46")]
+	// Different Faces
+	[InlineData("(1 0 0)", "Y", "(1 1 0)", "Z", "0#79*0")]
+	[InlineData("(0 1 0)", "Z", "(0 1 1)", "X", "0#79*0")]
+	[InlineData("(0 0 1)", "X", "(1 0 1)", "Y", "0#79*0")]
+	public void GetExtendedOnceBlockTopologicId_ReturnExpected(string axisCc, string facesId, string extendedAxisCc, string extendedFacesId, string expected)
+	{
+		// 1. Prepare
+		var extendedAxis = new Cartesian3dCoordinate(extendedAxisCc);
+		var extendedBlock = new Block("id1", extendedAxis, BlockFacesFactory.GetFaces(extendedFacesId));
+
+		var axis = new Cartesian3dCoordinate(axisCc);
+		var b = new Block("id", axis, BlockFacesFactory.GetFaces(facesId));
+		b.Bandage = new(b, [extendedBlock]);
+
+		var builder = new AngularTopologyBuilder();
+
+		// 2. Execute
+		var id = builder.GetTopologicId(b);
+
+		// 3. Verify
+		Assert.NotNull(id);
+		Assert.Equal(expected, id);
+	}
+
+	[Theory]
+	// Single Face L
+	[InlineData("(1 0 0)", "Y", "(1 1 0)", "Y", "(1 0 1)", "Y", "0#79*79#0#79*79")]
+	[InlineData("(1 0 0)", "Y", "(1 -1 0)", "Y", "(1 0 1)", "Y", "0#79*79#0#79*79")]
+	[InlineData("(1 0 0)", "Y", "(1 1 0)", "Y", "(1 0 -1)", "Y", "0#79*79#0#79*79")]
+	[InlineData("(1 0 0)", "Y", "(1 -1 0)", "Y", "(1 0 -1)", "Y", "0#79*79#0#79*79")]
+	[InlineData("(1 0 0)", "X", "(1 -1 0)", "X", "(1 0 -1)", "X", "157#79*79#0#79*79")]
+	[InlineData("(1 0 0)", "X", "(1 1 0)", "X", "(1 0 1)", "X", "157#79*79#0#79*79")]
+	// TODO : Validate this result.
+	[InlineData("(1 0 0)", "X", "(1 1 1)", "X", "(1 1 -1)", "X", "157#62*62#0#62*62")]
+	// Single Face I
+	// TODO : investigate strange UT result.
+	[InlineData("(1 0 0)", "Y", "(1 1 0)", "Y", "(1 -1 0)", "Y", "0#79*79#0#79*79")]
+	[InlineData("(1 0 0)", "Y", "(1 0 1)", "Y", "(1 0 -1)", "Y", "0#79*0#0#79*0")]
+	[InlineData("(1 0 0)", "Y", "(1 0 -1)", "Y", "(1 0 1)", "Y", "0#79*0#0#79*0")]
+	public void GetExtendedTwiceBlockTopologicId_ReturnExpected(string axisCc, string facesId, string extended1AxisCc, string extended1FacesId, string extended2AxisCc, string extended2FacesId, string expected)
+	{
+		// 1. Prepare
+		var extended1Axis = new Cartesian3dCoordinate(extended1AxisCc);
+		var extended1Block = new Block("id1", extended1Axis, BlockFacesFactory.GetFaces(extended1FacesId));
+
+		var extended2Axis = new Cartesian3dCoordinate(extended2AxisCc);
+		var extended2Block = new Block("id2", extended1Axis, BlockFacesFactory.GetFaces(extended2FacesId));
+
+		var axis = new Cartesian3dCoordinate(axisCc);
+		var b = new Block("id", axis, BlockFacesFactory.GetFaces(facesId));
+		b.Bandage = new(b, [extended1Block, extended2Block]);
+
+		var builder = new AngularTopologyBuilder();
+
+		// 2. Execute
+		var id = builder.GetTopologicId(b);
+
+		// 3. Verify
+		Assert.NotNull(id);
+		Assert.Equal(expected, id);
 	}
 
 	#endregion Test Methods

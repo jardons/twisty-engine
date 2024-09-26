@@ -40,7 +40,7 @@ public class AngularTopologyBuilder : ITopologyBuilder
 			.OrderBy(b => b.InitialPosition, comparer)
 			.ToList();
 
-		idParts = new string[extensions.Count * 2 + 1];
+		idParts = new string[extensions.Count * 2];
 
 		// Start from central block.
 		idParts[0] = id;
@@ -50,7 +50,7 @@ public class AngularTopologyBuilder : ITopologyBuilder
 		// Create id based on two informations allowing to identify position of all extensions :
 		// * Angle from the extension block to the plane perpendicular to the principal block axis.
 		// * Angle between the extension block axix and next previous face.
-		for (int i = 1; i < list.Count; i++)
+		for (int i = 1; i < extensions.Count; i++)
 		{
 			idParts[i * 2] = Stringify(extensions[i - 1].InitialPosition.GetThetaTo(extensions[i].InitialPosition));
 			idParts[i * 2 + 1] = $"{Stringify(plane.GetThetaTo(extensions[i].InitialPosition))}*{GetTopologicId(extensions[i])}";

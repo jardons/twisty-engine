@@ -1,32 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Twisty.Engine.Geometry;
+﻿namespace Twisty.Engine.Geometry;
 
 ///<summary>
-/// This Comparer allow to sort the point in a plane by reading them line by line.
+/// This Comparer allow to sort the point in a plane by reading them in the order Z, Y, X.
 ///</summary>
-/// <remarks>
-/// Sorting map :
-/// 
-///        +y
-///         |
-///     1   |   2
-///        3|
-/// -x -----*----- +x
-///      4  |
-///     5   |   6
-///    7    |
-///        -y
-/// </remarks>
-public class PlanePositionPointComparer : IComparer<Cartesian3dCoordinate>, IComparer<IPositionnedByCartesian3dVector>
+public class PositionPointComparer : IComparer<Cartesian2dCoordinate>, IComparer<Cartesian3dCoordinate>, IComparer<IPositionnedByCartesian3dVector>
 {
-	private CartesianCoordinatesFlattener m_Converter;
+	#region IComparer<Cartesian2dCoordinate> Members
 
-	public PlanePositionPointComparer(Plane p)
+	/// <summary>
+	/// Compares two objects and returns a value indicating whether one is less than, equal to, or greater than the other.
+	/// </summary>
+	/// <param name="x">The first object to compare.</param>
+	/// <param name="y">The second object to compare.</param>
+	/// <returns>
+	/// A signed integer that indicates the relative values of x and y:
+	/// - If less than 0, x is less than y.
+	/// - If 0, x equals y.
+	/// - If greater than 0, x is greater than y.
+	/// </returns>
+	public int Compare(Cartesian2dCoordinate x, Cartesian2dCoordinate y)
 	{
-		m_Converter = new CartesianCoordinatesFlattener(p);
+		if (!x.Y.IsEqualTo(y.Y))
+			return x.Y > y.Y ? -1 : 1;
+
+		// Same line
+		if (x.X.IsEqualTo(y.X))
+			return 0;
+
+		return x.X < y.X ? -1 : 1;
 	}
+
+	#endregion IComparer<Cartesian2dCoordinate> Members
 
 	#region IComparer<Cartesian3dCoordinate> Members
 
@@ -43,24 +47,18 @@ public class PlanePositionPointComparer : IComparer<Cartesian3dCoordinate>, ICom
 	/// </returns>
 	public int Compare(Cartesian3dCoordinate x, Cartesian3dCoordinate y)
 	{
-		// Calculate intersection with plane to have all point on same plane.
-		Cartesian3dCoordinate intersectX = m_Converter.Plane.GetIntersection(x);
-		Cartesian3dCoordinate intersectY = m_Converter.Plane.GetIntersection(y);
+		if (!x.Z.IsEqualTo(y.Z))
+			return x.Z > y.Z ? -1 : 1;
 
-		// Convert in a 2D referential to facilitate the comparison.
-		Cartesian2dCoordinate x2 = m_Converter.ConvertTo2d(intersectX);
-		Cartesian2dCoordinate y2 = m_Converter.ConvertTo2d(intersectY);
+		// Same slice.
+		if (!x.Y.IsEqualTo(y.Y))
+			return x.Y > y.Y ? -1 : 1;
 
-		if (x2.Y.IsEqualTo(y2.Y))
-		{
-			// Same line
-			if (x2.X.IsEqualTo(y2.X))
-				return 0;
+		// Same line
+		if (x.X.IsEqualTo(y.X))
+			return 0;
 
-			return x2.X < y2.X ? -1 : 1;
-		}
-
-		return x2.Y > y2.Y ? -1 : 1;
+		return x.X < y.X ? -1 : 1;
 	}
 
 	#endregion IComparer<Cartesian3dCoordinate> Members
