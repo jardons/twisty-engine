@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 using Twisty.Engine.Geometry;
 using Twisty.Engine.Tests.Assertions;
 using Xunit;
@@ -87,6 +89,46 @@ namespace Twisty.Engine.Tests.Geometry
 
 			// 3. Verify
 			GeometryAssert.SamePoint(expected, r);
+		}
+
+		[Theory]
+		[InlineData(0.0, 0.0, "{\"X\":0,\"Y\":0}")]
+		[InlineData(1.0, 0.0, "{\"X\":1,\"Y\":0}")]
+		[InlineData(1.0, 0.8, "{\"X\":1,\"Y\":0.8}")]
+		public void JsonSerialize_Expected(double x, double y, string expectedJson)
+		{
+			// 1. Prepare
+			Cartesian2dCoordinate p = new(x, y);
+
+			var options = new JsonSerializerOptions
+			{
+				NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals
+			};
+
+			// 2. Execute
+			var json = JsonSerializer.Serialize(p, options);
+
+			// 3. Verify
+			Assert.Equal(expectedJson, json);
+		}
+
+		[Theory]
+		[InlineData("{\"X\":0,\"Y\":0}", 0.0, 0.0)]
+		[InlineData("{\"X\":1,\"Y\":0}", 1.0, 0.0)]
+		[InlineData("{\"X\":1,\"Y\":0.8}", 1.0, 0.8)]
+		[InlineData("{\"X\":1,\"Y\":0.8}", 1.0, 0.8)]
+		[InlineData("{\"X\":1.9548754,\"Y\":0.00000001}", 1.9548754, 0.00000001)]
+		public void JsonDeserialize_Expected(string json, double x, double y)
+		{
+			// 1. Prepare
+			// Nothing to prepare.
+
+			// 2. Execute
+			var cc = JsonSerializer.Deserialize<Cartesian3dCoordinate>(json);
+
+			// 3. Verify
+			Assert.Equal(x, cc.X, GeometryAssert.PRECISION_DOUBLE);
+			Assert.Equal(y, cc.Y, GeometryAssert.PRECISION_DOUBLE);
 		}
 
 		#endregion Test Methods

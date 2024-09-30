@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 
 namespace Twisty.Engine.Geometry;
 
@@ -75,6 +76,7 @@ public struct Cartesian3dCoordinate
     /// <param name="x">Coordinates on the X axis.</param>
     /// <param name="y">Coordinates on the Y axis.</param>
     /// <param name="z">Coordinates on the Z axis.</param>
+    [JsonConstructor]
     public Cartesian3dCoordinate(double x, double y, double z)
     {
         this.X = x;
@@ -82,24 +84,27 @@ public struct Cartesian3dCoordinate
         this.Z = z;
     }
 
-    #endregion ctor(s)
+	#endregion ctor(s)
 
-    #region Public Properties
+	#region Public Properties
 
-    /// <summary>
-    /// Gets the cartesian coordinate on the X axis.
-    /// </summary>
-    public double X { get; }
+	/// <summary>
+	/// Gets the cartesian coordinate on the X axis.
+	/// </summary>
+	[JsonNumberHandling(JsonNumberHandling.AllowNamedFloatingPointLiterals)]
+	public double X { get; }
 
-    /// <summary>
-    /// Gets the cartesian coordinate on the Y axis.
-    /// </summary>
-    public double Y { get; }
+	/// <summary>
+	/// Gets the cartesian coordinate on the Y axis.
+	/// </summary>
+	[JsonNumberHandling(JsonNumberHandling.AllowNamedFloatingPointLiterals)]
+	public double Y { get; }
 
-    /// <summary>
-    /// Gets the cartesian coordinate on the Z axis.
-    /// </summary>
-    public double Z { get; }
+	/// <summary>
+	/// Gets the cartesian coordinate on the Z axis.
+	/// </summary>
+	[JsonNumberHandling(JsonNumberHandling.AllowNamedFloatingPointLiterals)]
+	public double Z { get; }
 
     /// <summary>
     /// Gets the magnitude of this vector, also noted as ||V||.
@@ -109,47 +114,56 @@ public struct Cartesian3dCoordinate
     ///          _________________
     /// ||V|| = V Xv² * Yv² * Zv² '
     /// </remarks>
+    [JsonIgnore]
     public readonly double Magnitude => Math.Sqrt((this.X * this.X) + (this.Y * this.Y) + (this.Z * this.Z));
 
-    /// <summary>
-    /// Gets the angle in radians between the vector and the X axis.
-    /// </summary>
-    public readonly double ThetaToX => Trigonometry.Acos(this.X / this.Magnitude);
+	/// <summary>
+	/// Gets the angle in radians between the vector and the X axis.
+	/// </summary>
+	[JsonIgnore]
+	public readonly double ThetaToX => Trigonometry.Acos(this.X / this.Magnitude);
 
-    /// <summary>
-    /// Gets the angle in radians between the vector and the Y axis.
-    /// </summary>
-    public readonly double ThetaToY => Trigonometry.Acos(this.Y / this.Magnitude);
+	/// <summary>
+	/// Gets the angle in radians between the vector and the Y axis.
+	/// </summary>
+	[JsonIgnore]
+	public readonly double ThetaToY => Trigonometry.Acos(this.Y / this.Magnitude);
 
-    /// <summary>
-    /// Gets the angle in radians between the vector and the Z axis.
-    /// </summary>
-    public readonly double ThetaToZ => Trigonometry.Acos(this.Z / this.Magnitude);
+	/// <summary>
+	/// Gets the angle in radians between the vector and the Z axis.
+	/// </summary>
+	[JsonIgnore]
+	public readonly double ThetaToZ => Trigonometry.Acos(this.Z / this.Magnitude);
 
-    /// <summary>
-    /// Gets a boolean indicating if whether the current coordonate is on the X axis or not.
-    /// </summary>
-    public readonly bool IsOnX => Y.IsZero() && Z.IsZero();
+	/// <summary>
+	/// Gets a boolean indicating if whether the current coordonate is on the X axis or not.
+	/// </summary>
+	[JsonIgnore]
+	public readonly bool IsOnX => Y.IsZero() && Z.IsZero();
 
-    /// <summary>
-    /// Gets a boolean indicating if whether the current coordonate is on the Y axis or not.
-    /// </summary>
-    public readonly bool IsOnY => X.IsZero() && Z.IsZero();
+	/// <summary>
+	/// Gets a boolean indicating if whether the current coordonate is on the Y axis or not.
+	/// </summary>
+	[JsonIgnore]
+	public readonly bool IsOnY => X.IsZero() && Z.IsZero();
 
-    /// <summary>
-    /// Gets a boolean indicating if whether the current coordonate is on the Z axis or not.
-    /// </summary>
-    public readonly bool IsOnZ => X.IsZero() && Y.IsZero();
+	/// <summary>
+	/// Gets a boolean indicating if whether the current coordonate is on the Z axis or not.
+	/// </summary>
+	[JsonIgnore]
+	public readonly bool IsOnZ => X.IsZero() && Y.IsZero();
 
-    /// <summary>
-    /// Gets a boolean indicating if whether the current coordonate is the origin point crossing all axes or not.
-    /// </summary>
-    public readonly bool IsZero => X.IsZero() && Y.IsZero() && Z.IsZero();
+	/// <summary>
+	/// Gets a boolean indicating if whether the current coordonate is the origin point crossing all axes or not.
+	/// </summary>
+	[JsonIgnore]
+	public readonly bool IsZero => X.IsZero() && Y.IsZero() && Z.IsZero();
 
-    /// <summary>
-    /// Gets the Reverse vector of this one.
-    /// </summary>
-    public readonly Cartesian3dCoordinate Reverse => new(-this.X, -this.Y, -this.Z);
+	/// <summary>
+	/// Gets the Reverse vector of this one.
+	/// </summary>
+	[JsonIgnore]
+	public readonly Cartesian3dCoordinate Reverse => new(-this.X, -this.Y, -this.Z);
 
     #endregion Public Properties
 
@@ -442,10 +456,9 @@ public struct Cartesian3dCoordinate
             z += p.Z;
         }
 
-        if (count == 0)
-            return Zero;
-
-        return new Cartesian3dCoordinate(x / count, y / count, z / count);
+        return count == 0
+            ? Zero
+            : new Cartesian3dCoordinate(x / count, y / count, z / count);
     }
 
     #endregion Public Static Methods
