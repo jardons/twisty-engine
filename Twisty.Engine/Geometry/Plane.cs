@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 
 namespace Twisty.Engine.Geometry;
 
@@ -43,7 +44,8 @@ public class Plane
 	/// </summary>
 	/// <param name="n">Normal used to define a plane.</param>
 	/// <param name="d">D factor of the formula 'ax + by + cz + d = 0' used to define a plane.</param>
-	public Plane(in Cartesian3dCoordinate n, double d)
+	[JsonConstructor]
+	public Plane(Cartesian3dCoordinate n, double d)
 	{
 		this.Normal = n;
 		if (this.Normal.IsZero)
@@ -95,16 +97,19 @@ public class Plane
 	/// <summary>
 	/// Gets the A factor of the formula 'ax + by + cz + d = 0' used to define a plane.
 	/// </summary>
+	[JsonIgnore]
 	public double A => this.Normal.X;
 
 	/// <summary>
 	/// Gets the B factor of the formula 'ax + by + cz + d = 0' used to define a plane.
 	/// </summary>
+	[JsonIgnore]
 	public double B => this.Normal.Y;
 
 	/// <summary>
 	/// Gets the C factor of the formula 'ax + by + cz + d = 0' used to define a plane.
 	/// </summary>
+	[JsonIgnore]
 	public double C => this.Normal.Z;
 
 	/// <summary>
