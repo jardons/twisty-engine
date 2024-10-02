@@ -1,4 +1,5 @@
-﻿using Twisty.Engine.Geometry;
+﻿using System.Text.Json.Serialization;
+using Twisty.Engine.Geometry;
 
 namespace Twisty.Engine.Structure;
 
@@ -23,6 +24,7 @@ public class BlockFace
 	/// </summary>
 	/// <param name="identifier">Identifier of the BlockFaces that should match the expected face.</param>
 	/// <param name="p"></param>
+	[JsonConstructor]
 	public BlockFace(string identifier, Cartesian3dCoordinate p)
 	{
 		this.Position = p;

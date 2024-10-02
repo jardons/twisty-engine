@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using Twisty.Engine.Geometry;
 
 namespace Twisty.Engine.Structure;
@@ -15,14 +16,14 @@ public class RotationAxis
 	/// Create a new RotationAxis object.
 	/// </summary>
 	/// <param name="id">Id of the RotationAxis.</param>
-	/// <param name="axis">Rotation Axis coordinate starting from the core center.</param>
+	/// <param name="vector">Rotation Axis coordinate starting from the core center.</param>
 	/// <param name="layersDistances">
 	/// List distances to each layers on the current axis indexed per id.
 	/// Layer will be created on origin if null.
 	/// </param>
 	/// <exception cref="System.ArgumentNullException">Axis id is mandatory.</exception>
 	/// <exception cref="System.ArgumentException">Axis id cannot be an empty or a white string.</exception>
-	public RotationAxis(string id, Cartesian3dCoordinate axis, IDictionary<string, double> layersDistances = null)
+	public RotationAxis(string id, Cartesian3dCoordinate vector, IDictionary<string, double> layersDistances = null)
 	{
 		if (id is null)
 			throw new ArgumentNullException(nameof(id), "Axis id is mandatory.");
@@ -30,14 +31,39 @@ public class RotationAxis
 		if (string.IsNullOrWhiteSpace(id))
 			throw new ArgumentException("Axis id cannot be an empty or a white string.", nameof(id));
 
-		if (axis.IsZero)
-			throw new ArgumentException("Axis cannot be on initial point.", nameof(axis));
+		if (vector.IsZero)
+			throw new ArgumentException("Axis cannot be on initial point.", nameof(vector));
 
 		this.Id = id;
-		this.Vector = axis;
+		this.Vector = vector;
 		this.Layers = layersDistances is null
-			? [ new LayerSeparator($"L_{id}", new Plane(axis, 0.0)) ]
-			: layersDistances.Select(kv => new LayerSeparator(kv.Key, new Plane(axis, kv.Value)));
+			? [ new LayerSeparator($"L_{id}", new Plane(vector, 0.0)) ]
+			: layersDistances.Select(kv => new LayerSeparator(kv.Key, new Plane(vector, kv.Value)));
+	}
+
+	/// <summary>
+	/// Create a new RotationAxis object.
+	/// </summary>
+	/// <param name="id">Id of the RotationAxis.</param>
+	/// <param name="vector">Rotation Axis coordinate starting from the core center.</param>
+	/// <param name="layers">Collection of the layer on this axis.</param>
+	/// <exception cref="System.ArgumentNullException">Axis id is mandatory.</exception>
+	/// <exception cref="System.ArgumentException">Axis id cannot be an empty or a white string.</exception>
+	[JsonConstructor]
+	public RotationAxis(string id, Cartesian3dCoordinate vector, IEnumerable<LayerSeparator> layers)
+	{
+		if (id is null)
+			throw new ArgumentNullException(nameof(id), "Axis id is mandatory.");
+
+		if (string.IsNullOrWhiteSpace(id))
+			throw new ArgumentException("Axis id cannot be an empty or a white string.", nameof(id));
+
+		if (vector.IsZero)
+			throw new ArgumentException("Axis cannot be on initial point.", nameof(vector));
+
+		this.Id = id;
+		this.Vector = vector;
+		this.Layers = layers.ToArray();
 	}
 
 	#region Public Properties
