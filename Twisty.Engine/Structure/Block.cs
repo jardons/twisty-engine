@@ -96,60 +96,6 @@ public class Block : IPositionnedByCartesian3dVector
 
 	public Bandage Bandage { get; set; }
 
-	/// <summary>
-	/// Gets the TopologicId for this block that will uniquely describe the block structure, ignoring orientation of faces colors.
-	/// </summary>
-	public string TopologicId
-	{
-		get
-		{
-			var list = this.m_Faces.Select(f => f.Position).ToList();
-			var plane = new Plane(this.InitialPosition, Cartesian3dCoordinate.Zero);
-			var comparer = new CircularVectorComparer(plane);
-			list.Sort(comparer);
-
-			string[] idParts = new string[list.Count * 2 - 1];
-
-			// Create id based on two informations allowing to identify position of all parts :
-			// * Angle from the face to the plane perpendicular to the block axis.
-			// * Angle between the face and previous face.
-			idParts[0] = double.Round(plane.GetThetaTo(list[0]) * 100.0).ToString();
-
-			for (int i = 1; i < list.Count; i++)
-			{
-				idParts[i * 2 - 1] = double.Round(list[i - 1].GetThetaTo(list[i]) * 100.0).ToString();
-				idParts[i * 2] = double.Round(plane.GetThetaTo(list[i]) * 100.0).ToString();
-			}
-
-			string id = string.Join('-', idParts);
-
-			if (Bandage is not null)
-			{
-				var extensions = Bandage.Extensions
-					.OrderBy(b => b.InitialPosition, comparer)
-					.ToList();
-
-				idParts = new string[extensions.Count * 2 + 1];
-
-				// Start from central block.
-				idParts[0] = id;
-
-				idParts[1] = $"{double.Round(plane.GetThetaTo(extensions[0].InitialPosition) * 100.0).ToString()}*{extensions[0].TopologicId}";
-
-				// Create id based on two informations allowing to identify position of all extensions :
-				// * Angle from the extension block to the plane perpendicular to the principal block axis.
-				// * Angle between the extension block axix and next previous face.
-				for (int i = 1; i < list.Count; i++)
-				{
-					idParts[i * 2] = double.Round(extensions[i - 1].InitialPosition.GetThetaTo(extensions[i].InitialPosition) * 100.0).ToString();
-					idParts[i * 2 + 1] = $"{double.Round(plane.GetThetaTo(extensions[i].InitialPosition) * 100.0).ToString()}*{extensions[i].TopologicId}";
-				}
-			}
-
-			return id;
-		}
-	}
-
 	#endregion Public Properties
 
 	#region Public Methods
