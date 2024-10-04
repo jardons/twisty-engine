@@ -13,8 +13,8 @@ namespace Twisty.Engine.Tests.Structure.Builders;
 public class RotationCoreFormatEntryConverterTest
 {
 	[Theory]
-	[InlineData(typeof(RotationCoreFormatLoad))]
-	[InlineData(typeof(RotationCoreFormatUnion))]
+	[InlineData(typeof(RotationCoreFormatLoad<object>))]
+	[InlineData(typeof(RotationCoreFormatUnion<object>))]
 	public void JsonSerializeIRotationCoreFormat_Json(Type type)
 	{
 		// 1. Prepare
@@ -30,8 +30,8 @@ public class RotationCoreFormatEntryConverterTest
 	}
 
 	[Theory]
-	[InlineData(RotationCoreFormatEntryType.Load, typeof(RotationCoreFormatLoad))]
-	[InlineData(RotationCoreFormatEntryType.Union, typeof(RotationCoreFormatUnion))]
+	[InlineData(RotationCoreFormatEntryType.Load, typeof(RotationCoreFormatLoad<object>))]
+	[InlineData(RotationCoreFormatEntryType.Union, typeof(RotationCoreFormatUnion<object>))]
 	public void JsonDeserializeRotationCoreFormat_Expected(RotationCoreFormatEntryType typeId, Type type)
 	{
 		// 1. Prepare
@@ -40,7 +40,7 @@ public class RotationCoreFormatEntryConverterTest
 		var options = GetOptions();
 
 		// 2. Execute
-		var obj = JsonSerializer.Deserialize<IRotationCoreFormatEntry>(json, options);
+		var obj = JsonSerializer.Deserialize<IRotationCoreFormatEntry<object>>(json, options);
 
 		// 3. Verify
 		Assert.IsType(type, obj);
@@ -56,7 +56,7 @@ public class RotationCoreFormatEntryConverterTest
 		object obj;
 
 		// 2. Execute
-		void a() => obj = JsonSerializer.Deserialize<IRotationCoreFormatEntry>(json, options);
+		void a() => obj = JsonSerializer.Deserialize<IRotationCoreFormatEntry<object>>(json, options);
 
 		// 3. Verify
 		Assert.Throws<JsonException>(a);
@@ -74,7 +74,7 @@ public class RotationCoreFormatEntryConverterTest
 		object obj;
 
 		// 2. Execute
-		void a() => obj = JsonSerializer.Deserialize<IRotationCoreFormatEntry>(json, options);
+		void a() => obj = JsonSerializer.Deserialize<IRotationCoreFormatEntry<object>>(json, options);
 
 		// 3. Verify
 		Assert.Throws<JsonException>(a);
@@ -89,7 +89,7 @@ public class RotationCoreFormatEntryConverterTest
 		object obj;
 
 		// 2. Execute
-		void a() => obj = JsonSerializer.Deserialize<IRotationCoreFormatEntry>(json, options);
+		void a() => obj = JsonSerializer.Deserialize<IRotationCoreFormatEntry<object>>(json, options);
 
 		// 3. Verify
 		Assert.Throws<JsonException>(a);
@@ -104,7 +104,7 @@ public class RotationCoreFormatEntryConverterTest
 		return new JsonSerializerOptions
 		{
 			NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals,
-			Converters = { new RotationCoreFormatEntryConverter() }
+			Converters = { new RotationCoreFormatEntryConverter<object>() }
 		};
 	}
 }
