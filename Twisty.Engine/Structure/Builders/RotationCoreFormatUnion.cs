@@ -15,6 +15,6 @@ public class RotationCoreFormatUnion<T> : IRotationCoreFormatEntry<T>
 	public IRotationCoreFormatEntry<T>[] Entries { get; set; }
 
 	/// <inheritdoc />
-	public IEnumerable<T> GetValues()
-		=> Entries?.SelectMany(e => e.GetValues()) ?? [];
+	public IEnumerable<T> GetValues(RotationCoreBuilderContext context)
+		=> Entries?.SelectMany(e => e.GetValues(context)) ?? [];
 }
