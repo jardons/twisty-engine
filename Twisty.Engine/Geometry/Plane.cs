@@ -42,14 +42,14 @@ public class Plane
 	/// <summary>
 	/// Create a new Plane.
 	/// </summary>
-	/// <param name="n">Normal used to define a plane.</param>
+	/// <param name="normal">Normal used to define a plane.</param>
 	/// <param name="d">D factor of the formula 'ax + by + cz + d = 0' used to define a plane.</param>
 	[JsonConstructor]
-	public Plane(Cartesian3dCoordinate n, double d)
+	public Plane(Cartesian3dCoordinate normal, double d)
 	{
-		this.Normal = n;
+		this.Normal = normal;
 		if (this.Normal.IsZero)
-			throw new ArgumentException("Plane normal should be a directed vector and cannot be on the origins.", nameof(n));
+			throw new ArgumentException("Plane normal should be a directed vector and cannot be on the origins.", nameof(normal));
 
 		this.D = d;
 	}

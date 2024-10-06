@@ -13,11 +13,16 @@ namespace Twisty.Engine.Structure;
 [DebuggerDisplay("{GetType().Name} ({Id} [{Plane.A}, {Plane.B}, {Plane.C}, {Plane.D}])")]
 public class LayerSeparator : IPlanar
 {
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="id">Id of the Layer Separator.</param>
+	/// <param name="plane">Plane defining the boundaring between two layers.</param>
 	[JsonConstructor]
-	public LayerSeparator(string id, Plane p)
+	public LayerSeparator(string id, Plane plane)
 	{
 		this.Id = id;
-		this.Plane = p;
+		this.Plane = plane;
 	}
 
 	/// <summary>

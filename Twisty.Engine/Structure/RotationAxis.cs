@@ -37,7 +37,7 @@ public class RotationAxis
 		this.Id = id;
 		this.Vector = vector;
 		this.Layers = layersDistances is null
-			? [ new LayerSeparator($"L_{id}", new Plane(vector, 0.0)) ]
+			? GetDefaultLayer(id, vector)
 			: layersDistances.Select(kv => new LayerSeparator(kv.Key, new Plane(vector, kv.Value)));
 	}
 
@@ -63,7 +63,7 @@ public class RotationAxis
 
 		this.Id = id;
 		this.Vector = vector;
-		this.Layers = layers.ToArray();
+		this.Layers = layers?.ToArray() ?? GetDefaultLayer(id, vector);
 	}
 
 	#region Public Properties
@@ -95,4 +95,17 @@ public class RotationAxis
 		=> Layers.OrderByDescending(l => Math.Abs(l.Plane.D)).First();
 
 	#endregion Public Methods
+
+	#region Private Methods
+
+	/// <summary>
+	/// Gets the default root LayerSeparator located on origin. This separator need to be used when none a provided.
+	/// </summary>
+	/// <param name="id">Id of the RotationAxis.</param>
+	/// <param name="vector">Rotation Axis coordinate starting from the core center.</param>
+	/// <returns>Default root LayerSeparator located on origin taht will be used when no other one are provided.</returns>
+	private static LayerSeparator[] GetDefaultLayer(string id, Cartesian3dCoordinate vector)
+		=> [new LayerSeparator($"L_{id}", new Plane(vector, 0.0))];
+
+	#endregion Private Methods
 }
