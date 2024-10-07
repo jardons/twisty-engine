@@ -13,22 +13,22 @@ public class BlockFace
 	/// </summary>
 	/// <param name="identifier">Identifier of the BlockFaces that should match the expected face.</param>
 	/// <param name="p"></param>
-	public BlockFace(string identifier, SphericalVector p)
+	public BlockFace(string id, SphericalVector p)
 	{
 		this.Position = CoordinateConverter.ConvertToCartesian(p);
-		this.Id = identifier;
+		this.Id = id;
 	}
 
 	/// <summary>
 	/// Create a new objet representing a block face.
 	/// </summary>
-	/// <param name="identifier">Identifier of the BlockFaces that should match the expected face.</param>
-	/// <param name="p"></param>
+	/// <param name="id">Identifier of the BlockFaces that should match the expected face.</param>
+	/// <param name="position"></param>
 	[JsonConstructor]
-	public BlockFace(string identifier, Cartesian3dCoordinate p)
+	public BlockFace(string id, Cartesian3dCoordinate position)
 	{
-		this.Position = p;
-		this.Id = identifier;
+		this.Position = position;
+		this.Id = id;
 	}
 
 	/// <summary>
