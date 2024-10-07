@@ -14,70 +14,30 @@ namespace Twisty.Engine.Structure;
 [DebuggerDisplay("{Id}")]
 public class Block : IPositionnedByCartesian3dVector
 {
-	private readonly IReadOnlyCollection<BlockFace> m_Faces;
-
 	#region ctor(s)
 
 	/// <summary>
-	/// Create a new block proposing a single BlockFace.
+	/// Create a new block.
 	/// </summary>
-	/// <param name="id">Unique id of the block in the cube.</param>
-	/// <param name="initialPosition">Initial position vector of the block in the cube.</param>
-	/// <param name="face">only available BlockFace.</param>
-	public Block(string id, Cartesian3dCoordinate initialPosition, BlockFace face)
+	/// <param name="definition">Definition of this block initial state.</param>
+	public Block(BlockDefinition definition)
 	{
-		if (id is null)
-			throw new ArgumentNullException(nameof(id), "Id is mandatory.");
-		if (string.IsNullOrWhiteSpace(id))
-			throw new ArgumentException("Id cannot be an empty string.", nameof(id));
+		ArgumentNullException.ThrowIfNull(definition);
 
-		if (face is null)
-			throw new ArgumentNullException(nameof(face), "A block need at least one visible BlockFace");
-
-		m_Faces = [face];
-		this.Id = id;
-		this.InitialPosition = initialPosition;
-		this.Orientation = RotationMatrix3d.Unrotated;
-	}
-
-	/// <summary>
-	/// Create a new block proposing multiple faces.
-	/// </summary>
-	/// <param name="id">Unique id of the block in the cube.</param>
-	/// <param name="initialPosition">Initial position vector of the block in the cube.</param>
-	/// <param name="faces">Collection of available faces for this block.</param>
-	public Block(string id, Cartesian3dCoordinate initialPosition, params BlockFace[] faces)
-	{
-		if (id is null)
-			throw new ArgumentNullException(nameof(id), "Id is mandatory.");
-		if (string.IsNullOrWhiteSpace(id))
-			throw new ArgumentException("Id cannot be an empty string.", nameof(id));
-
-		if (faces is null)
-			throw new ArgumentNullException(nameof(faces), "A block need at least one visible BlockFace");
-
-		m_Faces = new List<BlockFace>(faces.OrderBy((f) => f.Id));
-		if (m_Faces.Count == 0)
-			throw new ArgumentException("A block need at least one visible BlockFace", nameof(faces));
-
-		this.Id = id;
-		this.InitialPosition = initialPosition;
-		this.Orientation = RotationMatrix3d.Unrotated;
+		Definition = definition;
+		Orientation = RotationMatrix3d.Unrotated;
 	}
 
 	#endregion ctor(s)
 
 	#region Public Properties
 
-	/// <summary>
-	/// Initial Position is stored using the direction relative to the Form center.
-	/// </summary>
-	public Cartesian3dCoordinate InitialPosition { get; init; }
+	public BlockDefinition Definition { get; }
 
 	/// <summary>
 	/// Position is stored using the direction relative to the Form center.
 	/// </summary>
-	public Cartesian3dCoordinate Position => this.Orientation.Rotate(this.InitialPosition);
+	public Cartesian3dCoordinate Position => this.Orientation.Rotate(this.Definition.InitialPosition);
 
 	/// <summary>
 	/// Current Orientation of the block.
@@ -87,13 +47,11 @@ public class Block : IPositionnedByCartesian3dVector
 	/// <summary>
 	/// Gets the unique ID of the block.
 	/// </summary>
-	public string Id { get; }
+	public string Id => Definition.Id;
 
 	/// <summary>
-	/// Gets the faces visibles for this block, ordered per face id.
+	/// Gets the bandage related to this Block.
 	/// </summary>
-	public IReadOnlyCollection<BlockFace> Faces => m_Faces;
-
 	public Bandage Bandage { get; set; }
 
 	#endregion Public Properties
@@ -114,7 +72,7 @@ public class Block : IPositionnedByCartesian3dVector
 	/// <param name="o">Vector indicating the orientation of the face we try to get.</param>
 	/// <returns>The searched Blockface if found, otherwise, null is returned.</returns>
 	public BlockFace GetBlockFace(SphericalVector o)
-		=> m_Faces.FirstOrDefault(f => this.Orientation.Rotate(f.Position).IsSameVector(CoordinateConverter.ConvertToCartesian(o)));
+		=> Definition.Faces.FirstOrDefault(f => this.Orientation.Rotate(f.Position).IsSameVector(CoordinateConverter.ConvertToCartesian(o)));
 
 	/// <summary>
 	/// Gets a block face based on its orientation.
@@ -122,7 +80,7 @@ public class Block : IPositionnedByCartesian3dVector
 	/// <param name="cc">Vector indicating the orientation of the face we try to get.</param>
 	/// <returns>The searched Blockface if found, otherwise, null is returned.</returns>
 	public BlockFace GetBlockFace(Cartesian3dCoordinate cc)
-		=> m_Faces.FirstOrDefault(f => this.Orientation.Rotate(f.Position).IsSameVector(cc));
+		=> Definition.Faces.FirstOrDefault(f => this.Orientation.Rotate(f.Position).IsSameVector(cc));
 
 	/// <summary>
 	/// Gets a block face based on its Id.
@@ -134,7 +92,7 @@ public class Block : IPositionnedByCartesian3dVector
 		if (id is null)
 			throw new ArgumentNullException(nameof(id), "Id is mandatory");
 
-		return m_Faces.FirstOrDefault(f => f.Id == id);
+		return Definition.Faces.FirstOrDefault(f => f.Id == id);
 	}
 
 	#endregion Public Methods

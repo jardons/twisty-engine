@@ -12,8 +12,8 @@ public class AngularTopologyBuilder : ITopologyBuilder
 {
 	public string GetTopologicId(Block block)
 	{
-		var list = block.Faces.Select(f => f.Position).ToList();
-		var plane = new Plane(block.InitialPosition, Cartesian3dCoordinate.Zero);
+		var list = block.Definition.Faces.Select(f => f.Position).ToList();
+		var plane = new Plane(block.Definition.InitialPosition, Cartesian3dCoordinate.Zero);
 		var comparer = new CircularVectorComparer(plane);
 		list.Sort(comparer);
 
@@ -37,7 +37,7 @@ public class AngularTopologyBuilder : ITopologyBuilder
 			return id;
 
 		var extensions = block.Bandage.Extensions
-			.OrderBy(b => b.InitialPosition, comparer)
+			.OrderBy(b => b.Definition.InitialPosition, comparer)
 			.ToList();
 
 		idParts = new string[extensions.Count * 2];
@@ -45,15 +45,15 @@ public class AngularTopologyBuilder : ITopologyBuilder
 		// Start from central block.
 		idParts[0] = id;
 
-		idParts[1] = $"{Stringify(plane.GetThetaTo(extensions[0].InitialPosition))}*{GetTopologicId(extensions[0])}";
+		idParts[1] = $"{Stringify(plane.GetThetaTo(extensions[0].Definition.InitialPosition))}*{GetTopologicId(extensions[0])}";
 
 		// Create id based on two informations allowing to identify position of all extensions :
 		// * Angle from the extension block to the plane perpendicular to the principal block axis.
 		// * Angle between the extension block axix and next previous face.
 		for (int i = 1; i < extensions.Count; i++)
 		{
-			idParts[i * 2] = Stringify(extensions[i - 1].InitialPosition.GetThetaTo(extensions[i].InitialPosition));
-			idParts[i * 2 + 1] = $"{Stringify(plane.GetThetaTo(extensions[i].InitialPosition))}*{GetTopologicId(extensions[i])}";
+			idParts[i * 2] = Stringify(extensions[i - 1].Definition.InitialPosition.GetThetaTo(extensions[i].Definition.InitialPosition));
+			idParts[i * 2 + 1] = $"{Stringify(plane.GetThetaTo(extensions[i].Definition.InitialPosition))}*{GetTopologicId(extensions[i])}";
 		}
 
 		return string.Join('#', idParts);

@@ -6,7 +6,7 @@ namespace Twisty.Engine.Structure;
 /// <summary>
 /// Class describing the object that will represent the central rotation point around which blocks will rotate.
 /// </summary>
-public abstract class RotationCore : IRotatable, IBlocksStructure
+public class RotationCore : IRotatable, IBlocksStructure
 {
     #region Private Members
 
@@ -19,24 +19,24 @@ public abstract class RotationCore : IRotatable, IBlocksStructure
 
     private readonly Dictionary<string, CoreFace> m_Faces;
 
-    #endregion Private Members
+	#endregion Private Members
 
-    #region ctor(s)
+	#region ctor(s)
 
-    /// <summary>
-    /// Create a new RotationCore object
-    /// </summary>
-    /// <param name="blocks">List of blocks available around the center of the RotationCore.</param>
-    /// <param name="axes">List of Rotation Axes proposed around the rotation core.</param>
-    /// <param name="faces">List of faces proposed for this RotationCore in his solved state.</param>
-    protected RotationCore(IEnumerable<Block> blocks, IEnumerable<RotationAxis> axes, IEnumerable<CoreFace> faces)
+	/// <summary>
+	/// Create a new RotationCore object
+	/// </summary>
+	/// <param name="blocks">List of blocks definition for blocks available around the center of the RotationCore.</param>
+	/// <param name="axes">List of Rotation Axes proposed around the rotation core.</param>
+	/// <param name="faces">List of faces proposed for this RotationCore in his solved state.</param>
+	internal RotationCore(IEnumerable<BlockDefinition> blocks, IEnumerable<RotationAxis> axes, IEnumerable<CoreFace> faces)
     {
-        m_Blocks = blocks.ToArray();
-        m_Axes = new Dictionary<string, RotationAxis>();
+        m_Blocks = blocks.Select(definition => new Block(definition)).ToArray();
+        m_Axes = [];
         foreach (var axis in axes)
             m_Axes.Add(axis.Id, axis);
 
-        m_Faces = new Dictionary<string, CoreFace>();
+        m_Faces = [];
         foreach (var f in faces)
             m_Faces.Add(f.Id, f);
     }
@@ -132,7 +132,7 @@ public abstract class RotationCore : IRotatable, IBlocksStructure
     /// <param name="position">Initial position of the block relative to the core center.</param>
     /// <returns>Block for the corresponding initial position or null if not found.</returns>
     public Block GetBlockForInitialPosition(Cartesian3dCoordinate position)
-        => this.Blocks.FirstOrDefault(b => b.InitialPosition.IsSameVector(position));
+        => this.Blocks.FirstOrDefault(b => b.Definition.InitialPosition.IsSameVector(position));
 
     /// <summary>
     /// Gets a face using its id.

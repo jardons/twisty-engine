@@ -20,7 +20,7 @@ namespace Twisty.Engine.Tests.Structure.Analysis
 		{
 			// 1. Prepare
 			Cartesian3dCoordinate cc = new(facePosition);
-			Block b = new("lonely", Cartesian3dCoordinate.XAxis, new BlockFace("face", cc));
+			Block b = new(new BlockDefinition("lonely", Cartesian3dCoordinate.XAxis, new BlockFace("face", cc)));
 			ResolutionAnalyzer a = new(CreateStructure(b));
 
 			// 2. Execute
@@ -40,8 +40,8 @@ namespace Twisty.Engine.Tests.Structure.Analysis
 
 			BlockFace bf1 = new("face1", cc);
 			BlockFace bf2 = new("face2", cc);
-			Block b = new("lonely", Cartesian3dCoordinate.XAxis, bf1);
-			Block originalBlock = new("other", Cartesian3dCoordinate.YAxis, bf2);
+			Block b = new(new BlockDefinition("lonely", Cartesian3dCoordinate.XAxis, bf1));
+			Block originalBlock = new(new BlockDefinition("other", Cartesian3dCoordinate.YAxis, bf2));
 
 			ResolutionAnalyzer a = new(CreateStructure(b, originalBlock));
 
@@ -63,8 +63,8 @@ namespace Twisty.Engine.Tests.Structure.Analysis
 
 			BlockFace bf1 = new("face", new Cartesian3dCoordinate(facePosition));
 			BlockFace bf2 = new("face", new Cartesian3dCoordinate(originalPosition));
-			Block b = new("lonely", bf1.Position, bf1);
-			Block originalBlock = new("other", bf2.Position, bf2);
+			Block b = new(new BlockDefinition("lonely", bf1.Position, bf1));
+			Block originalBlock = new(new BlockDefinition("other", bf2.Position, bf2));
 
 			ResolutionAnalyzer a = new(CreateStructure(b, originalBlock));
 
@@ -87,8 +87,8 @@ namespace Twisty.Engine.Tests.Structure.Analysis
 
 			BlockFace bf1 = new("face1", new Cartesian3dCoordinate(facePosition));
 			BlockFace bf2 = new("face2", new Cartesian3dCoordinate(originalPosition));
-			Block b = new("lonely", bf1.Position, bf1);
-			Block originalBlock = new("other", bf2.Position, bf2);
+			Block b = new(new BlockDefinition("lonely", bf1.Position, bf1));
+			Block originalBlock = new(new BlockDefinition("other", bf2.Position, bf2));
 
 			ResolutionAnalyzer a = new(CreateStructure(b, originalBlock));
 
@@ -109,7 +109,7 @@ namespace Twisty.Engine.Tests.Structure.Analysis
 			// 1. Prepare
 			Cartesian3dCoordinate axis = new(facePosition);
 			BlockFace bf = new("face", axis);
-			Block b = new("lonely", axis, bf);
+			Block b = new(new BlockDefinition("lonely", axis, bf));
 
 			ResolutionAnalyzer a = new(CreateStructure(b));
 
@@ -130,7 +130,7 @@ namespace Twisty.Engine.Tests.Structure.Analysis
 			Cartesian3dCoordinate axis = new(rotationAxis);
 
 			BlockFace bf = new("face", Cartesian3dCoordinate.XAxis);
-			Block b = new("lonely", new Cartesian3dCoordinate(facePosition), bf);
+			Block b = new(new BlockDefinition("lonely", new Cartesian3dCoordinate(facePosition), bf));
 
 			ResolutionAnalyzer a = new(CreateStructure(b));
 

@@ -51,9 +51,9 @@ public class SkewbCube : CubicRotationCore
 	/// </summary>
 	/// <param name="n">Indicate the number of rows per face of the cube that is currently generated.</param>
 	/// <returns>The list of block that represent the current cube.</returns>
-	private static List<Block> GenerateBlocks()
+	private static List<BlockDefinition> GenerateBlocks()
 	{
-		List<Block> blocks = [];
+		List<BlockDefinition> blocks = [];
 
 		CubicRotationCore.AddCornersToList(blocks);
 		CubicRotationCore.AddCentersToList(blocks);

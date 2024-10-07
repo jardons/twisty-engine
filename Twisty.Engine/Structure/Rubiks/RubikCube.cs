@@ -77,12 +77,12 @@ public class RubikCube : CubicRotationCore
 	/// <param name="n">Indicate the number of rows per face of the cube that is currently generated.</param>
 	/// <exception cref="ArgumentException">Size of the Rubik's Cube should be bigger than 1.</exception>
 	/// <returns>The list of block that represent the current cube.</returns>
-	private static IEnumerable<Block> GenerateBlocks(int n)
+	private static IEnumerable<BlockDefinition> GenerateBlocks(int n)
 	{
 		if (n <= 1)
 			throw new ArgumentException("Size of the Rubik's Cube should be bigger than 1.", nameof(n));
 
-		List<Block> blocks = [];
+		List<BlockDefinition> blocks = [];
 
 		// Corner are identical in all cubes.
 		AddCornersToList(blocks);
@@ -104,7 +104,7 @@ public class RubikCube : CubicRotationCore
 	/// Add the edges for Rubiks' cube bigger than 2.
 	/// </summary>
 	/// <param name="blocks">List of block to which created edges will be added.</param>
-	private static void AddEdgesToList(IList<Block> blocks)
+	private static void AddEdgesToList(IList<BlockDefinition> blocks)
 	{
 		blocks.Add(CreateEdgeBlock(POSITION_FACE_DOWN + POSITION_FACE_FRONT,
 			new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN),
@@ -153,7 +153,7 @@ public class RubikCube : CubicRotationCore
 	/// <param name="face1"></param>
 	/// <param name="face2"></param>
 	/// <returns></returns>
-	private static Block CreateEdgeBlock(Cartesian3dCoordinate position, BlockFace face1, BlockFace face2)
+	private static BlockDefinition CreateEdgeBlock(Cartesian3dCoordinate position, BlockFace face1, BlockFace face2)
 		=> new($"E_{face1.Id}{face2.Id}", position, face1, face2);
 
 	#endregion Private Members

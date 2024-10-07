@@ -58,7 +58,7 @@ public class StandardMaterializer : IMaterializer
 	private MaterializedObject MaterializeObject(RotationCore core, Block b)
 	{
 		List<MaterializedObjectShape> parts = [];
-		foreach (BlockFace face in b.Faces)
+		foreach (BlockFace face in b.Definition.Faces)
 		{
 			// Get the face from the cube as the block face don't contain face Plane coordinates.
 			CoreFace cubeFace = core.GetFace(face.Id);

@@ -40,7 +40,7 @@ namespace Twisty.Engine.Structure
 		/// </summary>
 		/// <param name="blocks">Collection of all the blocks forming the Cube.</param>
 		/// <param name="axes">Collection of the ROtation axes around the Cube.</param>
-		public CubicRotationCore(IEnumerable<Block> blocks, IEnumerable<RotationAxis> axes)
+		public CubicRotationCore(IEnumerable<BlockDefinition> blocks, IEnumerable<RotationAxis> axes)
 			: base(blocks, axes, GenerateFaces()) { }
 
 		#region Protected Members
@@ -49,24 +49,24 @@ namespace Twisty.Engine.Structure
 		/// Add the 6 centers for a cube using center on their face axis.
 		/// </summary>
 		/// <param name="blocks">List of block to which created centers will be added.</param>
-		protected static void AddCentersToList(IList<Block> blocks)
+		protected static void AddCentersToList(IList<BlockDefinition> blocks)
 		{
-			blocks.Add(new Block($"CF_{ID_FACE_DOWN}", POSITION_FACE_DOWN, new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN)));
-			blocks.Add(new Block($"CF_{ID_FACE_UP}", POSITION_FACE_UP, new BlockFace(ID_FACE_UP, POSITION_FACE_UP)));
-			blocks.Add(new Block($"CF_{ID_FACE_LEFT}", POSITION_FACE_LEFT, new BlockFace(ID_FACE_LEFT, POSITION_FACE_LEFT)));
-			blocks.Add(new Block($"CF_{ID_FACE_RIGHT}", POSITION_FACE_RIGHT, new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)));
-			blocks.Add(new Block($"CF_{ID_FACE_FRONT}", POSITION_FACE_FRONT, new BlockFace(ID_FACE_FRONT, POSITION_FACE_FRONT)));
-			blocks.Add(new Block($"CF_{ID_FACE_BACK}", POSITION_FACE_BACK, new BlockFace(ID_FACE_BACK, POSITION_FACE_BACK)));
+			blocks.Add(new BlockDefinition($"CF_{ID_FACE_DOWN}", POSITION_FACE_DOWN, new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN)));
+			blocks.Add(new BlockDefinition($"CF_{ID_FACE_UP}", POSITION_FACE_UP, new BlockFace(ID_FACE_UP, POSITION_FACE_UP)));
+			blocks.Add(new BlockDefinition($"CF_{ID_FACE_LEFT}", POSITION_FACE_LEFT, new BlockFace(ID_FACE_LEFT, POSITION_FACE_LEFT)));
+			blocks.Add(new BlockDefinition($"CF_{ID_FACE_RIGHT}", POSITION_FACE_RIGHT, new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)));
+			blocks.Add(new BlockDefinition($"CF_{ID_FACE_FRONT}", POSITION_FACE_FRONT, new BlockFace(ID_FACE_FRONT, POSITION_FACE_FRONT)));
+			blocks.Add(new BlockDefinition($"CF_{ID_FACE_BACK}", POSITION_FACE_BACK, new BlockFace(ID_FACE_BACK, POSITION_FACE_BACK)));
 		}
 
 		/// <summary>
 		/// Add blocks for the 8 corners of the cube.
 		/// </summary>
 		/// <param name="blocks">List of block to which created corners will be added.</param>
-		protected static void AddCornersToList(IList<Block> blocks)
+		protected static void AddCornersToList(IList<BlockDefinition> blocks)
 		{
 			// 4 bottoms corners.
-			blocks.Add(new Block(
+			blocks.Add(new BlockDefinition(
 				$"C{ID_FACE_DOWN}{ID_FACE_FRONT}{ID_FACE_RIGHT}",
 				POSITION_CORNER_DOWN_FRONT_RIGHT,
 				new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN),
@@ -74,7 +74,7 @@ namespace Twisty.Engine.Structure
 				new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)
 			));
 
-			blocks.Add(new Block(
+			blocks.Add(new BlockDefinition(
 				$"C{ID_FACE_DOWN}{ID_FACE_BACK}{ID_FACE_RIGHT}",
 				POSITION_CORNER_DOWN_BACK_RIGHT,
 				new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN),
@@ -82,7 +82,7 @@ namespace Twisty.Engine.Structure
 				new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)
 			));
 
-			blocks.Add(new Block(
+			blocks.Add(new BlockDefinition(
 				$"C{ID_FACE_DOWN}{ID_FACE_FRONT}{ID_FACE_LEFT}",
 				POSITION_CORNER_DOWN_FRONT_LEFT,
 				new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN),
@@ -90,7 +90,7 @@ namespace Twisty.Engine.Structure
 				new BlockFace(ID_FACE_LEFT, POSITION_FACE_LEFT)
 			));
 
-			blocks.Add(new Block(
+			blocks.Add(new BlockDefinition(
 				$"C{ID_FACE_DOWN}{ID_FACE_BACK}{ID_FACE_LEFT}",
 				POSITION_CORNER_DOWN_BACK_LEFT,
 				new BlockFace(ID_FACE_DOWN, POSITION_FACE_DOWN),
@@ -99,7 +99,7 @@ namespace Twisty.Engine.Structure
 			));
 
 			// 4 tops corners.
-			blocks.Add(new Block(
+			blocks.Add(new BlockDefinition(
 				$"C{ID_FACE_UP}{ID_FACE_FRONT}{ID_FACE_RIGHT}",
 				POSITION_CORNER_UP_FRONT_RIGHT,
 				new BlockFace(ID_FACE_UP, POSITION_FACE_UP),
@@ -107,7 +107,7 @@ namespace Twisty.Engine.Structure
 				new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)
 			));
 
-			blocks.Add(new Block(
+			blocks.Add(new BlockDefinition(
 				$"C{ID_FACE_UP}{ID_FACE_BACK}{ID_FACE_RIGHT}",
 				POSITION_CORNER_UP_BACK_RIGHT,
 				new BlockFace(ID_FACE_UP, POSITION_FACE_UP),
@@ -115,7 +115,7 @@ namespace Twisty.Engine.Structure
 				new BlockFace(ID_FACE_RIGHT, POSITION_FACE_RIGHT)
 			));
 
-			blocks.Add(new Block(
+			blocks.Add(new BlockDefinition(
 				$"C{ID_FACE_UP}{ID_FACE_FRONT}{ID_FACE_LEFT}",
 				POSITION_CORNER_UP_FRONT_LEFT,
 				new BlockFace(ID_FACE_UP, POSITION_FACE_UP),
@@ -123,7 +123,7 @@ namespace Twisty.Engine.Structure
 				new BlockFace(ID_FACE_LEFT, POSITION_FACE_LEFT)
 			));
 
-			blocks.Add(new Block(
+			blocks.Add(new BlockDefinition(
 				$"C{ID_FACE_UP}{ID_FACE_BACK}{ID_FACE_LEFT}",
 				POSITION_CORNER_UP_BACK_LEFT,
 				new BlockFace(ID_FACE_UP, POSITION_FACE_UP),

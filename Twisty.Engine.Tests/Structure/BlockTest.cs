@@ -13,71 +13,16 @@ public class BlockTest
 	#region Test Methods
 
 	[Fact]
-	public void CreateBlockWithNullId_ThrowArgumentNullException()
+	public void CreateWithNullDefinition_ThrowArgumentNullException()
 	{
 		// 1. Prepare
 		Block b;
-		var faces = BlockFacesFactory.GetFaces("X");
 
 		// 2. Execute
-		void a1() => b = new(null, Cartesian3dCoordinate.XAxis, faces[0]);
-		void a2() => b = new(null, Cartesian3dCoordinate.XAxis, faces);
+		void a() => b = new(null);
 
 		// 3. Verify
-		Assert.Throws<ArgumentNullException>(a1);
-		Assert.Throws<ArgumentNullException>(a2);
-	}
-
-	[Theory]
-	[InlineData("")]
-	[InlineData("\t")]
-	[InlineData(" ")]
-	[InlineData("    ")]
-	[InlineData("\n")]
-	public void CreateBlockWithEmptyId_ThrowArgumentNullException(string id)
-	{
-		// 1. Prepare
-		Block b;
-		var faces = BlockFacesFactory.GetFaces("X");
-
-		// 2. Execute
-		void a1() => b = new(id, Cartesian3dCoordinate.XAxis, faces[0]);
-		void a2() => b = new(id, Cartesian3dCoordinate.XAxis, faces);
-
-		// 3. Verify
-		Assert.Throws<ArgumentException>(a1);
-		Assert.Throws<ArgumentException>(a2);
-	}
-
-	[Fact]
-	public void CreateBlockWithNullFace_ThrowArgumentNullException()
-	{
-		// 1. Prepare
-		Block b;
-		BlockFace f = null;
-		BlockFace[] faces = null;
-
-		// 2. Execute
-		void a1() => b = new("id", Cartesian3dCoordinate.XAxis, f);
-		void a2() => b = new("id", Cartesian3dCoordinate.XAxis, faces);
-
-		// 3. Verify
-		Assert.Throws<ArgumentNullException>(a1);
-		Assert.Throws<ArgumentNullException>(a2);
-	}
-
-	[Fact]
-	public void CreateBlockWithEmptyFaces_ThrowArgumentException()
-	{
-		// 1. Prepare
-		Block b;
-		BlockFace[] faces = [];
-
-		// 2. Execute
-		void a() => b = new("id", Cartesian3dCoordinate.XAxis, faces);
-
-		// 3. Verify
-		Assert.Throws<ArgumentException>(a);
+		Assert.Throws<ArgumentNullException>(a);
 	}
 
 	[Fact]
@@ -87,7 +32,7 @@ public class BlockTest
 		SphericalVector faceOrientation = new SphericalVector(Math.PI, Math.PI);
 
 		// 2. Execute
-		Block b = new("id", Cartesian3dCoordinate.XAxis, new BlockFace("test", faceOrientation));
+		Block b = new(new BlockDefinition("id", Cartesian3dCoordinate.XAxis, new BlockFace("test", faceOrientation)));
 		BlockFace f = b.GetBlockFace(faceOrientation);
 
 		// 3. Verify
@@ -109,7 +54,7 @@ public class BlockTest
 		Cartesian3dCoordinate axis = new Cartesian3dCoordinate(rotationAxisCc);
 		Cartesian3dCoordinate faceOrientation = new Cartesian3dCoordinate(faceCc);
 		Cartesian3dCoordinate expectedOrientation = new Cartesian3dCoordinate(expectedCc);
-		Block b = new("id", Cartesian3dCoordinate.XAxis, new BlockFace("test", faceOrientation));
+		Block b = new(new BlockDefinition("id", Cartesian3dCoordinate.XAxis, new BlockFace("test", faceOrientation)));
 
 		// 2. Execute
 		b.RotateAround(axis, theta);
@@ -124,7 +69,7 @@ public class BlockTest
 	{
 		// 1. Prepare
 		SphericalVector faceOrientation = new SphericalVector(Math.PI, Math.PI);
-		Block b = new("id", Cartesian3dCoordinate.XAxis, new BlockFace("test", faceOrientation));
+		Block b = new(new BlockDefinition("id", Cartesian3dCoordinate.XAxis, new BlockFace("test", faceOrientation)));
 
 		// 2. Execute
 		BlockFace f = b.GetBlockFace(new SphericalVector(100, 100));
@@ -140,7 +85,7 @@ public class BlockTest
 		// 1. Prepare
 		Cartesian3dCoordinate axis = new Cartesian3dCoordinate(axisCc);
 		Cartesian3dCoordinate faceOrientation = new Cartesian3dCoordinate(originalFace);
-		Block b = new("id", Cartesian3dCoordinate.XAxis, new BlockFace("test", faceOrientation));
+		Block b = new(new BlockDefinition("id", Cartesian3dCoordinate.XAxis, new BlockFace("test", faceOrientation)));
 
 		b.RotateAround(axis, theta);
 

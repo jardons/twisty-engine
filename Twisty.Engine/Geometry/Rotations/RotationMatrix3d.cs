@@ -79,8 +79,7 @@ public class RotationMatrix3d
 	/// <param name="matrix">Precalculated matrix as a table format.</param>
 	private RotationMatrix3d(double[,] matrix)
 	{
-		if (matrix is null)
-			throw new ArgumentNullException(nameof(matrix));
+		ArgumentNullException.ThrowIfNull(matrix);
 
 		if (matrix.Length != 9)
 			throw new ArgumentException("Matrix size is expected to be [3, 3].");

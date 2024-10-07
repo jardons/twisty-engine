@@ -53,7 +53,7 @@ public class AngularTopologyBuilderTest
 	{
 		// 1. Prepare
 		var axis = new Cartesian3dCoordinate(axisCc);
-		var b = new Block("id", axis, BlockFacesFactory.GetFaces(facesId));
+		var b = new Block(new BlockDefinition("id", axis, BlockFacesFactory.GetFaces(facesId)));
 		var builder = new AngularTopologyBuilder();
 
 		// 2. Execute
@@ -96,7 +96,7 @@ public class AngularTopologyBuilderTest
 		// 1. Prepare
 		var axis = new Cartesian3dCoordinate(axisCc);
 		var rotationAxis = new Cartesian3dCoordinate(rotationAxisCc);
-		var b = new Block("id", axis, BlockFacesFactory.GetFaces(facesId));
+		var b = new Block(new BlockDefinition("id", axis, BlockFacesFactory.GetFaces(facesId)));
 		var builder = new AngularTopologyBuilder();
 
 		// Keep original id as rotated one should stay the same.
@@ -127,10 +127,10 @@ public class AngularTopologyBuilderTest
 	{
 		// 1. Prepare
 		var extendedAxis = new Cartesian3dCoordinate(extendedAxisCc);
-		var extendedBlock = new Block("id1", extendedAxis, BlockFacesFactory.GetFaces(extendedFacesId));
+		var extendedBlock = new Block(new BlockDefinition("id1", extendedAxis, BlockFacesFactory.GetFaces(extendedFacesId)));
 
 		var axis = new Cartesian3dCoordinate(axisCc);
-		var b = new Block("id", axis, BlockFacesFactory.GetFaces(facesId));
+		var b = new Block(new BlockDefinition("id", axis, BlockFacesFactory.GetFaces(facesId)));
 		b.Bandage = new(b, [extendedBlock]);
 
 		var builder = new AngularTopologyBuilder();
@@ -162,13 +162,13 @@ public class AngularTopologyBuilderTest
 	{
 		// 1. Prepare
 		var extended1Axis = new Cartesian3dCoordinate(extended1AxisCc);
-		var extended1Block = new Block("id1", extended1Axis, BlockFacesFactory.GetFaces(extended1FacesId));
+		var extended1Block = new Block(new BlockDefinition("id1", extended1Axis, BlockFacesFactory.GetFaces(extended1FacesId)));
 
 		var extended2Axis = new Cartesian3dCoordinate(extended2AxisCc);
-		var extended2Block = new Block("id2", extended1Axis, BlockFacesFactory.GetFaces(extended2FacesId));
+		var extended2Block = new Block(new BlockDefinition("id2", extended1Axis, BlockFacesFactory.GetFaces(extended2FacesId)));
 
 		var axis = new Cartesian3dCoordinate(axisCc);
-		var b = new Block("id", axis, BlockFacesFactory.GetFaces(facesId));
+		var b = new Block(new BlockDefinition("id", axis, BlockFacesFactory.GetFaces(facesId)));
 		b.Bandage = new(b, [extended1Block, extended2Block]);
 
 		var builder = new AngularTopologyBuilder();
