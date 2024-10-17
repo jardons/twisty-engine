@@ -307,15 +307,34 @@ public class PlaneTest
 	public void GetVectorProjection_Expected(string planeCoordinate, string vectorCoordinates, string expectedCoordinate)
 	{
 		// 1. Prepare
-		Plane p = new Plane(planeCoordinate);
-		Cartesian3dCoordinate v = new Cartesian3dCoordinate(vectorCoordinates);
-		Cartesian3dCoordinate expected = new Cartesian3dCoordinate(expectedCoordinate);
+		var p = new Plane(planeCoordinate);
+		var v = new Cartesian3dCoordinate(vectorCoordinates);
+		var expected = new Cartesian3dCoordinate(expectedCoordinate);
 
 		// 2. Execute
 		var r = p.GetVectorProjection(v);
 
 		// 3. Verify
 		GeometryAssert.SameVector(expected, r);
+	}
+
+	[Theory]
+	[InlineData("(1 0 0 0)", "(1 1 0 1 1 0)", "(0 1 0 0 1 0)")]
+	[InlineData("(1 0 0 0)", "(1 1 1 1 1 1)", "(0 1 1 0 1 1)")]
+	[InlineData("(1 0 0 -10)", "(1 1 0 1 1 0)", "(10 1 0 0 1 0)")]
+	[InlineData("(1 0 0 10)", "(1 1 0 1 1 0)", "(-10 1 0 0 1 0)")]
+	public void GetParametricLineProjection_Expected(string planeCoordinate, string lineCoordinates, string expectedLine)
+	{
+		// 1. Prepare
+		var p = new Plane(planeCoordinate);
+		var line = new ParametricLine(lineCoordinates);
+		var expected = new ParametricLine(expectedLine);
+
+		// 2. Execute
+		var r = p.GetParametricLineProjection(line);
+
+		// 3. Verify
+		GeometryAssert.SameLine(expected, r);
 	}
 
 	[Theory]

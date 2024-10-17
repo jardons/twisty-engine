@@ -205,7 +205,7 @@ public class Plane
 		// Base on the plane equation, we need to adapt to use the correct resolution to avoid usses coming from potential divide by 0.0.
 		Cartesian3dCoordinate point;
 		if (this.D.IsZero() && p.D.IsZero())
-			// If both D are 0, origin will be share.
+			// If both D are 0, origin will be shared.
 			point = Cartesian3dCoordinate.Zero;
 		else if (TryGetPointAtIntersectionOnZUsingA(p, out Cartesian3dCoordinate rZfromA))
 			point = rZfromA;
@@ -306,6 +306,19 @@ public class Plane
 				l.X - (l.A * planePart),
 				l.Y - (l.B * planePart),
 				l.Z - (l.C * planePart)
+			);
+	}
+
+	/// <summary>
+	/// Gets the orientation projection of a ParametricLine on the current Plane.
+	/// </summary>
+	/// <param name="line"></param>
+	/// <returns></returns>
+	public ParametricLine GetParametricLineProjection(in ParametricLine line)
+	{
+		return new ParametricLine(
+				GetIntersection(GetPerpendicular(line.Point)),
+				GetVectorProjection(line.Vector).Normalize()
 			);
 	}
 
