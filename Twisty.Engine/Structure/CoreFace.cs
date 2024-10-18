@@ -18,11 +18,11 @@ public class CoreFace : IPlanar
 	/// Create a new CoreFace for a specific Plane.
 	/// </summary>
 	/// <param name="id">Id of the face.</param>
-	/// <param name="p">PLane representing the face of the Core.</param>
+	/// <param name="plane">PLane representing the face of the Core.</param>
 	[JsonConstructor]
-	public CoreFace(string id, Plane p)
+	public CoreFace(string id, Plane plane)
 	{
-		this.Plane = p;
+		this.Plane = plane;
 		this.Id = id;
 	}
 

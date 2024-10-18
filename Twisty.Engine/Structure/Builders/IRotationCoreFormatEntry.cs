@@ -6,7 +6,13 @@
 public enum RotationCoreFormatEntryType
 {
 	None,
+	/// <summary>
+	/// Format describing the load of data from a file.
+	/// </summary>
 	Load,
+	/// <summary>
+	/// Format describing the union of several formats results.
+	/// </summary>
 	Union
 }
 

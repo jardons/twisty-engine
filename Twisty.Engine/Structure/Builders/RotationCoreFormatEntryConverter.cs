@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using Newtonsoft.Json.Linq;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Twisty.Engine.Structure.Builders;
@@ -31,5 +32,17 @@ public class RotationCoreFormatEntryConverter<T> : JsonConverter<IRotationCoreFo
 
 	/// <inheritdoc />
 	public override void Write(Utf8JsonWriter writer, IRotationCoreFormatEntry<T> value, JsonSerializerOptions options)
-		=> JsonSerializer.Serialize(writer, value, options);
+	{
+		switch (value.Type)
+		{
+			case RotationCoreFormatEntryType.Load:
+				JsonSerializer.Serialize(writer, (RotationCoreFormatLoad<T>)value, options);
+				return;
+			case RotationCoreFormatEntryType.Union:
+				JsonSerializer.Serialize(writer, (RotationCoreFormatUnion<T>)value, options);
+				return;
+			default:
+				throw new JsonException($"{nameof(RotationCoreFormatEntryConverter<T>)} was not able to find {nameof(IRotationCoreFormatEntry<T>)} implementation for the Type '{value.Type}'.");
+		}
+	}
 }
