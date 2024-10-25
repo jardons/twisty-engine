@@ -1,0 +1,274 @@
+[
+	{
+		"InitialPosition": {
+			"X": 1,
+			"Y": 1,
+			"Z": -1
+		},
+		"Id": "CDFR",
+		"Faces": [
+			{
+				"Position": {
+					"X": 0,
+					"Y": 0,
+					"Z": -1
+				},
+				"Id": "D"
+			},
+			{
+				"Position": {
+					"X": 1,
+					"Y": 0,
+					"Z": 0
+				},
+				"Id": "F"
+			},
+			{
+				"Position": {
+					"X": 0,
+					"Y": 1,
+					"Z": 0
+				},
+				"Id": "R"
+			}
+		]
+	},
+	{
+		"InitialPosition": {
+			"X": -1,
+			"Y": 1,
+			"Z": -1
+		},
+		"Id": "CDBR",
+		"Faces": [
+			{
+				"Position": {
+					"X": -1,
+					"Y": 0,
+					"Z": 0
+				},
+				"Id": "B"
+			},
+			{
+				"Position": {
+					"X": 0,
+					"Y": 0,
+					"Z": -1
+				},
+				"Id": "D"
+			},
+			{
+				"Position": {
+					"X": 0,
+					"Y": 1,
+					"Z": 0
+				},
+				"Id": "R"
+			}
+		]
+	},
+	{
+		"InitialPosition": {
+			"X": 1,
+			"Y": -1,
+			"Z": -1
+		},
+		"Id": "CDFL",
+		"Faces": [
+			{
+				"Position": {
+					"X": 0,
+					"Y": 0,
+					"Z": -1
+				},
+				"Id": "D"
+			},
+			{
+				"Position": {
+					"X": 1,
+					"Y": 0,
+					"Z": 0
+				},
+				"Id": "F"
+			},
+			{
+				"Position": {
+					"X": 0,
+					"Y": -1,
+					"Z": 0
+				},
+				"Id": "L"
+			}
+		]
+	},
+	{
+		"InitialPosition": {
+			"X": -1,
+			"Y": -1,
+			"Z": -1
+		},
+		"Id": "CDBL",
+		"Faces": [
+			{
+				"Position": {
+					"X": -1,
+					"Y": 0,
+					"Z": 0
+				},
+				"Id": "B"
+			},
+			{
+				"Position": {
+					"X": 0,
+					"Y": 0,
+					"Z": -1
+				},
+				"Id": "D"
+			},
+			{
+				"Position": {
+					"X": 0,
+					"Y": -1,
+					"Z": 0
+				},
+				"Id": "L"
+			}
+		]
+	},
+	{
+		"InitialPosition": {
+			"X": 1,
+			"Y": 1,
+			"Z": 1
+		},
+		"Id": "CUFR",
+		"Faces": [
+			{
+				"Position": {
+					"X": 1,
+					"Y": 0,
+					"Z": 0
+				},
+				"Id": "F"
+			},
+			{
+				"Position": {
+					"X": 0,
+					"Y": 1,
+					"Z": 0
+				},
+				"Id": "R"
+			},
+			{
+				"Position": {
+					"X": 0,
+					"Y": 0,
+					"Z": 1
+				},
+				"Id": "U"
+			}
+		]
+	},
+	{
+		"InitialPosition": {
+			"X": -1,
+			"Y": 1,
+			"Z": 1
+		},
+		"Id": "CUBR",
+		"Faces": [
+			{
+				"Position": {
+					"X": -1,
+					"Y": 0,
+					"Z": 0
+				},
+				"Id": "B"
+			},
+			{
+				"Position": {
+					"X": 0,
+					"Y": 1,
+					"Z": 0
+				},
+				"Id": "R"
+			},
+			{
+				"Position": {
+					"X": 0,
+					"Y": 0,
+					"Z": 1
+				},
+				"Id": "U"
+			}
+		]
+	},
+	{
+		"InitialPosition": {
+			"X": 1,
+			"Y": -1,
+			"Z": 1
+		},
+		"Id": "CUFL",
+		"Faces": [
+			{
+				"Position": {
+					"X": 1,
+					"Y": 0,
+					"Z": 0
+				},
+				"Id": "F"
+			},
+			{
+				"Position": {
+					"X": 0,
+					"Y": -1,
+					"Z": 0
+				},
+				"Id": "L"
+			},
+			{
+				"Position": {
+					"X": 0,
+					"Y": 0,
+					"Z": 1
+				},
+				"Id": "U"
+			}
+		]
+	},
+	{
+		"InitialPosition": {
+			"X": -1,
+			"Y": -1,
+			"Z": 1
+		},
+		"Id": "CUBL",
+		"Faces": [
+			{
+				"Position": {
+					"X": -1,
+					"Y": 0,
+					"Z": 0
+				},
+				"Id": "B"
+			},
+			{
+				"Position": {
+					"X": 0,
+					"Y": -1,
+					"Z": 0
+				},
+				"Id": "L"
+			},
+			{
+				"Position": {
+					"X": 0,
+					"Y": 0,
+					"Z": 1
+				},
+				"Id": "U"
+			}
+		]
+	}
+]

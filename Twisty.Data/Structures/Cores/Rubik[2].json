@@ -1,0 +1,14 @@
+{
+	"Faces": {
+		"Type": "Load",
+		"Id": "Cube"
+	},
+	"Axes": {
+		"Type": "Load",
+		"Id": "Cube"
+	},
+	"Blocks": {
+		"Type": "Load",
+		"Id": "CubeCorners"
+	}
+}
