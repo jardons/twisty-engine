@@ -29,8 +29,7 @@ namespace Twisty.Engine.Geometry
 		/// <returns>A table of double containing the coordinate in the given order.</returns>
 		public static double[] ParseCoordinates(string coordinates)
 		{
-			if (coordinates is null)
-				throw new ArgumentNullException(nameof(coordinates));
+			ArgumentNullException.ThrowIfNull(coordinates);
 
 			if (!coordinates.StartsWith("(") || !coordinates.EndsWith(")") || coordinates.Length < 3)
 				throw new FormatException("Coordinates doesn't follow the expected format '(DDD.D, DDD.D, DDD.D)' where 'DDD.D' must be a valid Double.");

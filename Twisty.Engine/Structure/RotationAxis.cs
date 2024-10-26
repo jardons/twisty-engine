@@ -25,8 +25,7 @@ public class RotationAxis
 	/// <exception cref="System.ArgumentException">Axis id cannot be an empty or a white string.</exception>
 	public RotationAxis(string id, Cartesian3dCoordinate vector, IDictionary<string, double> layersDistances = null)
 	{
-		if (id is null)
-			throw new ArgumentNullException(nameof(id), "Axis id is mandatory.");
+		ArgumentNullException.ThrowIfNull(id);
 
 		if (string.IsNullOrWhiteSpace(id))
 			throw new ArgumentException("Axis id cannot be an empty or a white string.", nameof(id));
@@ -52,8 +51,7 @@ public class RotationAxis
 	[JsonConstructor]
 	public RotationAxis(string id, Cartesian3dCoordinate vector, IEnumerable<LayerSeparator> layers)
 	{
-		if (id is null)
-			throw new ArgumentNullException(nameof(id), "Axis id is mandatory.");
+		ArgumentNullException.ThrowIfNull(id);
 
 		if (string.IsNullOrWhiteSpace(id))
 			throw new ArgumentException("Axis id cannot be an empty or a white string.", nameof(id));
