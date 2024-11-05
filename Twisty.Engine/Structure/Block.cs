@@ -89,8 +89,7 @@ public class Block : IPositionnedByCartesian3dVector
 	/// <returns>The searched Blockface if found, otherwise, null is returned.</returns>
 	public BlockFace GetBlockFace(string id)
 	{
-		if (id is null)
-			throw new ArgumentNullException(nameof(id), "Id is mandatory");
+		ArgumentNullException.ThrowIfNull(id);
 
 		return Definition.Faces.FirstOrDefault(f => f.Id == id);
 	}

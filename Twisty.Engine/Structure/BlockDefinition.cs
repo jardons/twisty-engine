@@ -8,7 +8,7 @@ namespace Twisty.Engine.Structure;
 /// Class describing an initial block state in the rotation core.
 /// </summary>
 [DebuggerDisplay("{Id}")]
-public class BlockDefinition
+public class BlockDefinition : SateliteDefinition
 {
 	private readonly IReadOnlyCollection<BlockFace> m_Faces;
 
@@ -21,6 +21,7 @@ public class BlockDefinition
 	/// <param name="initialPosition">Initial position vector of the block in the cube.</param>
 	/// <param name="faces">Collection of available faces for this block.</param>
 	public BlockDefinition(string id, Cartesian3dCoordinate initialPosition, params BlockFace[] faces)
+		: base(id, initialPosition)
 	{
 		ArgumentNullException.ThrowIfNull(id);
 		ArgumentNullException.ThrowIfNull(faces);
@@ -28,12 +29,9 @@ public class BlockDefinition
 		if (string.IsNullOrWhiteSpace(id))
 			throw new ArgumentException("Id cannot be an empty string.", nameof(id));
 
-		m_Faces = new List<BlockFace>(faces.Where(f => f is not null).OrderBy((f) => f.Id));
+		m_Faces = [..faces.Where(f => f is not null).OrderBy((f) => f.Id)];
 		if (m_Faces.Count == 0)
 			throw new ArgumentException("A block need at least one visible BlockFace", nameof(faces));
-
-		this.Id = id;
-		this.InitialPosition = initialPosition;
 	}
 
 	/// <summary>
@@ -44,6 +42,7 @@ public class BlockDefinition
 	/// <param name="faces">Collection of available faces for this block.</param>
 	[JsonConstructor]
 	public BlockDefinition(string id, Cartesian3dCoordinate initialPosition, IReadOnlyCollection<BlockFace> faces)
+		: base(id, initialPosition)
 	{
 		ArgumentNullException.ThrowIfNull(id);
 		ArgumentNullException.ThrowIfNull(faces);
@@ -51,27 +50,14 @@ public class BlockDefinition
 		if (string.IsNullOrWhiteSpace(id))
 			throw new ArgumentException("Id cannot be an empty string.", nameof(id));
 
-		m_Faces = new List<BlockFace>(faces.Where(f => f is not null).OrderBy((f) => f.Id));
+		m_Faces = [..faces.Where(f => f is not null).OrderBy((f) => f.Id)];
 		if (m_Faces.Count == 0)
 			throw new ArgumentException("A block need at least one visible BlockFace", nameof(faces));
-
-		this.Id = id;
-		this.InitialPosition = initialPosition;
 	}
 
 	#endregion ctor(s)
 
 	#region Public Properties
-
-	/// <summary>
-	/// Initial Position is stored using the direction relative to the Form center.
-	/// </summary>
-	public Cartesian3dCoordinate InitialPosition { get; }
-
-	/// <summary>
-	/// Gets the unique ID of the block.
-	/// </summary>
-	public string Id { get; }
 
 	/// <summary>
 	/// Gets the faces visibles for this block, ordered per face id.
