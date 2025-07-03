@@ -23,7 +23,7 @@ namespace Twisty.Engine.Geometry;
 ///          
 /// </example>
 [DebuggerDisplay("({X}, {Y})")]
-public class Cartesian2dCoordinate
+public struct Cartesian2dCoordinate
 {
 	/// <summary>
 	/// Gets the Zero point coordinates.
@@ -117,6 +117,27 @@ public class Cartesian2dCoordinate
 	public double ThetaToY => Math.Acos(this.Y / this.Magnitude);
 
 	#endregion Public Properties
+
+	#region Public Methods
+
+	/// <summary>
+	/// Gets the distance between this point and another provided one.
+	/// </summary>
+	/// <param name="p">Other point to which the distance will be calculated.</param>
+	/// <returns>Distance between this point and another provided one.</returns>
+	public readonly double GetDistanceTo(in Cartesian2dCoordinate p)
+		=> Math.Sqrt((this.X - p.X) * (this.X - p.X) + (this.Y - p.Y) * (this.Y - p.Y));
+
+	/// <summary>
+	/// Gets the manhatan distance between this point and another provided one.
+	/// </summary>
+	/// <param name="p">Other point to which the distance will be calculated.</param>
+	/// <returns>Distance between this point and another provided one.</returns>
+	public readonly double GetManhattanDistanceTo(in Cartesian2dCoordinate p)
+		=> Math.Abs(this.X - p.X)
+			+ Math.Abs(this.Y - p.Y);
+
+	#endregion Public Methods
 
 	#region Operators
 

@@ -383,20 +383,30 @@ public struct Cartesian3dCoordinate
     public readonly double GetThetaTo(in Cartesian3dCoordinate x)
         => Trigonometry.Acos(this.DotProduct(x) / (this.Magnitude * x.Magnitude));
 
-    /// <summary>
-    /// Gets the distance between this point and another provided one.
-    /// </summary>
-    /// <param name="p">Other point to which the distance will be calculated.</param>
-    /// <returns>Distance between this point and another provided one.</returns>
-    public readonly double GetDistanceTo(in Cartesian3dCoordinate p)
-        => Math.Pow(Math.Pow(this.X - p.X, 2.0) + Math.Pow(this.Y - p.Y, 2.0) + Math.Pow(this.Z - p.Z, 2.0), 0.5);
+	/// <summary>
+	/// Gets the distance between this point and another provided one.
+	/// </summary>
+	/// <param name="p">Other point to which the distance will be calculated.</param>
+	/// <returns>Distance between this point and another provided one.</returns>
+	public readonly double GetDistanceTo(in Cartesian3dCoordinate p)
+		=> Math.Sqrt((this.X - p.X) * (this.X - p.X) + (this.Y - p.Y) * (this.Y - p.Y) + (this.Z - p.Z) * (this.Z - p.Z));
 
-    /// <summary>
-    /// Gets the dot product between this vector in a 1 X 3 format and a second one in a 3 X 1 format.
-    /// </summary>
-    /// <param name="c">Vector that will be used as a 3 X 1 matrix.</param>
-    /// <returns>Calculated vector from the dot product of the 2 vectors.</returns>
-    public readonly double DotProduct(in Cartesian3dCoordinate c)
+	/// <summary>
+	/// Gets the manhatan distance between this point and another provided one.
+	/// </summary>
+	/// <param name="p">Other point to which the distance will be calculated.</param>
+	/// <returns>Distance between this point and another provided one.</returns>
+	public readonly double GetManhattanDistanceTo(in Cartesian3dCoordinate p)
+	    => Math.Abs(this.X - p.X)
+            + Math.Abs(this.Y - p.Y)
+            + Math.Abs(this.Z - p.Z);
+
+	/// <summary>
+	/// Gets the dot product between this vector in a 1 X 3 format and a second one in a 3 X 1 format.
+	/// </summary>
+	/// <param name="c">Vector that will be used as a 3 X 1 matrix.</param>
+	/// <returns>Calculated vector from the dot product of the 2 vectors.</returns>
+	public readonly double DotProduct(in Cartesian3dCoordinate c)
     {
         return (this.X * c.X) + (this.Y * c.Y) + (this.Z * c.Z);
     }
