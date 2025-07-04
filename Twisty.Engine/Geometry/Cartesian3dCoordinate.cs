@@ -455,9 +455,7 @@ public struct Cartesian3dCoordinate
     public static Cartesian3dCoordinate GetCenterOfMass(in IEnumerable<Cartesian3dCoordinate> points)
     {
         int count = 0;
-        double x = 0.0;
-        double y = 0.0;
-        double z = 0.0;
+        double x = 0.0, y = 0.0, z = 0.0;
         foreach (Cartesian3dCoordinate p in points)
         {
             ++count;
@@ -471,17 +469,38 @@ public struct Cartesian3dCoordinate
             : new Cartesian3dCoordinate(x / count, y / count, z / count);
     }
 
-    #endregion Public Static Methods
+	/// <summary>
+	/// Get the center of mass point for the provided collection of points.
+	/// </summary>
+	/// <param name="points">Points for which the center of mass will be calculated.</param>
+	/// <returns>COordinate of the point in the center of mass of the provided points list.</returns>
+	public static Cartesian3dCoordinate GetCenterOfMass(Span<Cartesian3dCoordinate> points)
+	{
+        if (points.IsEmpty)
+            return Zero;
 
-    #region Operators
+		double x = 0.0, y = 0.0, z = 0.0;
+		foreach (Cartesian3dCoordinate p in points)
+		{
+			x += p.X;
+			y += p.Y;
+			z += p.Z;
+		}
 
-    /// <summary>
-    /// Gets the result of the substraction of 2 vectors.
-    /// </summary>
-    /// <param name="v1">First vector from which the second one will be substracted.</param>
-    /// <param name="v2">Substracted Vector.</param>
-    /// <returns>Result of the subbstraction of the 2 vectors.</returns>
-    public static Cartesian3dCoordinate operator -(in Cartesian3dCoordinate v1, in Cartesian3dCoordinate v2)
+		return new Cartesian3dCoordinate(x / points.Length, y / points.Length, z / points.Length);
+	}
+
+	#endregion Public Static Methods
+
+	#region Operators
+
+	/// <summary>
+	/// Gets the result of the substraction of 2 vectors.
+	/// </summary>
+	/// <param name="v1">First vector from which the second one will be substracted.</param>
+	/// <param name="v2">Substracted Vector.</param>
+	/// <returns>Result of the subbstraction of the 2 vectors.</returns>
+	public static Cartesian3dCoordinate operator -(in Cartesian3dCoordinate v1, in Cartesian3dCoordinate v2)
     {
         return new Cartesian3dCoordinate(
                 v1.X - v2.X,
