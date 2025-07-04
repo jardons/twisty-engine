@@ -11,8 +11,17 @@ namespace Twisty.Engine.Algorithms
 		public Algorithm(string command)
 		{
 			this.Command = command;
+			this.Categories = [];
 		}
 
+		/// <summary>
+		/// Algorythm command to execute.
+		/// </summary>
 		public string Command { get; }
+
+		/// <summary>
+		/// Gets the categories to which the elgorythm belongs.
+		/// </summary>
+		public List<string> Categories { get; }
 	}
 }

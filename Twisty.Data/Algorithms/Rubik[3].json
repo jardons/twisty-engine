@@ -1,5 +1,6 @@
 {
 	"Algorythms": [
-		{ "Command": "RU'R'U" }
+		{ "Command": "RU'R'U" },
+		{ "Command": "RU'RURURU'R'U'RR", "Categories": [ "PLL" ] }
 	]
 }

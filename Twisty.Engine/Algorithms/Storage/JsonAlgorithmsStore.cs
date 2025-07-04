@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
 namespace Twisty.Engine.Algorithms.Storage
 {
 	public class JsonAlgorithmsStore
